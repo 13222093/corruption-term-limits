@@ -273,3 +273,5 @@
 | \SLargeTenLow | 0.749 | same at 0.8 s |
 | \SLargeTenHigh | 0.749 | same at 1.2 s |
 | \NeutralMaxDev | 0.008 | max |ybar - (nu+rho)/(2nu+rho)| for rho>=0.05 (large IBM) |
+| \RuntimeFullMin | 17 | total recorded compute, full profile (minutes) |
+| \RuntimeQuickMin | 2 | total recorded compute, quick profile (minutes) |

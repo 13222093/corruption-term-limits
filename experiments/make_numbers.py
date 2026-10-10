@@ -333,6 +333,15 @@ def build(profile):
     pred = {r: (nu_l + r) / (2 * nu_l + r) for r in lg}
     M("NeutralMaxDev", max(abs(lg[r] - pred[r]) for r in lg if r >= 0.05),
       "max |ybar - (nu+rho)/(2nu+rho)| for rho>=0.05 (large IBM)", 3)
+    # compute time recorded in the results files
+    for prof, nm in ((profile, "Full"), ("quick", "Quick")):
+        d = os.path.join(RESULTS, prof)
+        tot = 0.0
+        for fn in os.listdir(d):
+            if fn.endswith(".json") and not fn.startswith("hypotheses"):
+                with open(os.path.join(d, fn)) as fh:
+                    tot += json.load(fh)["data"].get("runtime_s", 0.0)
+        M(f"Runtime{nm}Min", tot / 60.0, f"total recorded compute, {prof} profile (minutes)", 0)
     return MACROS
 
 

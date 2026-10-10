@@ -1,0 +1,823 @@
+\documentclass[11pt]{article}
+\usepackage[a4paper,margin=2.5cm]{geometry}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{amsmath,amssymb}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage[numbers,sort&compress]{natbib}
+\usepackage{xcolor}
+\usepackage[hidelinks]{hyperref}
+\usepackage{microtype}
+\usepackage[font=small,labelfont=bf]{caption}
+\usepackage{doi}
+\usepackage[section]{placeins}
+
+\graphicspath{{../figures/}}
+\input{autogen_numbers}
+
+\newcommand{\IBM}{IBM}
+\newcommand{\rhoc}{\rho_c}
+
+\title{Umpire rotation and inherited integrity in an evolutionary model of institutional corruption}
+\author{Mohammad Ari Alexander Aziz\\[2pt]
+\small School of Electrical Engineering and Informatics, Institut Teknologi Bandung, Indonesia\\
+\small Email: [placeholder] \quad ORCID: [placeholder]}
+\date{Draft, \today}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Institutions that punish free riders can sustain cooperation, but the officers who run them may
+become corrupt. Lee, Iwasa, Dieckmann and Sigmund (2019) showed that social learning then produces
+recurring cycles of corruption. We reproduce their model and extend it with term-limited officers
+(umpires) who are replaced at a fixed rate by newcomers whose integrity may be inherited from the
+incumbents. We reproduce the paper's analytical benchmarks exactly and its simulations closely,
+and we document six inconsistencies in the published text. In the large-population limit,
+rotation removes corruption cycles through a saddle-node bifurcation on the cycle at a critical
+rotation rate. We derive an approximation for this rate and show that it is proportional to the
+exploration rate. In stochastic simulations, rotation raises the time-averaged share of honest
+umpires from \HoneYSZero{} to \HoneYSMax{} and makes corruption episodes rarer. Rotation also
+lowers vigilance, but contrary to our hypothesis the remaining episodes are shallower, not deeper.
+Inheritance weakens rotation in all three variants studied; linear inheritance is equivalent to
+slower fresh rotation. Conformist inheritance produces bistability only when newcomers almost
+purely copy the majority, and delayed inheritance does not destabilize the honest state.
+Replacing whole cohorts at once is more effective than gradual replacement at the same average
+rate.
+\end{abstract}
+
+\noindent\textbf{Keywords:} corruption, evolutionary game theory, institutions, term limits,
+replicator dynamics, bifurcation
+
+\noindent\textbf{What is reproduced and what is new.} Sections~\ref{sec:base},
+\ref{sec:methods-markov} and \ref{sec:repro} reproduce Lee et al.~\cite{lee2019social}. The
+rotation model (Section~\ref{sec:rotation}), its analysis (Section~\ref{sec:analytic}) and all
+results on hypotheses H1 to H6 (Section~\ref{sec:hyp}) are new. \textbf{The supplementary
+information of Lee et al.\ was not available to us;} the individual-based update procedure is
+therefore our reconstruction from the main text and is marked as such throughout
+(Appendix~\ref{app:typos}).
+
+%=====================================================================
+\section{Introduction}
+%=====================================================================
+
+Cooperation in groups is often protected by institutions that punish those who cheat. Courts,
+regulators, referees and auditors make defection costly, and in doing so they turn a social
+dilemma into a situation where cooperation pays. Ostrom described such institutions as tools that
+let people overcome collective-action problems~\cite{ostrom1990commons}. Evolutionary game theory
+has shown how sanctioning institutions can arise and persist through social learning, for example
+when individuals choose whether to contribute to a punishment pool~\cite{sigmund2010social}, and
+how institutional rewards and penalties can be combined
+efficiently~\cite{sasaki2014optional,chen2015carrot}.
+
+Institutions are run by people, and people can be bribed. Corruption of enforcers is a central
+topic in political economy~\cite{roseackerman2016corruption} and has been studied
+experimentally~\cite{muthukrishna2017corrupting}. Lee, Iwasa, Dieckmann and
+Sigmund~\cite{lee2019social} built a minimal evolutionary model of this problem. Pairs of players
+play a donation game supervised by an umpire. An honest umpire fines defectors; a corrupt umpire
+takes a bribe from them instead. Players can pay a small cost to learn the type of their umpire
+and refuse to play under one that does not suit them. Both players and umpires learn by imitating
+more successful peers. The model produces cycles: when umpires are honest, checking them seems
+wasteful, so optimistic players spread; corrupt umpires then gain from bribes and take over;
+cooperation collapses until prudent players return, at which point honest umpires earn more and
+recover. In large populations with more exploration, the cycles are damped and corruption
+persists at an intermediate level~\cite{lee2019social}. Related models study corrupt enforcers
+in pool punishment~\cite{liu2019corrupt}, enforcer education against illegal
+logging~\cite{lee2015logging}, and supervision of umpires by
+players~\cite{shi2023bidirectional} or by external services~\cite{zhou2023supervision}. Cycles of
+corruption have also been described in political models~\cite{bicchieri1997cycles}.
+
+One common policy response to corruption is to limit how long officials stay in office. Staff
+rotation has been tested in laboratory experiments~\cite{abbink2004rotation,buhren2020rotation},
+and term limits have been linked to corruption in empirical
+work~\cite{ferraz2011electoral,laurent2021horizon}. The effect is not obvious. New officials may
+not yet be part of corrupt networks, but they may also learn the norms of the body they join.
+Rotation is also everyday practice in many small institutions, such as student organizations
+whose leaders change every year. In such settings the integrity of the institution depends both
+on how often its members change and on what newcomers learn from their predecessors.
+
+To our knowledge, rotation of enforcers has not been analyzed in the model of Lee et al.\ or in
+the other evolutionary-game models of corruption that we found (Appendix~\ref{app:lit}). Here we
+first reproduce the model, using only the main text because the supplementary information was not
+available to us. We then add umpire rotation: each umpire is replaced at a fixed rate, and the
+newcomer is honest with a probability that is either fixed (a fresh cohort) or inherited from the
+current umpires. Inheritance can be linear, conformist, or delayed by one term. We state six
+hypotheses in advance (H1 to H6), fix the metrics and decision rules before running the
+experiments, and evaluate each hypothesis in the deterministic large-population limit (mean
+field) and in finite-population simulations.
+
+Our contributions are as follows. We reproduce the analytical benchmarks of Lee et al.\ exactly,
+including an independent derivation of their rare-exploration Markov chain, and their simulations
+closely. We document six inconsistencies in the published text, none of which changes the paper's
+conclusions. We show that rotation removes the corruption cycle not through a Hopf bifurcation
+but through a saddle-node bifurcation on the limit cycle, and we derive an approximation for the
+critical rotation rate. We find that rotation raises honesty and lowers vigilance as expected,
+but that the remaining corruption episodes are not deeper, so a ``vigilance paradox'' does not
+appear. We find that inheritance weakens rotation, that conformist inheritance creates
+bistability only in an extreme regime, and that delayed inheritance does not destabilize the
+honest state. Finally, we find that replacing whole cohorts at once is more effective than
+gradual replacement.
+
+%=====================================================================
+\section{Model}
+%=====================================================================
+
+\subsection{Base model (Lee et al.\ 2019)}\label{sec:base}
+
+This subsection restates the model of Lee et al.~\cite{lee2019social}; all credit for it belongs
+to them. Source locations for every element are listed in the repository file \texttt{SPEC.md}.
+
+There are $M$ players and $N$ umpires. Two random players meet and are assigned a random umpire.
+Each player follows one of four strategies: optimistic cooperator (OC), prudent cooperator (PC),
+optimistic defector (OD) or prudent defector (PD). A prudent player pays $h$ to learn whether the
+umpire is honest. A PD refuses to play under an honest umpire and a PC refuses to play under a
+corrupt one. If both players proceed, each pays a fee $f$ to the umpire. A corrupt umpire also
+takes a bribe $B$ from each defector. The players then play a donation game with benefit $b$ and
+cost $c$, and an honest umpire fines each defector $A$. The resulting payoff matrices for the
+strategy order (OC, PC, OD, PD) are
+\begin{equation}
+Q_H=\begin{pmatrix}
+b-c-f & b-c-f & -c-f & 0\\
+b-c-f-h & b-c-f-h & -c-f-h & -h\\
+b-f-A & b-f-A & -f-A & 0\\
+-h & -h & -h & -h
+\end{pmatrix},
+\end{equation}
+\begin{equation}
+Q_C=\begin{pmatrix}
+b-c-f & 0 & -c-f & -c-f\\
+-h & -h & -h & -h\\
+b-f-B & 0 & -f-B & -f-B\\
+b-f-B-h & -h & -f-B-h & -f-B-h
+\end{pmatrix}.
+\end{equation}
+An honest umpire earns $2f$ unless a PD walks away; a corrupt umpire earns $2f$ plus $B$ per
+defector unless a PC walks away. With $x=(x_1,\dots,x_4)$ the frequencies of OC, PC, OD, PD and
+$y$ the fraction of honest umpires, the expected umpire incomes are
+$P_H=2f(1-x_4)^2$ and $P_C=2f(1-x_2)^2+2B(x_3+x_4)(1-x_2)$, so that
+\begin{equation}
+P_H-P_C=2f(x_2-x_4)(1+x_1+x_3)-2B(x_3+x_4)(1-x_2),\label{eq:ump}
+\end{equation}
+as stated by Lee et al. Their parameter conditions are
+$f+h<b-c$, $c+h<A$, $B+h<c$ and $h<\sqrt{f(f+B)}$. The last one guarantees that honest umpires
+can invade a population of corrupt umpires and prudent cooperators. We use their base values
+$b=1$, $c=0.5$, $f=B=0.2$, $h=0.1$ and $A=2$ (or $A=0.7$).
+
+In large populations the dynamics are the replicator-mutator equations
+\begin{align}
+\dot x_i &= x_i\big[(Q(y)x)_i - x^{\top}Q(y)x\big] - \mu x_i + \mu\frac{1-x_i}{3},\qquad i=1,\dots,4,\label{eq:rm1}\\
+\dot y &= y(1-y)\big[P_H(x)-P_C(x)\big] - \nu y + \nu(1-y),\label{eq:rm2}
+\end{align}
+with exploration rates $\mu$ (players) and $\nu$ (umpires) and $Q(y)=yQ_H+(1-y)Q_C$. The printed
+equation has the weights of $Q_H$ and $Q_C$ swapped; we use the reading that is consistent with
+$y$ being the honest fraction (Appendix~\ref{app:typos}).
+
+In finite populations, individuals revise their strategies one at a time. With probability $\mu$
+(players) or $\nu$ (umpires) the revising individual switches to another strategy at random;
+otherwise it compares its payoff $P_X$ with that of a random role model $Y$ from its own
+population and copies $Y$ with probability $[1+\exp(s(P_X-P_Y))]^{-1}$, where $s$ is the
+selection strength.
+
+\subsection{Rotation and inherited integrity (new)}\label{sec:rotation}
+
+We add term limits for umpires. This is our design (an assumption, not part of Lee et al.).
+Each umpire is replaced at rate $\rho$ by a newcomer who is honest with probability $p_{\rm new}$.
+In the mean field this adds one term to Eq.~\eqref{eq:rm2}:
+\begin{equation}
+\dot y = y(1-y)\big[P_H-P_C\big] - \nu y + \nu(1-y) + \rho\,\big(p_{\rm new}-y\big).\label{eq:rot}
+\end{equation}
+We study four rules for the newcomer's honesty:
+\begin{align*}
+\text{V0 (fresh cohort):}\quad & p_{\rm new}=p_0,\\
+\text{V1 (linear inheritance):}\quad & p_{\rm new}=(1-\kappa)p_0+\kappa y,\\
+\text{V2 (conformist inheritance):}\quad & p_{\rm new}=(1-\kappa)p_0+\kappa\, g(y),\quad g(y)=\frac{y^k}{y^k+(1-y)^k},\ k=2,\\
+\text{V3 (delayed inheritance):}\quad & p_{\rm new}(t)=(1-\kappa)p_0+\kappa\, y(t-T_{\rm lag}).
+\end{align*}
+Here $p_0$ is the honesty of an untrained newcomer (default 1) and $\kappa\in[0,1]$ is the weight
+of inheritance. In V3 the newcomer learns from the body as it was one term earlier; by default
+$T_{\rm lag}=1/\rho$, the mean term length. We also study pulsed rotation, in which a fraction
+$\tau$ of umpires is replaced every $T$ time units, so that $y\to(1-\tau)y+\tau p_{\rm new}$ at
+each pulse and the average rate is $\rho=\tau/T$. In the finite-population model, each umpire is
+replaced at rate $\rho$ per generation (continuous) or $\lfloor\tau N\rceil$ randomly chosen
+umpires are replaced every $T$ generations (pulses).
+
+Two remarks help interpretation. First, for V1 the rotation term equals
+$\rho(1-\kappa)(p_0-y)$, so linear inheritance is identical to fresh rotation at the effective rate
+$\rho_{\rm eff}=\rho(1-\kappa)$ in the mean field. Second, with $p_0=1$ the V0 rotation term
+$\rho(1-y)$ combines with exploration into $(\nu+\rho)(1-y)-\nu y$, which is umpire exploration
+biased toward honesty. Fresh-cohort rotation is therefore close in spirit to enforcer
+``education'' studied by Lee et al.~\cite{lee2015logging} in another model. The inheritance
+variants, pulses and the finite-population process differ from biased exploration.
+
+We test six hypotheses, stated before any extension experiment was run:
+H1, rotation raises time-averaged honesty and damps corruption cycles;
+H2 (vigilance paradox), by keeping umpires honest, rotation lets prudent cooperators decline, so
+the remaining corruption episodes are deeper;
+H3, inheritance weakens the benefit of rotation;
+H4, rotation and a lower information cost $h$ act as substitutes or complements;
+H5, conformist inheritance creates bistability and hysteresis;
+H6, delayed inheritance destabilizes the honest state at high $\kappa$.
+
+%=====================================================================
+\section{Methods}\label{sec:methods}
+%=====================================================================
+
+\paragraph{Mean field.} We integrate Eqs.~\eqref{eq:rm1} and \eqref{eq:rot} with LSODA
+(\texttt{scipy}), relative tolerance $10^{-9}$ and absolute tolerance $10^{-11}$. Payoffs are
+evaluated at $x/\sum_i x_i$; this keeps the simplex invariant exactly, whereas the unnormalized
+form makes the simplex unstable when the mean payoff is negative. For the extension we use
+$\mu=\nu=\MuMF$, where the base model still cycles with deep corruption and the period is short
+enough for long averages (Appendix~\ref{app:params}). Runs start from the initial state of Lee et
+al.'s Fig.~3 ($y=1$, $x=(0.1,0.4,0.4,0.1)$), discard a burn-in of \TBurnMF{} time units and
+average over \TWinMF{} time units.
+
+\paragraph{Bifurcation analysis.} We derive the Jacobian of the reduced system $(x_1,x_2,x_3,y)$
+symbolically with \texttt{sympy} and check it against finite differences. Equilibria are followed
+in a parameter by pseudo-arclength continuation. A fold is detected by a sign change of the
+parameter component of the tangent and refined by solving $F=0$, $\det J=0$. A Hopf point is
+detected when the number of eigenvalues with positive real part changes by two through a complex
+pair, and refined by solving $F=0$, $\operatorname{Re}\lambda=0$~\cite{kuznetsov2004bifurcation}.
+
+\paragraph{Delay equations.} V3 is a delay differential equation. We integrate it by the method of
+steps: each interval of length $T_{\rm lag}$ is solved with \texttt{solve\_ivp}, using the dense
+output of the previous interval for the delayed term. Local stability of an equilibrium is
+decided by the rightmost root of the characteristic equation
+$\det(\lambda I-J_0-J_1e^{-\lambda T_{\rm lag}})=0$, computed by Chebyshev collocation of the
+infinitesimal generator with 40 nodes and checked with 80~\cite{breda2005pseudospectral}.
+
+\paragraph{Individual-based model.} The supplementary information of Lee et al.\ was not
+available to us, so the update procedure is our reconstruction (Appendix~\ref{app:typos}). In
+each elementary step one individual is chosen uniformly from all $M+N$ individuals and revises
+its strategy as described above. A player's co-player is drawn from the other $M-1$ players, and
+an umpire serves two distinct random players; payoffs are expected values given the current
+counts. Rotation adds replacement events at rate $\rho N$ per generation. One generation is the
+time in which each individual revises once on average. Because payoffs depend only on counts,
+the simulation tracks counts and is exact for this process. We use the two settings of Lee et
+al.'s Fig.~1: small ($M=\MSmall$, $N=\NSmall$, $\mu=0.001$, $\nu=0.005$, $s=10^{10}$) with sustained
+cycles, and large ($M=5000$, $N=1000$, $\mu=0.01$, $\nu=0.05$, $s=0.3$) with damped oscillations.
+For validation we derive the exact large-population limit of this process,
+$\dot x_i=(1-\mu)x_i\sum_j x_j\tanh[s(P_i-P_j)/2]+\mu[(1-x_i)/3-x_i]$ and the analogous equation for
+$y$, which reduces to Eqs.~\eqref{eq:rm1}--\eqref{eq:rm2} for weak selection after rescaling time
+by $s/2$ and exploration rates by $2/s$.
+
+\paragraph{Rare-exploration limit.}\label{sec:methods-markov} When exploration is rare and
+imitation is hard, the population moves between ten absorbing states. We derive the transition
+matrix from the payoffs: a mutant that earns more than the residents takes over (and we follow the
+replicator dynamics to find where the population ends), a neutral umpire mutant takes over with
+probability $1/N$, and neutral player mutants are ignored as in Lee et al. The stationary
+distribution is computed symbolically.
+
+\paragraph{Metrics and pre-registration.} Before running any extension experiment we fixed the
+metrics, burn-in, averaging windows and decision rules for each hypothesis (file
+\texttt{METRICS.md}, committed first). The main metrics are the time-averaged honest fraction
+$\bar y$; the cooperator share $x_1+x_2$; the frequency of prudent cooperators (vigilance); the
+cycle amplitude; and corruption episodes, defined as maximal intervals with $y<0.5$, with their
+depth (peak corruption $1-\min y$ and lowest cooperator share within the episode), duration and
+frequency.
+
+\paragraph{Statistics.} Each finite-population condition has \Nreps{} independent replicates. In
+the small setting each replicate runs \BurnSmall{} generations of burn-in and \WinSmall{}
+generations of averaging; in the large setting \BurnLarge{} and \WinLarge{}. We report means with
+95\% percentile bootstrap intervals (10000 resamples). The standard error of $\bar y$ fell from
+\SEFive{} with 5 replicates to \SEThirty{} with 30 and \SEFifty{} with 50, which justified 30
+replicates. Time averages did not change when the window was doubled (Appendix~\ref{app:checks}).
+
+\paragraph{Sensitivity and software.} We varied $b,c,f,B,h,A,\mu,\nu$ one at a time by $\pm20\%$
+in the mean field and $s$ by $\pm20\%$ in the large finite-population setting. The code is in
+Python (\texttt{numpy}, \texttt{scipy}, \texttt{sympy}, \texttt{numba}); it has more than 80
+tests, and every number in this paper is generated from result files by a script. The full
+pipeline used about \RuntimeFullMin{} minutes on a laptop.
+
+%=====================================================================
+\section{Results}
+%=====================================================================
+
+\subsection{Reproduction of Lee et al.\ (2019)}\label{sec:repro}
+
+Table~\ref{tab:repro} compares our results with the published benchmarks. With all umpires
+corrupt and no exploration, every trajectory converged to OD $=h/(f+B)=\BoneOD$ and PC
+$=\BonePC$ (largest deviation $\BoneDev$ over \BoneStarts{} random starts); with all umpires
+honest, OC went to fixation. With the printed weighting of $Q(y)$, the all-corrupt case instead
+ends at OC $=\PrintedOC$, which contradicts the paper's own statement.
+
+\begin{table}[t]
+\centering\small
+\caption{Reproduction benchmarks. Values in brackets are 95\% bootstrap intervals over \Nreps{}
+replicates. ``Read off'' values were estimated by eye from the published figures.}
+\label{tab:repro}
+\begin{tabular}{>{\raggedright}p{4.4cm}>{\raggedright}p{3.6cm}>{\raggedright\arraybackslash}p{6.2cm}}
+\toprule
+Benchmark & Lee et al.\ (2019) & This work \\
+\midrule
+B1: all corrupt & OD 0.25, PC 0.75 & OD \BoneOD, PC \BonePC{} \\
+B2: all honest & OC $\to1$ & OC $\to1$ \\
+B3: H:C ratio, rare exploration ($N=10$) & $(19N+87){:}109=2.54$ & \MarkovRatio{} (independent derivation) \\
+B3: simulated H:C ratio & about \PaperRatio{} & \BthreeRatio{} [\BthreeRatioLo, \BthreeRatioHi] \\
+B4: episodes per $10^5$ steps (small) & about 7 (read off Fig.~1) & \EpisodesSteps{} [\EpisodesStepsLo, \EpisodesStepsHi] \\
+B4: corrupt fraction (large) & 0.50--0.55 (read off Fig.~1D) & \BfourCorrupt{} [\BfourCorruptLo, \BfourCorruptHi] \\
+B4: orbit shrinkage & qualitative (Fig.~3) & Hopf at $\mu=\nu=\HopfMuA$ ($A=2$), \HopfMuB{} ($A=0.7$) \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.82\textwidth]{fig01_small_cycles.pdf}
+\caption{Sustained cycles in the small population (reproduction of Lee et al.\ Fig.~1A, B).
+(A) Frequencies of OC, PC, OD and PD. (B) Shares of honest (blue) and corrupt (red) umpires.
+One replicate, elementary steps $2$--$3\times10^5$. Parameters: $b=1$, $c=0.5$, $f=B=0.2$,
+$h=0.1$, $A=2$, $M=\MSmall$, $N=\NSmall$, $\mu=0.001$, $\nu=0.005$, $s=10^{10}$.}
+\label{fig:cycles}
+\end{figure}
+
+In the small population, corruption episodes recur (Fig.~\ref{fig:cycles}) at a rate close to
+that in the published figure. In the rare-exploration limit, our derivation of the transition
+matrix from the payoffs agrees with the published matrix except for two entries in rows that the
+chain never revisits, and gives exactly the published ratio
+$[(7+12\lambda)N+33\lambda+54\lambda^2]:[7+48\lambda+54\lambda^2]$, which is \MarkovRatio{} for
+$N=10$ and $\lambda=1$. Our simulated ratio at the published exploration rates is
+\BthreeRatio{} [\BthreeRatioLo, \BthreeRatioHi], lower than the published \PaperRatio{}. The
+value is stable when the averaging window is doubled (\BthreeDouble) and approaches the Markov
+limit as exploration becomes rarer: \BthreeRatioB{} at $\mu=3\times10^{-4}$ and \BthreeRatioC{} at
+$\mu=10^{-4}$ (Fig.~\ref{fig:ratio}). We attribute the remaining gap to differences in the
+unpublished details of the update procedure.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.48\textwidth]{fig03_hc_ratio.pdf}
+\caption{Honest-to-corrupt time ratio in the small population. Dots: mean over \Nreps{}
+replicates with 95\% bootstrap intervals; each replicate runs \BthreeGens{} generations at
+$\mu=10^{-3}$ and proportionally longer at smaller $\mu$, with $\nu=5\mu$ so that $M\mu=N\nu$.
+Dashed line: rare-exploration Markov chain. Star: value reported by Lee et al.}
+\label{fig:ratio}
+\end{figure}
+
+In the large population, the simulations follow the exact mean field of the process and settle
+at a corrupt fraction of \BfourCorrupt{} after damped oscillations (Fig.~\ref{fig:damped}A). The
+mean-field equilibrium is a stable focus with eigenvalues $\FermiRe\pm\FermiIm i$, which
+corresponds to a period of about \FermiPer{} generations and a decay time of \FermiDecay{}
+generations. In the replicator-mutator equations, raising the exploration rate shrinks the limit
+cycle until it disappears in a Hopf bifurcation (Fig.~\ref{fig:damped}B, C). We found that the
+time series in Lee et al.'s Fig.~3C, D match the orbit at $\mu=\nu=0.02$ (period \PerViolet;
+peaks of OC, PC, PD and OD \VioletOC, \VioletPC, \VioletPD{} and \VioletOD) rather than the orbit at
+$10^{-4}$ named in the caption, whose period is \PerSlow{} (Fig.~\ref{fig:damped}D). All
+discrepancies are listed in Appendix~\ref{app:typos}.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.85\textwidth]{fig02_damped_and_shrinkage.pdf}
+\caption{Damped oscillations and orbit shrinkage. (A) Large population ($M=5000$, $N=1000$,
+$\mu=0.01$, $\nu=0.05$, $s=0.3$), start with all OD and all honest umpires: mean of
+\LargeReps{} replicates (solid) and exact mean field (dotted). (B) Mean-field attractors in the
+plane of honest fraction and cooperator share for $\mu=\nu\in\{10^{-4},0.02,0.07\}$, $A=2$.
+(C) Cycle amplitude of $y$ against $\mu=\nu$; dashed lines mark the Hopf points. (D) Mean-field
+time series at $\mu=\nu=0.02$, $A=2$, which match Lee et al.'s Fig.~3C, D.}
+\label{fig:damped}
+\end{figure}
+
+\FloatBarrier
+\subsection{Analytical results for rotation}\label{sec:analytic}
+
+\paragraph{Rotation removes cycles through a SNIC.} Figure~\ref{fig:bif}A shows the equilibria of
+the mean field with fresh-cohort rotation (V0, $p_0=1$) as a function of $\rho$. Without
+rotation, the only interior equilibrium is an unstable focus surrounded by the corruption cycle.
+At $\rhoc=\RhoC$ a fold creates a stable node close to the all-OC state (honest fraction
+\FoldY, OC \FoldOC, PC \FoldPC) together with a saddle. The fold lies on the limit cycle: as
+$\rho\to\rhoc$ the orbit lingers near the coming equilibrium and the period grows as
+$(\rhoc-\rho)^{\alpha}$ with fitted $\alpha=\SnicSlope$, close to the value $-1/2$ that is
+characteristic of a saddle-node on an invariant circle (SNIC; Fig.~\ref{fig:bif}B). For
+$\rho>\rhoc$ all trajectories we started went to the honest equilibrium. The unstable focus is
+destroyed in a second fold at $\rho=\RhoFtwo$. At the default exploration rate there is no Hopf
+bifurcation in $\rho$.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\textwidth]{fig04_bifurcation_rho.pdf}
+\caption{Mean-field bifurcations in the rotation rate (V0, $p_0=1$). (A) Honest fraction at the
+equilibria (solid stable, dashed unstable), range of $y$ on the limit cycle (shaded) and
+time-averaged $y$ (dots); dotted lines mark the folds. $\mu=\nu=\MuMF$, $A=2$. (B) Period of the
+cycle against the distance to the fold, log-log; dashed line slope $-1/2$. (C) Fold points
+(solid: the fold creating the honest state; dash-dot: the second fold), the small-exploration
+formula (dotted) and Hopf points (crosses) as functions of $\mu=\nu$, for $A=2$ and $A=0.7$.}
+\label{fig:bif}
+\end{figure}
+
+\paragraph{An approximation for the critical rotation rate.} Near the all-OC state with small
+exploration, each rare strategy $j$ is kept at a mutation-selection balance
+$x_j\approx\mu/(3d_j(y))$, where $d_j(y)$ is its payoff deficit against OC:
+\begin{equation}
+d_{\rm PC}=(1-y)(b-c-f)+h,\quad d_{\rm OD}=y(A-B)-(c-B),\quad d_{\rm PD}=y(b-f-B)-(c-B-h).
+\end{equation}
+OD and PD can invade the OC state when $y$ falls below $y_{\rm OD}=(c-B)/(A-B)$ or
+$y_{\rm PD}=(c-B-h)/(b-f-B)$; these are the two ratios compared in Lee et al.'s Fig.~3 caption.
+Inserting $x_j$ into Eq.~\eqref{eq:ump} gives $P_H-P_C\approx 4f(x_2-x_4)-2B(x_3+x_4)$, and the
+umpire equation~\eqref{eq:rot} has an equilibrium at $y$ when
+\begin{equation}
+\rho=G(y)=-\frac{y(1-y)\,[P_H-P_C](y)+\nu(1-2y)}{p_0-y}.\label{eq:G}
+\end{equation}
+The honest equilibrium appears at $\rhoc\approx\min_{y>y_{\rm th}}G(y)$ with
+$y_{\rm th}=\max(y_{\rm OD},y_{\rm PD})$. At the default parameters this gives \RhoCApprox{}
+(exact \RhoC; error \RhoCErr\%). Because $G$ is linear in $(\mu,\nu)$, the critical rate is
+proportional to the exploration rate: $\rhoc/\mu\approx\RhoCOverMuA$ for $A=2$ and
+\RhoCOverMuB{} for $A=0.7$ when $\mu=\nu$ (Fig.~\ref{fig:bif}C). For $\mu\le0.011$ the formula is
+within \ApproxErrMaxA\% of continuation for $A=2$. For $A=2$ the two folds exist up to
+$\mu=\nu\approx\MuMaxFoldA$. Close to the base Hopf point ($\mu=\nu=\HopfMuA$) Hopf points
+also appear on the equilibrium branch (crosses in Fig.~\ref{fig:bif}C), so there the route by
+which rotation removes the cycle changes; we did not analyze this region in detail.
+
+\paragraph{Linear inheritance equals slower rotation.} For V1 the whole mean-field system equals
+the V0 system with $\rho$ replaced by $\rho(1-\kappa)$ (checked symbolically). Every bifurcation
+point of V0 at $\rho_*$ therefore appears in V1 at $\rho_*/(1-\kappa)$, which we confirmed by
+continuation for both folds. The same identity holds for the pulse map,
+$(1-\tau)y+\tau[(1-\kappa)p_0+\kappa y]=y+\tau(1-\kappa)(p_0-y)$.
+
+\paragraph{Dependence on the information cost.} The critical rotation rate depends on $h$
+non-monotonically (Fig.~\ref{fig:rhoh}A, B): it peaks at \RhoCMax{} near $h=\RhoCMaxH$ and falls
+to \RhoCHighH{} at $h=0.28$. The reason is that $y_{\rm PD}$ decreases with $h$: when information
+is costly, prudent defection is less attractive, and a smaller push toward honesty keeps the OC
+state safe.
+
+\FloatBarrier
+\subsection{Hypotheses}\label{sec:hyp}
+
+Table~\ref{tab:hyp} summarizes the outcomes, which were decided by the rules in
+\texttt{METRICS.md}.
+
+\begin{table}[t]
+\centering\small
+\caption{Outcomes of the pre-registered hypotheses. MF: mean field; IBM: finite population.}
+\label{tab:hyp}
+\begin{tabular}{>{\raggedright}p{4.6cm}>{\raggedright}p{2.6cm}>{\raggedright\arraybackslash}p{7.0cm}}
+\toprule
+Hypothesis & Outcome & Main evidence \\
+\midrule
+H1: rotation raises honesty, damps cycles & \OutcomeOne & MF: cycles vanish at $\rhoc$; IBM: $\bar y$ \HoneYSZero$\to$\HoneYSMax, episodes \HoneEpSZero$\to$\HoneEpSMax{} per 1000 generations \\
+H2: vigilance paradox & \OutcomeTwo & PC \HtwoPCSZero$\to$\HtwoPCSThirty, but episodes shallower (lowest cooperation \HtwoDCSZero$\to$\HtwoDCSTen) and shorter \\
+H3: inheritance weakens rotation & \OutcomeThree & Honesty falls with $\kappa$ for V1, V2, V3 in MF and IBM \\
+H4: rotation vs.\ transparency & substitutes & Gain from rotation rises with $h$ in \HfourInc{} of \HfourPairs{} MF pairs and \HfourIncIBM{} of \HfourPairsIBM{} IBM pairs \\
+H5: conformist bistability & \OutcomeFive & Bistable only for $\kappa\ge\HfiveKminDefault$; no loop in the pre-registered sweep \\
+H6: delay destabilizes & \OutcomeSix & Rightmost root $\le\HsixMaxRe$ at all \HsixPoints{} points \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\paragraph{H1: rotation raises honesty and damps cycles (\OutcomeOne).} In the mean field the
+amplitude of the cycle is unchanged until $\rhoc$ and zero beyond it (Fig.~\ref{fig:bif}A).
+Time-averaged honesty is nearly flat below $\rhoc$ (\YbarZero{} at $\rho=0$, \YbarLastCycle{} just
+below $\rhoc$) because the orbit spends more time near the ghost of the coming equilibrium, then
+rises to \YbarRhoFive{} at $\rho=0.05$ and \YbarRhoTwenty{} at $\rho=0.2$. In the small finite
+population, honesty rises from \HoneYSZero{} [\HoneYSZeroLo, \HoneYSZeroHi] without rotation to
+\HoneYSMax{} [\HoneYSMaxLo, \HoneYSMaxHi] at $\rho=\HoneRhoMaxIBM$ per generation, and corruption
+episodes fall from \HoneEpSZero{} to \HoneEpSMax{} per 1000 generations
+(Fig.~\ref{fig:h2}D, F). In the large population honesty rises from \HoneYLZero{} to
+\HoneYLMax{}, and episodes with $y<0.5$ disappear for $\rho\ge0.05$. In the large population the
+time-averaged honesty with rotation is within \NeutralMaxDev{} of $(\nu+\rho)/(2\nu+\rho)$, the
+value expected if selection between umpire types were neutral, for all $\rho\ge0.05$.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\textwidth]{fig05_rho_h.pdf}
+\caption{Rotation and the information cost $h$ (V0, $p_0=1$). (A) Mean-field time-averaged
+honesty; red line: critical rate $\rhoc(h)$ from continuation; dotted: small-exploration formula;
+dashed white: the bound $h=\sqrt{f(f+B)}$ of Lee et al. (B) Mean-field cycle amplitude of $y$.
+$\mu=\nu=\MuMF$, burn-in \TBurnMF, window \TWinMF. (C) Small finite population: mean honesty with
+95\% bootstrap bands over \Nreps{} replicates of \WinSmall{} generations; $\rho=0$ is plotted at
+$10^{-3}$.}
+\label{fig:rhoh}
+\end{figure}
+
+\paragraph{H2: the vigilance paradox (\OutcomeTwo).} Rotation lowers vigilance as predicted. In
+the small population the frequency of prudent cooperators falls from \HtwoPCSZero{} to
+\HtwoPCSTen{} at $\rho=0.1$ and \HtwoPCSThirty{} at $\rho=0.3$; in the mean field from \PCZero{} to
+\PCLastCycle{} just below $\rhoc$ and \PCFirstEq{} at the honest equilibrium. But the remaining
+episodes are not deeper (Fig.~\ref{fig:h2}). In the small population the lowest cooperator share
+during an episode rises from \HtwoDCSZero{} [\HtwoDCSZeroLo, \HtwoDCSZeroHi] to \HtwoDCSTen{}
+[\HtwoDCSTenLo, \HtwoDCSTenHi] at $\rho=0.1$, peak corruption falls from \HtwoDYSZero{} to
+\HtwoDYSTen{}, and episodes last \HtwoRecSZero{} generations without rotation and \HtwoRecSThirty{}
+at $\rho=0.3$. In the mean field, peak corruption falls from \DepthYZero{} to \DepthYLast{} and the
+lowest cooperator share rises from \DepthCZero{} to \DepthCLast{} as $\rho$ approaches $\rhoc$.
+Fewer prudent players do not lead to worse episodes because rotation also feeds honest umpires
+into the episodes themselves, which shortens them before cooperation collapses fully.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\textwidth]{fig07_vigilance_h2.pdf}
+\caption{Vigilance and the depth of corruption episodes (V0, $p_0=1$). Top: mean field
+($\mu=\nu=\MuMF$, $A=2$); dotted line marks $\rhoc$; depth and period are shown only where a
+cycle exists. Bottom: small finite population, means with 95\% bootstrap bands over \Nreps{}
+replicates of \WinSmall{} generations. An episode is a maximal interval with $y<0.5$; in the
+finite population gaps shorter than 5 generations are merged and episodes shorter than 5
+generations dropped.}
+\label{fig:h2}
+\end{figure}
+
+\paragraph{H3: inheritance weakens rotation (\OutcomeThree).} In the mean field, honesty falls with
+$\kappa$ at every rotation rate for V1 and V3 and at most rates for V2, and the region without
+cycles shrinks (Fig.~\ref{fig:kappa}A--C). For V1 the boundary is exactly
+$\rho(1-\kappa)=\rhoc$. V2 weakens rotation least, because at the honest equilibrium $y>1/2$ and
+conformity then favors honesty. In the small population, honesty falls with $\kappa$ for all three
+variants at all three rotation rates tested (Fig.~\ref{fig:kappa}D--F). The finite-population
+test of the V1 equivalence compares V1 at $(\rho,\kappa)$ with V0 at $\rho(1-\kappa)$; the
+difference in mean honesty was at most \HthreeMaxDiff, but its 95\% interval excluded zero at
+\HthreeNexcl{} of \HthreeNtests{} points. By the pre-registered rule the equivalence therefore
+does not hold exactly in the finite population; with a Bonferroni adjustment for 15 comparisons
+(a post-hoc check) it \HthreeBonf.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\textwidth]{fig06_rho_kappa.pdf}
+\caption{Inherited integrity. (A--C) Mean-field time-averaged honesty for V1, V2 ($k=2$) and V3
+($T_{\rm lag}=1/\rho$) over rotation rate and inheritance weight; red line:
+$\rho(1-\kappa)=\rhoc$. $\mu=\nu=\MuMF$. (D--F) Small finite population at $\rho=0.03$, $0.1$
+and $0.3$ per generation: mean honesty with 95\% bootstrap bands over \Nreps{} replicates; dotted:
+fresh rotation at $\rho(1-\kappa)$.}
+\label{fig:kappa}
+\end{figure}
+
+\paragraph{H4: rotation and transparency are substitutes.} If rotation helps more where
+information is costly, the two act as substitutes. In the mean field the gain in honesty from
+rotation increased with $h$ for \HfourInc{} of \HfourPairs{} neighboring pairs in the admissible
+range of $h$ (for example \GainLowH{} at $h=0.02$ and \GainHighH{} at $h=0.28$ for $\rho=0.05$),
+so the pre-registered rule classifies them as substitutes for honesty. For the cooperator share
+the pattern is mixed (\HfourIncC{} pairs increasing, \HfourDecC{} decreasing). In the small
+population the gain increased with $h$ in \HfourIncIBM{} of \HfourPairsIBM{} pairs, while honesty
+without rotation hardly depended on $h$ (\HfourYZeroMin{} to \HfourYZeroMax), as the
+rare-exploration result of Lee et al.\ predicts (Fig.~\ref{fig:rhoh}C).
+
+\paragraph{H5: conformist inheritance and bistability (\OutcomeFive).} In the pre-registered scan
+over $h$, exploration rate, conformity exponent, $\kappa$ and $\rho$, only \HfiveNbi{} of
+\HfiveNscan{} points showed different attractors from an honest and a corrupt start, and the
+pre-registered sweeps of $\kappa$ showed no loop (largest gap \HfiveGapPre;
+Fig.~\ref{fig:hyst}A, F). A targeted follow-up found an open bistable region, but only when
+newcomers almost purely copy the majority ($\kappa\ge\HfiveKminDefault$ at default parameters,
+$\kappa\ge\HfiveKminStrong$ with $h=0.29$ and $k=4$) and rotation is fast (Fig.~\ref{fig:hyst}B,
+C). A post-hoc sweep that starts from the corrupt state shows hysteresis (gap \HfiveGapPost;
+Fig.~\ref{fig:hyst}D). In the finite population the time-averaged honesty did not depend on the
+starting state at these points, for $N=10$ and $N=100$ (Fig.~\ref{fig:hyst}E), so noise switches
+between the two states. The hypothesis is therefore only partly supported.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\textwidth]{fig08_conformist_hysteresis.pdf}
+\caption{Conformist inheritance (V2). (A) Pre-registered sweeps of $\kappa$ up and down,
+continuing the state, at three $\rho$ ($h=0.1$, $k=2$, $\mu=\nu=\MuMF$). (B, C) Difference in
+time-averaged honesty between honest and corrupt starts over $(\rho,\kappa)$; dots mark points
+where it exceeds 0.05. (D) Sweeps up from the honest state and down from the corrupt state
+(post hoc). (E) Small and medium finite populations at bistable mean-field points, honest and
+corrupt starts, means with 95\% intervals over \Nreps{} replicates. (F) Distribution of the
+two-start difference in the pre-registered scan (log scale).}
+\label{fig:hyst}
+\end{figure}
+
+\paragraph{H6: delayed inheritance (\OutcomeSix).} The equilibria of V3 are those of V1, so the
+honest equilibrium exists when $\rho(1-\kappa)>\rhoc$. Delay could in principle destabilize it.
+Across \HsixPoints{} combinations of $\rho\in\{0.05,0.1,0.2\}$, $\kappa$ and $T_{\rm lag}$ from 0 to
+400, the rightmost characteristic root had real part at most $\HsixMaxRe$, and a check with twice
+the collocation nodes gave the same picture (Fig.~\ref{fig:delay}). Longer delays only slowed the
+return to the honest state. Direct simulations of the delay equation agreed.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\textwidth]{fig09_delay_stability.pdf}
+\caption{Delayed inheritance (V3). Real part of the rightmost characteristic root of the honest
+equilibrium over delay and inheritance weight, for $\rho=0.05$, $0.1$ and $0.2$ ($\mu=\nu=\MuMF$).
+Blue: stable. Dashed line: one term, $T_{\rm lag}=1/\rho$. Above the red line no honest equilibrium
+exists ($\rho(1-\kappa)<\rhoc$).}
+\label{fig:delay}
+\end{figure}
+
+\FloatBarrier
+\subsection{Robustness}
+
+Replacing whole cohorts at once is more effective than gradual replacement at the same average
+rate. In the mean field at $\rho=0.02$, continuous rotation gives honesty \PulseMFCont{} and
+replacing all umpires every $1/\rho$ time units gives \PulseMFFull. In the small population at
+$\rho=0.03$ the values are \PulseIBMCont{} [\PulseIBMContLo, \PulseIBMContHi] and \PulseIBMFull{}
+[\PulseIBMFullLo, \PulseIBMFullHi] (Appendix Fig.~\ref{fig:S3}). When newcomers are not reliably
+honest, rotation needs to be faster and can backfire: $\rhoc$ rises to \RhoCpZeroNinety,
+\RhoCpZeroSeventyFive{} and \RhoCpZeroSixty{} for $p_0=0.9$, $0.75$ and $0.6$, and with $p_0=0.6$
+moderate rotation lowers honesty to \PZeroSixtyMin{}. With a smaller fine ($A=0.7$) the
+equilibrium curve has the same two folds and no Hopf point, with $\rhoc=\RhoCAseven$. In one-at-a-time variations of $\pm20\%$ that respect the
+parameter conditions, $\rhoc$ ranged from \OATRhoCMin{} to \OATRhoCMax{} and honesty at
+$\rho=\RhoProbe$ from \OATProbeMin{} to \OATProbeMax{} (Appendix Fig.~\ref{fig:S2}). Rotation
+raised honesty at all population sizes tested (Fig.~\ref{fig:val}B); larger populations had
+lower honesty without rotation (\FinSmallZero{} for $M=50$, \FinLargeZero{} for $M=\FinMmax$) and
+needed faster rotation for the same effect.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.85\textwidth]{fig10_validation_finite_size.pdf}
+\caption{Validation and finite size. (A) Root-mean-square deviation between the finite
+population and its exact mean field over 100 generations, against $M$ ($N=M/5$, large-population
+rates, 8 replicates, 95\% intervals); dashed: slope $-1/2$. (B) Mean honesty against rotation
+rate for $M\in\{50,100,200,400\}$, $N=M/5$, small-population rates, \Nreps{} replicates, 95\%
+bands.}
+\label{fig:val}
+\end{figure}
+
+%=====================================================================
+\section{Discussion}
+%=====================================================================
+
+Lee et al.\ showed that institutional corruption need not settle at a fixed level: when watching
+the watchers is costly, honesty and corruption chase each other in cycles~\cite{lee2019social}.
+We asked what term limits do to this cycle. In the model, regular replacement of umpires by
+honest newcomers removes the cycle once the replacement rate passes a critical value. Below that
+value the cycle survives but slows down, and the average level of honesty barely changes. Above
+it the institution settles in a state where nearly all players cooperate optimistically and few
+check their umpires. The transition is a saddle-node on the cycle rather than a Hopf bifurcation,
+which has a practical reading: the system does not move smoothly from small oscillations to
+stability. Instead, corruption episodes become rarer and rarer as the rotation rate rises and then
+stop. The critical rate is proportional to how often umpires explore corrupt behavior, so the
+model says that the turnover needed to keep an institution honest scales with the rate at which
+its members are tempted to try corruption.
+
+The vigilance paradox we expected did not appear. Rotation did make players less vigilant, but
+the episodes of corruption that remained were milder and shorter, because the same newcomers that
+keep the institution honest also cut episodes short. Within this model, then, the loss of
+vigilance is not dangerous as long as the supply of honest newcomers continues. This conclusion
+depends on that supply. When newcomers inherit the integrity of the body they join, the benefit
+of rotation shrinks, and linear inheritance is exactly equivalent to slower rotation. When
+newcomers are not reliably honest, rotation can even lower honesty. Conformist inheritance can
+lock an institution into corruption only in an extreme regime where newcomers almost purely
+follow the majority, and this lock-in did not survive noise in our finite-population simulations.
+
+These results suggest implications for real institutions, stated here as model implications and
+not as empirical claims. First, the value of term limits depends on what newcomers bring:
+training or selection that makes newcomers reliably honest matters as much as the rotation rate.
+Second, mentoring by incumbents transmits whatever the incumbents are, so in a body with a corrupt
+majority it works against rotation. Third, replacing whole cohorts at once, as in annual
+elections of an entire board, was more effective in the model than staggered replacement at the
+same average rate. Student organizations, where leadership often changes every year, are a
+natural setting in which these predictions could be examined; the author's experience with the
+regulations governing such organizations at ITB motivated this question, but the model has not
+been tested against data from them.
+
+Our work relates to several strands of research. Enforcer ``education'' that raises the trial
+rate of honest conduct curbs corruption in a model of illegal logging~\cite{lee2015logging}, and
+higher exploration rates of enforcers reduce corruption in a model with optional external
+supervision~\cite{zhou2023supervision}; in the mean field, fresh-cohort rotation is formally the
+same mechanism, and our contribution is the bifurcation structure, the inheritance variants and the
+finite-population analysis. Staff rotation has been tested as an anti-corruption policy in
+laboratory experiments~\cite{abbink2004rotation,buhren2020rotation}, and empirical studies relate
+corruption to term limits and re-election
+incentives~\cite{ferraz2011electoral,laurent2021horizon}. Our model omits elections and
+reputation, so it does not speak to those incentive effects.
+
+The study has limitations. The supplementary information of Lee et al.\ was not available, so our
+individual-based update rule is a reconstruction; it reproduces the published figures closely
+but gives a lower honest-to-corrupt ratio (\BthreeRatio{} against \PaperRatio). The rotation rate
+is measured in model time in the mean field and in generations in the simulations, and these
+units are not directly comparable because hard imitation is not the weak-selection limit.
+Populations are well mixed; players and umpires learn at the same per-capita rate; the
+inheritance rules are our own simple choices; and the game involves two players. The mean-field
+default exploration rate (\MuMF) is higher than the orange orbit of Lee et al.\ ($10^{-4}$); we
+checked $10^{-3}$ and $0.02$ and found the same picture with $\rhoc$ proportional to $\mu$.
+
+Several extensions would be natural: a formal asymptotic derivation of $\rhoc$; heterogeneous
+term lengths; mentoring on networks rather than in a well-mixed body; elections in which players
+choose umpires; and an analysis of pulsed rotation as a periodically forced system, which could
+explain why whole-cohort replacement works better.
+
+\section*{Data and code availability}
+All code, configuration files, results (with configuration hashes and git commits) and the
+scripts that generate every figure and number are available at [repository URL placeholder].
+
+\section*{Acknowledgements}
+[Placeholder.]
+
+\bibliographystyle{unsrtnat}
+\bibliography{references}
+
+%=====================================================================
+\appendix
+\renewcommand{\thefigure}{S\arabic{figure}}
+\setcounter{figure}{0}
+\section{Derivations}\label{app:deriv}
+
+\paragraph{Umpire income.} With $x$ the strategy frequencies and pairs drawn independently, an
+honest umpire earns $2f$ unless a PD is present, so $P_H=2f(1-x_4)^2$. A corrupt umpire earns
+nothing if a PC is present; otherwise it earns $2f$ plus $B$ per defector, so
+$P_C=2f(1-x_2)^2+2B(x_3+x_4)(1-x_2)$. Using $2-x_2-x_4=1+x_1+x_3$ on the simplex gives
+Eq.~\eqref{eq:ump}. We verified this by enumerating all ordered strategy pairs with a rule-based
+implementation of a single game.
+
+\paragraph{Linear inheritance.} $\rho[(1-\kappa)p_0+\kappa y-y]=\rho(1-\kappa)(p_0-y)$, so the V1
+system is the V0 system with $\rho\to\rho(1-\kappa)$; for pulses
+$(1-\tau)y+\tau[(1-\kappa)p_0+\kappa y]=y+\tau(1-\kappa)(p_0-y)$.
+
+\paragraph{Invasion thresholds.} At the OC vertex the payoff of OC is $b-c-f$, that of OD is
+$y(b-f-A)+(1-y)(b-f-B)$ and that of PD is $-yh+(1-y)(b-f-B-h)$. OD does better than OC when
+$y<y_{\rm OD}=(c-B)/(A-B)$ and PD when $y<y_{\rm PD}=(c-B-h)/(b-f-B)$. At base parameters
+$y_{\rm PD}=\yPD$; $y_{\rm OD}=\yODA$ for $A=2$ and \yODB{} for $A=0.7$. As honesty drifts down
+along the OC edge, the strategy with the larger threshold invades first: PD for $A=2$ and OD for
+$A=0.7$. This explains which corner the cycle visits.
+
+\paragraph{Critical rotation rate.} For a rare strategy $j$ near the OC vertex,
+$\dot x_j\approx -d_j(y)x_j+\mu/3$, so $x_j\approx\mu/(3d_j)$. To first order in $x_j$,
+$P_H-P_C=4f(x_2-x_4)-2B(x_3+x_4)$, which gives Eq.~\eqref{eq:G}. The honest equilibrium exists for
+$\rho\ge\min_{y>y_{\rm th}}G(y)$. The approximation requires $d_j\gg\mu$, which fails close to
+$y_{\rm th}$, but the minimum lies at $y\approx\RhoCy$, well above the thresholds.
+
+\paragraph{Neutral umpire selection.} If $P_H=P_C$, Eq.~\eqref{eq:rot} with $p_0=1$ gives
+$\nu(1-2y)+\rho(1-y)=0$, so $y=(\nu+\rho)/(2\nu+\rho)$.
+
+\section{Reproduction notes and resolved typos}\label{app:typos}
+
+\begin{table}[h]
+\centering\small
+\begin{tabular}{>{\raggedright}p{0.8cm}>{\raggedright}p{2.3cm}>{\raggedright}p{5.3cm}>{\raggedright\arraybackslash}p{5.2cm}}
+\toprule
+ID & Location & Issue & Resolution \\
+\midrule
+D1 & Methods & $Q(y)=y_1Q_C+(1-y_1)Q_H$ with $y_1$ the honest fraction & $Q(y)=y_1Q_H+(1-y_1)Q_C$; the printed form fails B1 \\
+D2 & Methods & Honest mixed state called ``OD+PD (a mixture of OD and PC)'' & It mixes OD and PD (Fig.~2 caption, $Q_H$) \\
+D3 & Fig.~3 caption & ``8 or 9, respectively'' reversed relative to the figure & With $A=2$ the orbit passes state 9, with $A=0.7$ state 8 (Appendix~\ref{app:deriv}) \\
+D4 & Transition matrix & Row 3 omits the transition to state 8 & State 3 is transient; no effect \\
+D5 & Transition matrix & Row 4 gives $\mu/6$ to a neutral player mutant & State 4 is transient; no effect \\
+D6 & Fig.~3C, D & Caption names the $\mu=\nu=10^{-4}$ orbit & Panels match $\mu=\nu=0.02$ \\
+U1 & SI (not available) & Individual-based update procedure & Reconstructed: random sequential updates, role model from own population, expected payoffs, time in elementary steps \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The time unit was inferred from Lee et al.'s Fig.~1: with one individual updating per elementary
+step, entry rates of new strategies are equal in both populations when $M\mu=N\nu$, as the caption
+states, and the number of episodes per $10^5$ steps matches the figure. All signs of the payoff
+matrices were read from the PDF at 300 dpi; the PMC web version lost minus signs.
+
+\section{Parameters}\label{app:params}
+
+\begin{table}[h]
+\centering\small
+\begin{tabular}{l>{\raggedright}p{7.6cm}l}
+\toprule
+Symbol & Value & Source \\
+\midrule
+$b,c,f,B,h,A$ & $1,\ 0.5,\ 0.2,\ 0.2,\ 0.1,\ 2$ (or $A=0.7$) & Lee et al., Fig.~1, Fig.~3 \\
+Small setting & $M=50$, $N=10$, $\mu=0.001$, $\nu=0.005$, $s=10^{10}$ & Lee et al., Fig.~1A, B \\
+Large setting & $M=5000$, $N=1000$, $\mu=0.01$, $\nu=0.05$, $s=0.3$ & Lee et al., Fig.~1C, D \\
+Mean-field exploration & $\mu=\nu=\MuMF$ (also $10^{-3}$, $0.02$) & this work \\
+Rotation & $\rho\in[0,0.2]$ (mean field), $[0,0.3]$ per generation (finite) & this work \\
+Inheritance & $\kappa\in[0,0.995]$, $k=2$ (also 4), $p_0=1$ (also 0.9, 0.75, 0.6) & this work \\
+Delay & $T_{\rm lag}=1/\rho$ (default), $0$ to $400$ & this work \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The base mean-field cycle has period about \PerSlow{} at $\mu=\nu=10^{-4}$, \PerZero{} at
+$\mu=\nu=\MuMF$ and \PerViolet{} at $0.02$; the Hopf point is at \HopfMuA.
+
+\section{Numerical and statistical checks}\label{app:checks}
+
+Tightening the tolerances tenfold and switching to an explicit Runge-Kutta method changed honesty,
+amplitude and minimum cooperation by at most $\TolMaxDiff$ at 16 test points. On a grid eight times
+finer in a sub-region ($\rho$ step \FineGridStep), the first rotation rate with an equilibrium was
+within \FineGridMaxOff{} of the continuation value of $\rhoc$. The finite-population simulation
+agrees with its exact mean field with an error that decreases as $M^{-1/2}$
+(\ValRmsA{} at $M=\ValMA$, \ValRmsD{} at $M=\ValMD$). With rotation rate set to zero, the code
+reproduces the base model bit for bit. Doubling the averaging window left the honest-to-corrupt
+ratio unchanged (\BthreeDouble). The test suite checks payoffs against a rule-based game, the
+symbolic Jacobian against finite differences, the delay solver against an exact solution, and the
+V1 equivalence symbolically.
+
+\section{Literature search}\label{app:lit}
+We searched the web (October 2026) for evolutionary-game models of corruption that include
+rotation, term limits or turnover of enforcers. We found none. The closest work studies enforcer
+education~\cite{lee2015logging}, enforcer exploration~\cite{zhou2023supervision}, corrupt enforcers
+in pool punishment~\cite{liu2019corrupt} and supervision of umpires~\cite{shi2023bidirectional}.
+Rotation itself has been studied experimentally~\cite{abbink2004rotation,buhren2020rotation} and
+term limits empirically~\cite{ferraz2011electoral,laurent2021horizon}.
+
+\section{Supplementary figures}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figS1_time_series.pdf}
+\caption{Time series. Top: mean field at $\rho=0$, $0.012$, $0.02$ and $0.1$ ($\mu=\nu=\MuMF$).
+Bottom: one small-population replicate at $\rho=0$, $0.03$ and $0.3$ per generation.}
+\label{fig:S1}
+\end{figure}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.9\textwidth]{figS2_sensitivity.pdf}
+\caption{One-at-a-time sensitivity ($\pm20\%$) of (A) the critical rotation rate and (B) the gain in
+honesty at $\rho=\RhoProbe$, mean field. Hatched bars violate the parameter conditions of Lee et
+al.}
+\label{fig:S2}
+\end{figure}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figS3_robustness.pdf}
+\caption{Robustness. (A) Pulsed rotation (markers) against continuous rotation (dotted) at the
+same average rate, mean field. (B) Newcomer honesty $p_0<1$ and $A=0.7$. (C) Exploration rates
+$\mu=\nu=10^{-3}$ and $0.02$; dotted lines mark $\rhoc$.}
+\label{fig:S3}
+\end{figure}
+
+\end{document}

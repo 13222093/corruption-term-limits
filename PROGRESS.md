@@ -104,3 +104,14 @@ Log of completed tasks: what was done, results, next step. Newest entries at the
 - Figures 1-10 and S1-S3 generated from results only; 271 LaTeX macros in
   paper/autogen_numbers.tex.
 - Next: Phase 7 documentation.
+
+## 2026-10-10 Phases 7-8: documentation and paper
+- Markdown documents are rendered from templates in docs_src/ by experiments/render_docs.py, so
+  every number comes from paper/autogen_numbers.tex (generated from results/full/).
+- README.md (question, results, how to run, reproduction notes, citation, license),
+  NOTES_for_author.md (concepts, how to read each figure, 10 interview questions),
+  SOP_sentences.md (3 sentences, 204-271 characters).
+- paper/main.tex compiled with MiKTeX to paper/main.pdf (21 pages; main text about 6000 words of
+  prose plus captions; 26 verified references; no undefined references or overfull boxes).
+- Makefile (mingw32-make on Windows), run_all.py, experiments/build_paper.py.
+- Next: Phase 9 self-review, clean-clone test, FINAL_REPORT.md.
