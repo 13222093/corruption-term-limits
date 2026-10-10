@@ -93,7 +93,9 @@ a follow-up. See REVIEW.md.
 ## 7. Open items for the author
 1. The SI was obtained and checked (SI_EXTRACT.md, CHANGES_SI.md). Remaining: ask the authors
    which time average gave 2.15 and which update order their simulation used (U1, U3).
-2. Fill in the repository URL, email, ORCID and acknowledgements in paper/main.tex and README.
+2. Push the repository (PUSH_INSTRUCTIONS.md; GitHub CLI was not available, so nothing has been
+   pushed), then fill in the repository URL in README, CITATION.cff, CV_ENTRY and both papers,
+   and the email, ORCID and further acknowledgements in both papers.
 3. Decide whether to keep A = 0.7 and the two-parameter Hopf region in the main text.
 4. Consider a formal derivation of rho_c (matched asymptotics) and an analysis of pulses as a
    periodically forced system.

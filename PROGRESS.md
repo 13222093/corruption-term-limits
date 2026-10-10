@@ -191,3 +191,22 @@ Log of completed tasks: what was done, results, next step. Newest entries at the
   Acknowledgements credit Lee et al. and disclose AI assistance. CV_ENTRY.md added (template,
   numbers from results). Tests pass (100); both papers compile without undefined references or
   overfull boxes.
+- Release: PUSH_INSTRUCTIONS.md written (no git remote and no GitHub CLI on this computer, so
+  nothing was pushed). Annotated tag v1.0.0 created on main.
+
+### Final summary of the release task
+- What changed: si-verification merged into main (renamed from master); regenerable outputs and
+  build logs removed from the tree; README rewritten for readers arriving from a CV (summary,
+  key figure, citation, run guide, tools and assistance); CITATION.cff; B3 reported under both
+  time-average definitions in both papers with an appendix table; neutral wording throughout
+  (WORDING_AUDIT.md); CV_ENTRY.md. No result changed: results/full/ is untouched apart from the
+  SI read-off fallback, which reuses the committed file.
+- Checks: 100 tests pass on main; both papers compile without undefined references, undefined
+  macros or overfull boxes; no em dashes; refs/ never committed; no secrets, emails or local
+  paths in the current tree (old build logs with a local path remain in earlier commits,
+  D-023).
+- Repository URL: not pushed. Follow PUSH_INSTRUCTIONS.md, then replace the placeholder URL in
+  CV_ENTRY, README, CITATION.cff and both papers.
+- Open items for the author: push and fill in the URL, email and ORCID; decide whether
+  SOP_sentences.md, NOTES_for_author.md, CV_ENTRY.md and CLAUDE.md should be public; ask Lee et
+  al. which time average gave 2.15 and which update order they used.

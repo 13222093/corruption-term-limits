@@ -144,7 +144,8 @@ Key documents: [SPEC.md](SPEC.md) (model with source locations), [DECISIONS.md](
 [NOTES_for_author.md](NOTES_for_author.md), [REVIEW.md](REVIEW.md),
 [FINAL_REPORT.md](FINAL_REPORT.md), [CITATIONS_TODO.md](CITATIONS_TODO.md),
 [SI_EXTRACT.md](SI_EXTRACT.md) (what the SI specifies), [CHANGES_SI.md](CHANGES_SI.md) (effect of
-the SI verification).
+the SI verification), [WORDING_AUDIT.md](WORDING_AUDIT.md) (how the notation inconsistencies are
+described).
 
 ## How to run
 
