@@ -1,0 +1,111 @@
+# FINAL_REPORT.md
+
+Project: *Who guards the guardians when the guardians rotate?* Reproduction of Lee, Iwasa,
+Dieckmann and Sigmund (PNAS 2019) and an extension with umpire rotation and inherited integrity.
+All numbers below are generated from `results/full/`.
+
+## 1. What was reproduced, and how closely
+
+| Benchmark | Published | Obtained | Verdict |
+|---|---|---|---|
+| B1 all corrupt | OD 0.25, PC 0.75 | OD {{BoneOD}}, PC {{BonePC}}; max deviation {{BoneDev}} ({{BoneStarts}} random starts) | exact |
+| B2 all honest | OC -> 1 | OC -> 1; max deviation {{BtwoDev}} | exact |
+| B3 Markov ratio (N = 10) | (19N+87):109 = 2.54 | {{MarkovRatio}}; same closed form from an independent derivation of T | exact |
+| B3 simulated ratio | about {{PaperRatio}} | {{BthreeRatio}} [{{BthreeRatioLo}}, {{BthreeRatioHi}}]; rarer exploration: {{BthreeRatioB}}, {{BthreeRatioC}} | close; lower than published; CI excludes 2.15 |
+| B4 sustained cycles | about 7 episodes per 1e5 steps (read off) | {{EpisodesSteps}} [{{EpisodesStepsLo}}, {{EpisodesStepsHi}}] | consistent |
+| B4 damped oscillations | corrupt about 0.50-0.55 (read off) | {{BfourCorrupt}} [{{BfourCorruptLo}}, {{BfourCorruptHi}}]; stable focus {{FermiRe}} +- {{FermiIm}}i | consistent |
+| B4 orbit shrinkage | qualitative | Hopf at mu = nu = {{HopfMuA}} (A = 2), {{HopfMuB}} (A = 0.7) | reproduced |
+| Fig. 3C, D values | read off: OC 0.93, PC 0.70, PD 0.45, OD 0.27, period about 137 | at mu = nu = 0.02: {{VioletOC}}, {{VioletPC}}, {{VioletPD}}, {{VioletOD}}, period {{PerViolet}} | match (see D6) |
+
+The fallback project (Section 14 of CLAUDE.md) was not needed: B1 and B2 passed.
+
+## 2. Every discrepancy found
+- **D1** Q(y) weighting swapped in the printed Methods (in the PDF itself). Resolved to
+  y Q_H + (1 - y) Q_C; the printed form fails B1 (OC -> {{PrintedOC}} with all umpires corrupt).
+- **D2** Honest mixed state misnamed "OD+PD (a mixture of OD and PC)"; it is OD and PD.
+- **D3** Fig. 3 caption "8 or 9, respectively" reversed relative to the figure; explained by the
+  invasion thresholds y_PD = {{yPD}} and y_OD = {{yODA}} (A = 2) or {{yODB}} (A = 0.7).
+- **D4** Printed T omits allOD(H) -> allOD(C); transient row, no effect.
+- **D5** Printed T gives mu/6 to a neutral player mutant in row 4; transient row, no effect.
+- **D6** Fig. 3C, D are labeled as the mu = nu = 1e-4 orbit (period {{PerSlow}}), but match the
+  mu = nu = 0.02 orbit.
+- **B3 gap** Simulated ratio {{BthreeRatio}} vs published {{PaperRatio}}; most likely due to the
+  reconstructed update procedure (SI unavailable).
+- **PMC** web version lost minus signs; all signs taken from the PDF.
+- **SI** not available (U1-U4 in SPEC.md): IBM update scheme, payoff evaluation, time unit, and
+  T derivation were reconstructed or re-derived.
+
+## 3. Hypothesis outcomes (pre-registered rules in METRICS.md)
+| Hypothesis | Outcome | Mean field | Finite population |
+|---|---|---|---|
+| H1 rotation raises honesty, damps cycles | {{OutcomeOne}} | cycles vanish at rho_c = {{RhoC}} (SNIC); honesty {{YbarZero}} -> {{YbarRhoTwenty}} at rho = 0.2 | honesty {{HoneYSZero}} -> {{HoneYSMax}}; episodes {{HoneEpSZero}} -> {{HoneEpSMax}} per 1000 generations |
+| H2 vigilance paradox | {{OutcomeTwo}} | PC {{PCZero}} -> {{PCLastCycle}}; peak corruption {{DepthYZero}} -> {{DepthYLast}} | PC {{HtwoPCSZero}} -> {{HtwoPCSThirty}}; lowest cooperation in episodes {{HtwoDCSZero}} -> {{HtwoDCSTen}}; duration {{HtwoRecSZero}} -> {{HtwoRecSThirty}} |
+| H3 inheritance weakens rotation | {{OutcomeThree}} | V1 = V0 at rho (1 - kappa), exact; V2, V3 also weaker | honesty falls with kappa for V1, V2, V3; V1 vs V0(rho_eff): {{HthreeNexcl}} of {{HthreeNtests}} CIs exclude 0 ({{HthreeBonf}} after Bonferroni) |
+| H4 rotation vs transparency | {{OutcomeFour}} | gain rises with h in {{HfourInc}}/{{HfourPairs}} pairs (honesty); mixed for cooperation | {{HfourIncIBM}}/{{HfourPairsIBM}} pairs |
+| H5 conformist bistability | {{OutcomeFive}} | {{HfiveNbi}}/{{HfiveNscan}} bistable in the pre-registered scan; open region only for kappa >= {{HfiveKminDefault}}; no loop in pre-registered sweep, loop post hoc | no dependence on the starting state |
+| H6 delay destabilizes | {{OutcomeSix}} | rightmost root <= {{HsixMaxRe}} over {{HsixPoints}} points | not tested separately (mean-field question) |
+
+## 4. Key figures
+- `figures/fig04_bifurcation_rho.pdf`: SNIC in rho, period scaling (slope {{SnicSlope}}),
+  two-parameter diagram.
+- `figures/fig07_vigilance_h2.pdf`: vigilance falls, episodes get shallower (H2).
+- `figures/fig06_rho_kappa.pdf`: inheritance weakens rotation (H3).
+- `figures/fig01..03`: reproduction. Full list in `figures/README.md`.
+
+## 5. Additional findings
+- Small-exploration formula for the critical rotation rate: {{RhoCApprox}} vs exact {{RhoC}};
+  rho_c / mu = {{RhoCOverMuA}} (A = 2) and {{RhoCOverMuB}} (A = 0.7).
+- rho_c depends non-monotonically on h (peak {{RhoCMax}} near h = {{RhoCMaxH}}, {{RhoCHighH}} at
+  h = 0.28) because the PD invasion threshold falls with h.
+- Whole-cohort pulses beat continuous rotation at the same mean rate (mean field
+  {{PulseMFCont}} -> {{PulseMFFull}}; IBM {{PulseIBMCont}} -> {{PulseIBMFull}}).
+- Newcomers who are not reliably honest raise rho_c ({{RhoCpZeroNinety}}, {{RhoCpZeroSeventyFive}},
+  {{RhoCpZeroSixty}} for p0 = 0.9, 0.75, 0.6), and with p0 = 0.6 rotation can lower honesty
+  (to {{PZeroSixtyMin}}).
+- Large populations: honesty with rotation is within {{NeutralMaxDev}} of (nu + rho)/(2 nu + rho).
+
+## 6. Limitations
+Reconstructed IBM (SI unavailable); qualitative cross-level comparison (different time units and
+imitation rules); well-mixed populations; equal learning rates; simple inheritance rules;
+two-player games; global attraction above rho_c shown numerically, not proved; H5 region found by
+a follow-up. See REVIEW.md.
+
+## 7. Open items for the author
+1. Download the SI Appendix (pnas.1900078116.sapp.pdf) manually, put it in refs/, and check
+   SPEC.md items U1-U4; if the update rule differs, rerun `make all`.
+2. Fill in the repository URL, email, ORCID and acknowledgements in paper/main.tex and README.
+3. Decide whether to keep A = 0.7 and the two-parameter Hopf region in the main text.
+4. Consider a formal derivation of rho_c (matched asymptotics) and an analysis of pulses as a
+   periodically forced system.
+5. Read NOTES_for_author.md before interviews; the answers there are honest about the gaps.
+
+## 8. Exact commands to regenerate everything
+```bash
+pip install -r requirements.txt
+python -m pytest
+mingw32-make all            # or: make all (Linux/macOS), or: python run_all.py full
+```
+Equivalent step by step:
+```bash
+python experiments/run_reproduction.py full
+python experiments/run_extension.py full
+python experiments/run_sensitivity.py full
+python experiments/evaluate_hypotheses.py full
+python experiments/make_figures.py full
+python experiments/make_numbers.py full
+python experiments/render_docs.py
+python experiments/build_paper.py
+```
+Recorded compute: about {{RuntimeFullMin}} minutes (full) and {{RuntimeQuickMin}} minutes (quick).
+
+## 9. Definition of done (CLAUDE.md Section 15)
+- [x] All tests pass (80); `make all` regenerates everything (quick pipeline, numbers, docs and
+      paper verified from a clean clone; the full profile was run in the working copy).
+- [x] SPEC.md, DECISIONS.md, METRICS.md, PROGRESS.md complete.
+- [x] B1 to B4 attempted and reported with numbers.
+- [x] H1 to H6 each marked supported, not supported or mixed.
+- [x] All figures generated with full captions (paper/main.tex).
+- [x] README, NOTES_for_author.md, SOP_sentences.md complete.
+- [x] paper/main.pdf compiled; numbers via macros only.
+- [x] REVIEW.md and CITATIONS_TODO.md complete.
+- [x] FINAL_REPORT.md (this file).

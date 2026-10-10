@@ -39,7 +39,7 @@ incumbents. We reproduce the paper's analytical benchmarks exactly and its simul
 and we document six inconsistencies in the published text. In the large-population limit,
 rotation removes corruption cycles through a saddle-node bifurcation on the cycle at a critical
 rotation rate. We derive an approximation for this rate and show that it is proportional to the
-exploration rate. In stochastic simulations, rotation raises the time-averaged share of honest
+exploration rate. In stochastic simulations of small populations, rotation raises the time-averaged share of honest
 umpires from \HoneYSZero{} to \HoneYSMax{} and makes corruption episodes rarer. Rotation also
 lowers vigilance, but contrary to our hypothesis the remaining episodes are shallower, not deeper.
 Inheritance weakens rotation in all three variants studied; linear inheritance is equivalent to
@@ -287,8 +287,8 @@ replicates. Time averages did not change when the window was doubled (Appendix~\
 
 \paragraph{Sensitivity and software.} We varied $b,c,f,B,h,A,\mu,\nu$ one at a time by $\pm20\%$
 in the mean field and $s$ by $\pm20\%$ in the large finite-population setting. The code is in
-Python (\texttt{numpy}, \texttt{scipy}, \texttt{sympy}, \texttt{numba}); it has more than 80
-tests, and every number in this paper is generated from result files by a script. The full
+Python (\texttt{numpy}, \texttt{scipy}, \texttt{sympy}, \texttt{numba}); it has 80
+automated tests, and every number in this paper is generated from result files by a script. The full
 pipeline used about \RuntimeFullMin{} minutes on a laptop.
 
 %=====================================================================
@@ -389,7 +389,7 @@ At $\rhoc=\RhoC$ a fold creates a stable node close to the all-OC state (honest 
 $\rho\to\rhoc$ the orbit lingers near the coming equilibrium and the period grows as
 $(\rhoc-\rho)^{\alpha}$ with fitted $\alpha=\SnicSlope$, close to the value $-1/2$ that is
 characteristic of a saddle-node on an invariant circle (SNIC; Fig.~\ref{fig:bif}B). For
-$\rho>\rhoc$ all trajectories we started went to the honest equilibrium. The unstable focus is
+$\rho>\rhoc$ all three initial states we tried went to the honest equilibrium. The unstable focus is
 destroyed in a second fold at $\rho=\RhoFtwo$. At the default exploration rate there is no Hopf
 bifurcation in $\rho$.
 
@@ -499,8 +499,9 @@ during an episode rises from \HtwoDCSZero{} [\HtwoDCSZeroLo, \HtwoDCSZeroHi] to 
 \HtwoDYSTen{}, and episodes last \HtwoRecSZero{} generations without rotation and \HtwoRecSThirty{}
 at $\rho=0.3$. In the mean field, peak corruption falls from \DepthYZero{} to \DepthYLast{} and the
 lowest cooperator share rises from \DepthCZero{} to \DepthCLast{} as $\rho$ approaches $\rhoc$.
-Fewer prudent players do not lead to worse episodes because rotation also feeds honest umpires
-into the episodes themselves, which shortens them before cooperation collapses fully.
+A likely reason why fewer prudent players do not lead to worse episodes is that rotation also feeds honest umpires
+into the episodes themselves, which shortens them before cooperation collapses fully; we did not
+test this mechanism directly.
 
 \begin{figure}[t]
 \centering
@@ -523,7 +524,7 @@ variants at all three rotation rates tested (Fig.~\ref{fig:kappa}D--F). The fini
 test of the V1 equivalence compares V1 at $(\rho,\kappa)$ with V0 at $\rho(1-\kappa)$; the
 difference in mean honesty was at most \HthreeMaxDiff, but its 95\% interval excluded zero at
 \HthreeNexcl{} of \HthreeNtests{} points. By the pre-registered rule the equivalence therefore
-does not hold exactly in the finite population; with a Bonferroni adjustment for 15 comparisons
+does not hold exactly in the finite population; with a Bonferroni adjustment for \HthreeNtests{} comparisons
 (a post-hoc check) it \HthreeBonf.
 
 \begin{figure}[t]

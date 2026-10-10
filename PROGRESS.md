@@ -115,3 +115,12 @@ Log of completed tasks: what was done, results, next step. Newest entries at the
   prose plus captions; 26 verified references; no undefined references or overfull boxes).
 - Makefile (mingw32-make on Windows), run_all.py, experiments/build_paper.py.
 - Next: Phase 9 self-review, clean-clone test, FINAL_REPORT.md.
+
+## 2026-10-10 Phase 9: self-review and final report
+- REVIEW.md written as a critical referee (7 major, 8 minor points; checklist all satisfied).
+  Fixes applied to the paper: "small populations" in the abstract, "three initial states",
+  H2 mechanism marked untested, counts via macros, table widths, float barriers.
+- Clean-clone test: `mingw32-make quick` (80 tests + quick pipeline) ran in 3 min without
+  errors; `mingw32-make numbers docs paper` regenerated identical content (only line endings and
+  PDF timestamp differ).
+- FINAL_REPORT.md written. Project complete; open items for the author listed there.
