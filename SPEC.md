@@ -6,7 +6,7 @@ File: `refs/Social evolution leads to persistent corruption.pdf` (6 pages, scann
 visually page by page at 150-300 dpi). Page numbers below are journal pages (13276 = p.1).
 
 Abbreviations: "Main p.13277 col.2" = journal page 13277, right column.
-"SI" = SI Appendix (not available, see Section 0).
+"SI" = SI Appendix (`refs/pnas.1900078116.sapp.pdf`, obtained on branch si-verification; see Section 0 and SI_EXTRACT.md).
 
 ## 0. Availability of sources
 

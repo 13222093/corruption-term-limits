@@ -114,7 +114,7 @@ def build(profile):
 
     mk = R("rep_markov", profile)
     M("MarkovRatio", mk["ratio_N10_lam1"], "Markov H:C at N=10", 3)
-    M("MarkovRatioFinM", mk["ratio_finiteM_N10_M50"], "Markov with 1/M neutral player fixation", 3)
+    M("MarkovRatioFinM", mk["ratio_finiteM_N10_M50"], "Markov, M = 50, SI fixation rules (1/M for neutral players)", 3)
     M("MarkovNdiff", len(mk["derived_minus_printed"]), "number of differing entries", kind="raw")
 
     b3 = R("rep_b3", profile)

@@ -165,3 +165,15 @@ changes are new entries that reference the old one.
   experiments/digitize_si.py (line colors and hysteresis thresholds stated in the script), and
   the positions of the period labels in SI Fig. 9B are read from the rendered page and stored in
   that script. Both are approximate and are labelled as read-offs wherever they are used.
+
+## D-022 B3: the default definition stays; other definitions are reported beside it
+- What: the headline B3 value keeps the definition fixed before the SI was read (ratio of the
+  mean honest share to the mean corrupt share, METRICS.md). The time with all umpires honest over
+  the time with all umpires corrupt, and the majority-time ratio, are reported beside it from the
+  same runs (rep_b3_diag).
+- Why: switching the headline to the definition that matches 2.15 after seeing the result would
+  be tuning the analysis to force a match (integrity rule 4). The SI does not state which
+  definition the authors used, so both readings are reported and the question is left open.
+- Alternatives: replace the headline value (rejected for the reason above); report only the
+  default (rejected, because the Markov-type definition is the natural reading of a quantity
+  compared with a Markov prediction).

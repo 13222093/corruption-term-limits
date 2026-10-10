@@ -4,12 +4,13 @@ Source: Lee et al. (2019), Methods p.13281 ("Rare-Exploration Limit"): hard imit
 ten absorbing states (1-5 honest umpires: allOC, allPC, allOD, allPD, OD+PD; 6-10 corrupt umpires:
 allOC, allPC, allOD, allPD, OD+PC), printed transition matrix T and its stationary distribution.
 
-We (a) encode the printed T, and (b) derive T independently from the payoffs by invasion analysis
-(SPEC U2; the SI derivation was not available):
+We (a) encode the printed T, and (b) derive T from the payoffs by invasion analysis, using the
+fixation rules stated in the SI Appendix p.2-3 (SPEC U2, DECISIONS D-018):
 - A player mutant (rate mu/3 per mutant type) invades if its payoff exceeds the resident payoff
   in the infinite-population limit. It then fixes with probability 1 (hard imitation), and the
   destination is found by integrating the replicator dynamics of the player population with the
-  umpire type held fixed. A neutral player mutant fixes with probability 1/M (0 in the paper's
+  umpire type held fixed. A neutral player mutant fixes with probability 1/2 if two mutants do
+  better than the residents, 0 if they do worse, and 1/M if they stay neutral (0 in the
   M -> infinity convention).
 - An umpire mutant (rate lambda mu) fixes with probability 1 if it earns more, 1/N if it earns the
   same, 0 otherwise. After fixation the player population moves to the attractor of the

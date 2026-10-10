@@ -14,6 +14,7 @@ steps = [
 ]
 if profile == "full":
     steps += [[sys.executable, "experiments/make_numbers.py", profile],
+              [sys.executable, "experiments/make_changes_si.py"],
               [sys.executable, "experiments/render_docs.py"],
               [sys.executable, "experiments/build_paper.py"]]
 for cmd in steps:

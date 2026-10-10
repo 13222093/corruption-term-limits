@@ -30,6 +30,7 @@ numbers:
 	$(PYTHON) experiments/make_numbers.py $(PROFILE)
 
 docs: numbers
+	$(PYTHON) experiments/make_changes_si.py
 	$(PYTHON) experiments/render_docs.py
 
 paper: numbers

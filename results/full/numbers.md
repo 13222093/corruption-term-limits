@@ -39,8 +39,8 @@
 | \yPD | 0.333 | y_PD |
 | \yODB | 0.600 | y_OD at A=0.7 |
 | \MarkovRatio | 2.541 | Markov H:C at N=10 |
-| \MarkovRatioFinM | 2.540 | Markov with 1/M neutral player fixation |
-| \MarkovNdiff | 4 | number of differing entries |
+| \MarkovRatioFinM | 2.541 | Markov, M = 50, SI fixation rules (1/M for neutral players) |
+| \MarkovNdiff | 2 | number of differing entries |
 | \BthreeRatio | 2.030 | IBM H:C at mu=1e-3 |
 | \BthreeRatioLo | 2.003 | IBM H:C at mu=1e-3 (95% CI low) |
 | \BthreeRatioHi | 2.057 | IBM H:C at mu=1e-3 (95% CI high) |
@@ -361,5 +361,5 @@
 | \HZeroIBMB | 15.32 | h = 0 IBM ratio at mu = 0.0003 |
 | \HZeroIBMBLo | 14.80 | h = 0 IBM ratio at mu = 0.0003 (95% CI low) |
 | \HZeroIBMBHi | 15.85 | h = 0 IBM ratio at mu = 0.0003 (95% CI high) |
-| \RuntimeFullMin | 19 | total recorded compute, full profile (minutes) |
+| \RuntimeFullMin | 17 | total recorded compute, full profile (minutes) |
 | \RuntimeQuickMin | 3 | total recorded compute, quick profile (minutes) |

@@ -2,9 +2,9 @@
  "meta": {
   "name": "rep_b3_diag",
   "config_hash": "1bb6d80af734",
-  "git_commit": "03d765d-dirty",
+  "git_commit": "0925a29-dirty",
   "profile": "full",
-  "created": "2026-10-10T21:52:54",
+  "created": "2026-10-10T21:58:46",
   "config": {
    "params": {
     "b": 1.0,
@@ -323,6 +323,6 @@
    "sd": 0.025060957206482156,
    "frac_ge_published": 0.0
   },
-  "runtime_s": 71.68722891807556
+  "runtime_s": 72.49242639541626
  }
 }

@@ -5,7 +5,10 @@ Main-text sources (Lee et al. 2019, PNAS 116:13276):
 - Exploration with probability mu (players) or nu (umpires) to another strategy: p.13277, p.13280.
 - Average payoffs as functions of the counts M1..M4, N1, N2: p.13277 right column.
 
-ASSUMPTIONS (SI not available, SPEC U1; DECISIONS D-003 to D-007, D-011):
+SI-stated rules (SI Appendix p.2-3, Figs. 7-8; SI_EXTRACT.md): exploring players adopt one of the
+three other strategies, exploring umpires flip, nu = mu M / N, ties under hard imitation at 1/2.
+
+ASSUMPTIONS (not stated in the SI, SPEC U1; DECISIONS D-003 to D-007, D-011, D-017):
 - Asynchronous random sequential updating; one event = one individual (uniform over all M + N)
   revises its strategy. Rotation (extension) adds replacement events at rate rho per umpire.
 - Role model drawn uniformly from the other members of the focal's population.

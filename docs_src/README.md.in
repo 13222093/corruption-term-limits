@@ -10,10 +10,13 @@ It contains the code, all numeric results, figures, a first-draft paper in two l
 (`paper/main.pdf`, single-column preprint; `paper/ieee/main_ieee.pdf`, IEEE two-column journal
 format with IEEEtran) and notes for the author.
 
-> **Important limitation.** The SI Appendix of Lee et al. (2019) could not be obtained (PMC shows a
-> CAPTCHA, PNAS returns HTTP 403). Everything the main text delegates to the SI, in particular the
-> exact individual-based update procedure, is marked UNVERIFIED in [SPEC.md](SPEC.md) and was
-> resolved by documented assumptions ([DECISIONS.md](DECISIONS.md) D-003 to D-007).
+> **SI verification.** The SI Appendix of Lee et al. (2019) was read in full on the branch
+> `si-verification` ([SI_EXTRACT.md](SI_EXTRACT.md), [CHANGES_SI.md](CHANGES_SI.md)). It does not
+> describe the individual-based update procedure (update order, time unit, finite-population
+> payoffs). Every rule it does state is satisfied by our model, and its Fig. 8 supports our time
+> unit quantitatively, so the simulated process did not change. The SI corrected our derivation of
+> the rare-exploration matrix (discrepancy D5 withdrawn). The update order and role-model sampling
+> remain documented assumptions ([SPEC.md](SPEC.md) Section 8).
 
 ## Question
 
@@ -38,15 +41,18 @@ model. The two are reported separately.
 | B1: all umpires corrupt, OD -> h/(f+B) | 0.25, PC 0.75 | {{BoneOD}}, {{BonePC}} (max deviation {{BoneDev}} over {{BoneStarts}} starts) | reproduced |
 | B2: all umpires honest, OC -> 1 | 1 | 1 (max deviation {{BtwoDev}}) | reproduced |
 | B3: rare-exploration H:C ratio, N = 10 | (19N+87):109 = 2.54 | {{MarkovRatio}}, derived independently and symbolically | reproduced |
-| B3: simulated H:C ratio | about {{PaperRatio}} | {{BthreeRatio}} [{{BthreeRatioLo}}, {{BthreeRatioHi}}] ({{Nreps}} runs of {{BthreeGens}} generations) | close, not matched |
+| B3: simulated H:C ratio | about {{PaperRatio}} | ratio of mean shares {{BthreeRatio}} [{{BthreeRatioLo}}, {{BthreeRatioHi}}]; time all honest / all corrupt {{BthreePure}} [{{BthreePureLo}}, {{BthreePureHi}}] ({{Nreps}} runs of {{BthreeGens}} generations) | matched under the Markov-type definition; not under the ratio of mean shares |
 | B4: sustained cycles (M = 50, N = 10) | about 7 episodes per 10^5 steps (read from Fig. 1) | {{EpisodesSteps}} [{{EpisodesStepsLo}}, {{EpisodesStepsHi}}] | reproduced |
 | B4: damped oscillations (M = 5000, N = 1000) | corrupt fraction about 0.5-0.55 (Fig. 1D) | {{BfourCorrupt}} [{{BfourCorruptLo}}, {{BfourCorruptHi}}]; mean-field focus, eigenvalues {{FermiRe}} +- {{FermiIm}}i | reproduced |
 | B4: orbit shrinkage with exploration | qualitative (Fig. 3) | Hopf point at mu = nu = {{HopfMuA}} (A = 2), {{HopfMuB}} (A = 0.7) | reproduced |
 
 The simulated ratio moves toward the Markov value as exploration becomes rarer:
-{{BthreeRatioB}} at mu = 3e-4 and {{BthreeRatioC}} at mu = 1e-4. The remaining gap to the paper's
-2.15 at mu = 1e-3 is reported as a finding; the most likely cause is a difference in the
-(unavailable) individual-based update details.
+{{BthreeRatioB}} at mu = 3e-4 and {{BthreeRatioC}} at mu = 1e-4. At mu = 1e-3 the result depends
+on how the time average is defined: the time with all umpires honest over the time with all
+umpires corrupt (what the Markov chain counts) agrees with the published 2.15, the ratio of mean
+shares does not ({{LongRunMean}} even in runs of {{LongRunSteps}} steps). The SI does not say which
+definition was used. Other candidate causes (burn-in, imitation strength, exploration and payoff
+conventions) were checked and do not explain the difference ([CHANGES_SI.md](CHANGES_SI.md)).
 
 **Extension (new; author's design)**
 
@@ -89,10 +95,11 @@ the bifurcation structure and the inheritance variants have not been studied in 
 
 ```
 src/            model code (payoffs, ODE, DDE, IBM, Markov chain, rotation, analysis, metrics)
-experiments/    run_reproduction.py, run_extension.py, run_sensitivity.py,
-                evaluate_hypotheses.py, make_figures.py, make_numbers.py, render_docs.py
+experiments/    digitize_si.py, run_reproduction.py, run_extension.py, run_sensitivity.py,
+                evaluate_hypotheses.py, make_figures.py, make_numbers.py,
+                make_changes_si.py, render_docs.py
 tests/          pytest suite (payoffs, fixed points, IBM vs ODE, Markov chain, rotation limits,
-                rho_eff equivalence)
+                rho_eff equivalence, rules stated in the SI)
 configs/        base.yaml, quick.yaml, full.yaml
 results/        JSON outputs with config hash and git commit (full/ and quick/)
 figures/        PNG and vector PDF (figures/quick/ for the quick profile)
@@ -104,7 +111,9 @@ docs_src/       templates for the Markdown documents (numbers are filled in auto
 Key documents: [SPEC.md](SPEC.md) (model with source locations), [DECISIONS.md](DECISIONS.md),
 [METRICS.md](METRICS.md) (pre-registered metrics and decision rules), [PROGRESS.md](PROGRESS.md),
 [NOTES_for_author.md](NOTES_for_author.md), [REVIEW.md](REVIEW.md),
-[FINAL_REPORT.md](FINAL_REPORT.md), [CITATIONS_TODO.md](CITATIONS_TODO.md).
+[FINAL_REPORT.md](FINAL_REPORT.md), [CITATIONS_TODO.md](CITATIONS_TODO.md),
+[SI_EXTRACT.md](SI_EXTRACT.md) (what the SI specifies), [CHANGES_SI.md](CHANGES_SI.md) (effect of
+the SI verification).
 
 ## How to run
 
@@ -122,11 +131,13 @@ make quick                   # fast check with the quick profile
 
 Recorded compute: about {{RuntimeFullMin}} minutes for the full profile and {{RuntimeQuickMin}} minutes for
 the quick profile on a 16-thread laptop (14 worker processes).
-Individual steps: `python experiments/run_reproduction.py full`,
+Individual steps: `python experiments/digitize_si.py full` (needs the SI PDF in refs/),
+`python experiments/run_reproduction.py full`,
 `python experiments/run_extension.py full [bif e1 e2 e3 e4 e5 e5b e6]`,
 `python experiments/run_sensitivity.py full`, `python experiments/evaluate_hypotheses.py full`,
 `python experiments/make_figures.py full`, `python experiments/make_numbers.py full`,
-`python experiments/render_docs.py`, `python experiments/build_paper.py`.
+`python experiments/make_changes_si.py`, `python experiments/render_docs.py`,
+`python experiments/build_paper.py`.
 
 ## Reproduction notes: discrepancies and resolved typos
 
@@ -134,11 +145,12 @@ Individual steps: `python experiments/run_reproduction.py full`,
 |---|---|---|---|
 | D1 | Methods p.13281 | Q(y) printed as y1 Q_C + (1 - y1) Q_H although y1 is the honest fraction (also in the PDF, not only PMC) | Q(y) = y1 Q_H + (1 - y1) Q_C; the printed form fails B1 (test) |
 | D2 | Methods p.13281 | Honest mixed state called "OD+PD (a mixture of OD and PC)" | It is OD and PD (Fig. 2 caption, Q_H) |
-| D3 | Fig. 3 caption | "8 or 9, respectively" is reversed relative to the figure | With A = 2 the orbit passes state 9 (distance {{SlowDistNine}}), with A = 0.7 state 8 (distance {{SlowBDistEight}}); explained by the invasion thresholds y_PD = {{yPD}}, y_OD = {{yODA}} (A = 2) or {{yODB}} (A = 0.7) |
-| D4 | Transition matrix T | Row 3 omits allOD (H) -> allOD (C) | State 3 is transient; stationary distribution unchanged (symbolic check) |
-| D5 | Transition matrix T | Row 4 entry mu/6 for a neutral player mutant, while other neutral player mutants get 0 | Transient row; no effect |
+| D3 | Fig. 3 caption | "8 or 9, respectively" is reversed relative to the figure (the SI, p.1, agrees with the figure) | With A = 2 the orbit passes state 9 (distance {{SlowDistNine}}), with A = 0.7 state 8 (distance {{SlowBDistEight}}); explained by the invasion thresholds y_PD = {{yPD}}, y_OD = {{yODA}} (A = 2) or {{yODB}} (A = 0.7) |
+| D4 | Transition matrix T | Row 3 omits allOD (H) -> allOD (C), although the SI text (p.2) says corrupt umpires invade this state | State 3 is transient; stationary distribution unchanged (symbolic check). Confirmed by the SI |
+| D5 | (withdrawn) | We had called the mu/6 entry in row 4 inconsistent | The SI (p.2) explains it: a neutral dissident fixes with probability 1/2 when two copies already do better. Our derivation now uses this rule |
 | D6 | Fig. 3C, D | Caption says the orange orbit (mu = nu = 1e-4) is shown; its period is {{PerSlow}} time units | The panels match the mu = nu = 0.02 orbit (period {{PerViolet}}; peaks OC {{VioletOC}}, PC {{VioletPC}}, PD {{VioletPD}}, OD {{VioletOD}}) |
-| U1-U4 | SI Appendix | Not available | IBM update scheme, payoff evaluation and time unit resolved by assumptions; see SPEC.md Section 8 |
+| D7 | SI Fig. 9 | Axis labels swapped relative to the caption | The caption is right (ranges, Hopf boundary and periods agree with our model) |
+| U1-U4 | SI Appendix | Read in full ([SI_EXTRACT.md](SI_EXTRACT.md)) | Exploration rules verified; time unit supported by SI Fig. 8; update order and role-model sampling not stated (assumptions kept); T derivation verified; averaging behind 2.15 not stated |
 | PMC | Web version | Minus signs lost | All signs read from the PDF at 300 dpi and checked symbolically |
 
 ## Citation
