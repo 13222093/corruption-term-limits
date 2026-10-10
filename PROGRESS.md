@@ -172,3 +172,14 @@ Log of completed tasks: what was done, results, next step. Newest entries at the
   umpires corrupt (2.134 [2.102, 2.165]), not by the ratio of mean shares (2.030). No other
   candidate cause explains the gap. The SI does not state the definition, so this stays open (U3).
 - No simulated result and no hypothesis outcome changed.
+
+## 2026-10-10 Release task
+- Part 1: tests passed on si-verification (100); `master` renamed to `main`; si-verification
+  merged with --no-ff; tests passed on main (100). refs/ confirmed never committed. logs/,
+  results/quick/, figures/quick/ and the duplicated pre-SI JSON files removed from the tree
+  (D-023). digitize_si.py falls back to the committed read-offs when refs/ is absent. README top
+  section, key figure, run guide and "Tools and assistance" note; CITATION.cff added.
+- Part 2: paper/main.tex and paper/ieee/main_ieee.tex define both B3 time averages in Methods,
+  report both in Results (2.030 mean shares; 2.134 all honest / all corrupt, which contains 2.15),
+  and add Table 3 / Table IV in the reproduction appendix with the majority variant and all other
+  B3 checks (macros only). README wording aligned. Both PDFs compile without undefined references.

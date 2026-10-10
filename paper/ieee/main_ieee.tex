@@ -301,6 +301,12 @@ main metrics are the time-averaged honest fraction $\bar y$; the cooperator shar
 frequency of prudent cooperators (vigilance); the cycle amplitude; and corruption episodes,
 defined as maximal intervals with $y<0.5$, with their depth (peak corruption $1-\min y$ and lowest
 cooperator share within the episode), duration, and frequency.
+For the honest-to-corrupt ratio of benchmark B3 we compute two time averages from the same
+recorded series of each run and average each over replicates: the mean honest share over the
+mean corrupt share, $\bar y/(1-\bar y)$, which is our default; and the time with all umpires
+honest over the time with all umpires corrupt, which is the quantity that the rare-exploration
+Markov chain predicts. The original paper and its SI do not specify which definition was used
+for the published value.
 
 \subsection{Statistics}
 Each finite-population condition has \Nreps{} independent replicates. In the small setting each
@@ -356,18 +362,19 @@ matrix from the payoffs agrees with the published matrix except for one entry (D
 the chain never revisits, and gives exactly the published ratio
 $[(7+12\lambda)N+33\lambda+54\lambda^2]:[7+48\lambda+54\lambda^2]$, which is \MarkovRatio{} for
 $N=10$ and $\lambda=1$. It also reproduces the SI's chain for
-cost-free information ($h=0$) exactly. The simulated ratio at the published exploration rates
-depends on how the time average is defined, which neither the paper nor the SI states. The ratio
-of the mean honest share to the mean corrupt share is \BthreeRatio{} [\BthreeRatioLo,
-\BthreeRatioHi], lower than the published \PaperRatio{}. The ratio of the time with all umpires
-honest to the time with all umpires corrupt, the quantity that the Markov chain predicts, is
-\BthreePure{} [\BthreePureLo, \BthreePureHi] and agrees with it. The mean-share value is stable
-when the averaging window is doubled (\BthreeDouble) and in \LongRunN{} runs of
-$\LongRunSteps$ steps (mean \LongRunMean), and approaches the Markov limit as exploration becomes
-rarer: \BthreeRatioB{} at $\mu=3\times10^{-4}$ and \BthreeRatioC{} at $\mu=10^{-4}$
-(Fig.~\ref{fig:ratio}). Changing the burn-in, the initial state, the imitation strength, or the
-conventions for exploration, role models and payoffs did not bring it to \PaperRatio{}
-(Appendix~\ref{app:si}).
+cost-free information ($h=0$) exactly. Neither the paper nor its SI specifies how
+the published simulated ratio of about \PaperRatio{} was averaged over time, so we report both
+definitions given in Methods. The ratio of the mean honest share to the mean corrupt share is
+\BthreeRatio{} [\BthreeRatioLo, \BthreeRatioHi], below the published value. The ratio of the
+time with all umpires honest to the time with all umpires corrupt is \BthreePure{}
+[\BthreePureLo, \BthreePureHi]. This second definition is the quantity that the rare-exploration
+Markov chain predicts, and under it our simulation agrees with the published value. The
+mean-share ratio is stable when the averaging window is doubled (\BthreeDouble) and in
+\LongRunN{} runs of $\LongRunSteps$ steps (mean \LongRunMean), and it approaches the Markov limit
+as exploration becomes rarer: \BthreeRatioB{} at $\mu=3\times10^{-4}$ and \BthreeRatioC{} at
+$\mu=10^{-4}$ (Fig.~\ref{fig:ratio}). Changing the burn-in, the initial state, the imitation
+strength, or the conventions for exploration, role models and payoffs did not bring it to
+\PaperRatio{} (Table~\ref{tab:b3} in Appendix~\ref{app:typos}).
 
 \begin{figure*}[!t]
 \centering
@@ -382,8 +389,8 @@ $h=0.1$, $A=2$, $M=\MSmall$, $N=\NSmall$, $\mu=0.001$, $\nu=0.005$, $s=10^{10}$.
 \begin{figure}[!t]
 \centering
 \includegraphics[width=\columnwidth]{fig03_hc_ratio.pdf}
-\caption{Honest-to-corrupt time ratio in the small population. Dots: mean over \Nreps{}
-replicates with 95\% bootstrap intervals; each replicate runs \BthreeGens{} generations at
+\caption{Honest-to-corrupt ratio in the small population. Dots: ratio of the mean honest share
+to the mean corrupt share, mean over \Nreps{} replicates with 95\% bootstrap intervals; each replicate runs \BthreeGens{} generations at
 $\mu=10^{-3}$ and proportionally longer at smaller $\mu$, with $\nu=5\mu$ so that $M\mu=N\nu$.
 Dashed line: rare-exploration Markov chain. Star: value reported by Lee et al.}
 \label{fig:ratio}
@@ -793,6 +800,50 @@ in both populations when $M\mu=N\nu$, as the caption states, and the number of e
 time unit quantitatively (Appendix~\ref{app:si}). All signs of the payoff matrices were read from the PDF at
 300~dpi; the PMC web version lost minus signs.
 
+\paragraph{Benchmark B3 under different time averages.} Table~\ref{tab:b3} gives the simulated
+honest-to-corrupt ratio at the published setting ($M=\MSmall$, $N=\NSmall$, $\mu=10^{-3}$,
+$\nu=5\times10^{-3}$, $s=10^{10}$) under three definitions of the time average, all computed from
+the same \Nreps{} runs, and under single changes to the run settings and update conventions. The
+original paper and its SI do not specify the definition. The time with all umpires honest over
+the time with all umpires corrupt is the quantity that the Markov chain predicts, and it is the
+only row whose interval contains the published \PaperRatio. The honest-majority over
+corrupt-majority variant lies between the two main definitions.
+
+\begin{table*}[!t]
+\centering\footnotesize
+\caption{Simulated honest-to-corrupt ratio (benchmark B3) under different time averages and single
+changes to the model. Means over \Nreps{} replicates of \BthreeGens{} generations with 95\%
+bootstrap intervals unless stated otherwise. All rows below the first block use the mean-share
+definition. Published value: \PaperRatio; Markov limit: \MarkovRatio.}
+\label{tab:b3}
+\begin{tabular}{>{\raggedright}p{11.5cm}l}
+\toprule
+Variant & Ratio \\
+\midrule
+\multicolumn{2}{l}{\emph{Time-average definition (same runs)}} \\
+Mean honest share over mean corrupt share (default) & \BthreeRatio{} [\BthreeRatioLo, \BthreeRatioHi] \\
+Time with all umpires honest over time with all umpires corrupt & \BthreePure{} [\BthreePureLo, \BthreePureHi] \\
+Time with honest majority over time with corrupt majority & \BthreeMajority{} [\BthreeMajorityLo, \BthreeMajorityHi] \\
+\midrule
+\multicolumn{2}{l}{\emph{Run settings}} \\
+Burn-in of 50000 instead of \BurnSmall{} generations & \DiagBurn{} [\DiagBurnLo, \DiagBurnHi] \\
+Start from all OC instead of all OD & \DiagStartOC{} [\DiagStartOCLo, \DiagStartOCHi] \\
+Imitation intensity $s=1000$ & \DiagSelThousand{} [\DiagSelThousandLo, \DiagSelThousandHi] \\
+Imitation intensity $s=10$ & \DiagSelTen{} [\DiagSelTenLo, \DiagSelTenHi] \\
+\midrule
+\multicolumn{2}{l}{\emph{Update conventions}} \\
+Exploration may keep the current strategy & \DiagExploreAny{} [\DiagExploreAnyLo, \DiagExploreAnyHi] \\
+Role model may be the focal individual & \DiagRoleAny{} [\DiagRoleAnyLo, \DiagRoleAnyHi] \\
+Payoffs include play against oneself & \DiagSelfPayoff{} [\DiagSelfPayoffLo, \DiagSelfPayoffHi] \\
+One player and one umpire update per step & \DiagPairStep{} [\DiagPairStepLo, \DiagPairStepHi] \\
+\midrule
+\multicolumn{2}{l}{\emph{Run length}} \\
+\LongRunN{} runs of $\LongRunSteps$ elementary steps & mean \LongRunMean, SD \LongRunSD \\
+\ShortRunN{} windows of $10^5$ elementary steps & mean \ShortRunMean, SD \ShortRunSD \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
 \section{Parameters}\label{app:params}
 
 \begin{table}[!t]
@@ -839,19 +890,13 @@ The SI does not describe a different individual-based procedure, so the results 
 did not change; the derivation of the transition matrix was corrected to the SI's rules for
 neutral mutants.
 
-\paragraph{Honest-to-corrupt ratio.} Fig.~\ref{fig:S4}A tests one possible cause of the
-difference between our mean-share ratio and the published \PaperRatio{} at a time. A burn-in of
-50000 generations gave \DiagBurn{} [\DiagBurnLo, \DiagBurnHi], starting from all OC gave
-\DiagStartOC, and $s=1000$ gave \DiagSelThousand. Weaker imitation ($s=10$) gave \DiagSelTen,
-exploration that may keep the current strategy \DiagExploreAny, role models that may be oneself
-\DiagRoleAny, payoffs including self-play \DiagSelfPayoff, and one player and one umpire updating
-per step \DiagPairStep. None of these is consistent with both the SI's rules and the published
-value. Run length does not explain it either: \LongRunN{} runs of $\LongRunSteps$ steps gave
-\LongRunMean{} (SD \LongRunSD, maximum \LongRunMax), while \ShortRunN{} windows of $10^5$ steps
-gave mean \ShortRunMean{} (SD \ShortRunSD), so a single short window is too noisy to decide. The
-time with all umpires honest over the time with all umpires corrupt gave \BthreePure{}
-[\BthreePureLo, \BthreePureHi], and the time with an honest majority over the time with a corrupt
-majority gave \BthreeMajority{} [\BthreeMajorityLo, \BthreeMajorityHi].
+\paragraph{Honest-to-corrupt ratio.} Table~\ref{tab:b3} (Appendix~\ref{app:typos}) and
+Fig.~\ref{fig:S4}A summarize the checks of possible causes for the difference between our
+mean-share ratio and the published \PaperRatio{}. The single changes that move the ratio upward
+(weaker imitation, exploration that may keep the current strategy) conflict with the published
+setting or with the SI's rules, and the others leave it unchanged or lower it. A single window of
+$10^5$ steps is too noisy to decide between definitions (SD \ShortRunSD), whereas
+\LongRunN{} long runs give \LongRunMean{} (maximum \LongRunMax).
 
 \paragraph{Time unit.} SI Fig.~8 shows single simulation runs of $5\times10^6$ time units for
 $M=3000$, $2000$, $1000$ ($N=M/5$) at $s=10$ and $s=1$. We counted the cycles in the published

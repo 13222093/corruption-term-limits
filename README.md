@@ -77,10 +77,11 @@ model. The two are reported separately.
 
 The simulated ratio moves toward the Markov value as exploration becomes rarer:
 2.318 at mu = 3e-4 and 2.459 at mu = 1e-4. At mu = 1e-3 the result depends
-on how the time average is defined: the time with all umpires honest over the time with all
-umpires corrupt (what the Markov chain counts) agrees with the published 2.15, the ratio of mean
-shares does not (2.037 even in runs of 2.2e8 steps). The SI does not say which
-definition was used. Other candidate causes (burn-in, imitation strength, exploration and payoff
+on how the time average is defined, and neither the paper nor its SI states which definition was
+used. The time with all umpires honest over the time with all umpires corrupt is the quantity
+that the rare-exploration Markov chain predicts; under it our simulation agrees with the
+published 2.15. The ratio of mean shares does not (2.037 even in runs of
+2.2e8 steps). Other candidate causes (burn-in, imitation strength, exploration and payoff
 conventions) were checked and do not explain the difference ([CHANGES_SI.md](CHANGES_SI.md)).
 
 **Extension (new; author's design)**
