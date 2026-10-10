@@ -68,7 +68,7 @@ H4 substitutes (mean field and IBM agree), H5 mixed, H6 not supported.
 | Hypothesis outcomes match figures | Yes: H1 (Figs. 4, 6, 10), H2 (Fig. 6), H3 (Fig. 7), H4 (Fig. 5), H5 (Fig. 8), H6 (Fig. 9); outcomes computed by experiments/evaluate_hypotheses.py from the same files. |
 | Mean-field and finite-population results separated | Yes, in text, tables and figure panels. |
 | Limitations stated | Yes: Discussion and this review. |
-| Discrepancies with the original paper reported | Yes: D1-D4, D6, D7 (D5 withdrawn after reading the SI) and U1-U4 (README, paper Appendix B, SPEC.md, SI_EXTRACT.md). |
+| Notation inconsistencies in the original paper reported neutrally | Yes: D1-D4, D6, D7 and U1-U4 (README, paper Appendix B, SPEC.md, SI_EXTRACT.md). |
 | Tests pass; pipeline regenerates from a clean clone | Yes: 100 tests; quick pipeline and numbers/docs/paper regenerated in a fresh clone; full pipeline rerun on the si-verification branch. |
 
 ## Fixes made during review
@@ -86,8 +86,9 @@ Resolved:
   6% for s = 10). A per-generation time unit would be off by a factor of
   1200 to 3600.
 - Markov chain: the SI fixation rules for neutral mutants explain every printed entry of T
-  except D4. D5 was our error and is withdrawn. The SI's cost-free chain is reproduced exactly.
-- Fig. 3 caption (D3) and the T omission (D4) are confirmed by the SI text.
+  except D4, and they corrected our own first derivation of one entry (CHANGES_SI.md). The SI's
+  cost-free chain is reproduced exactly.
+- The SI text supports our readings of the Fig. 3 caption (D3) and of row 3 of T (D4).
 
 Remains:
 - Update order (asynchronous random sequential in our model), role-model sampling and
@@ -96,4 +97,5 @@ Remains:
   it counts time with all umpires honest against time with all umpires corrupt.
 - SI Fig. 8 panels with s = 1 show 0% to 38% fewer cycles than
   our model; each SI panel is one run, so this is weak evidence of a difference.
-- New inconsistency D7: SI Fig. 9 axis labels are swapped relative to its caption.
+- New notation inconsistency D7: in SI Fig. 9 the axis labels are exchanged relative to the
+  caption.

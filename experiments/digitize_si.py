@@ -12,7 +12,7 @@
    Frame boxes were located on a 300-dpi rendering (dark frame lines) and are stored below.
 2. SI Fig. 9B (page 9): positions of the printed period labels, read from a 150-dpi rendering
    and converted to (h, mu) with the caption's axes (h horizontal 0-0.35, mu = nu vertical
-   0-0.08; DISCREPANCY D7: the panel labels are swapped). Contour labels sit on their contour
+   0-0.08; notation inconsistency D7: the panel labels are exchanged). Contour labels sit on their contour
    lines, so the period at each position is approximately the label value.
 
 Usage: python experiments/digitize_si.py [profile]  ->  results/<profile>/si_digitized.json

@@ -183,3 +183,11 @@ Log of completed tasks: what was done, results, next step. Newest entries at the
   report both in Results (2.030 mean shares; 2.134 all honest / all corrupt, which contains 2.15),
   and add Table 3 / Table IV in the reproduction appendix with the majority variant and all other
   B3 checks (macros only). README wording aligned. Both PDFs compile without undefined references.
+- Part 3: neutral wording applied to both papers, README, FINAL_REPORT, REVIEW, NOTES (new Part 4
+  "How to talk about discrepancies"), SOP (sentence 1 now states a verified result instead of a
+  count of inconsistencies; 293 characters), CHANGES_SI, SPEC, SI_EXTRACT and three code comments
+  (80 replacements, WORDING_AUDIT.md). D5 removed outside the change logs. Paper main text has one
+  sentence on notation inconsistencies; Appendix B has a neutral table of D1-D4, D6, D7.
+  Acknowledgements credit Lee et al. and disclose AI assistance. CV_ENTRY.md added (template,
+  numbers from results). Tests pass (100); both papers compile without undefined references or
+  overfull boxes.

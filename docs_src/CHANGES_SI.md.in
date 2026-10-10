@@ -18,8 +18,9 @@ rerun).
   derived matrix equals the printed one except for discrepancy D4, and the SI's cost-free
   (h = 0) chain and its closed form are reproduced exactly. The closed form (19N + 87):109 is
   unchanged ({{MarkovRatio}} for N = 10).
-- **Discrepancy D5 was withdrawn** (our misreading). D1, D2, D3, D4 and D6 were confirmed; a new
-  inconsistency D7 (SI Fig. 9 axis labels) was found.
+- **Item D5 was withdrawn: it was our misreading**, not an inconsistency in the original. The
+  SI supports our readings of D1, D2, D3, D4 and D6, and one further notation inconsistency, D7
+  (SI Fig. 9 axis labels), was noted.
 - **No simulation result and no hypothesis outcome changed**, because the simulated process is
   unchanged; the full pipeline was rerun and reproduced every simulated value (table in
   Section 3). Only two diagnostics of the derived Markov chain changed (`MarkovNdiff`,
@@ -48,17 +49,17 @@ derived chain for M = 50 with neutral player mutants fixing at 1/M. Before the S
 were partly missing and the value differed slightly from the closed form; with the SI rules it
 equals (19N + 87):109 = {{MarkovRatio}}. No conclusion depends on either quantity.
 
-## 4. Discrepancies D1 to D7
+## 4. Notation inconsistencies D1 to D7
 
 | ID | Status | Evidence from the SI |
 |---|---|---|
 | D1 Q(y) weighting | confirmed | SI p.1 defines y1 = 1 as all umpires honest |
-| D2 OD+PD called "OD and PC" | confirmed | SI p.1 derives the OD-PD fixed point; SI p.2 repeats the slip |
+| D2 OD+PD labelled "OD and PC" | reading supported | SI p.1 derives the OD-PD fixed point; SI p.2 uses the same label |
 | D3 Fig. 3 caption "respectively" | confirmed | SI p.1: "Fig. 3 A, where PD can invade ... Fig. 3 B, where OD can invade instead" |
 | D4 T omits allOD(H) -> allOD(C) | confirmed, strengthened | SI p.2 says corrupt umpires invade (allOD, allH); T still omits it |
-| D5 mu/6 vs 0 for neutral mutants | **withdrawn** | SI p.2 explains both entries (two-mutant rule) |
+| D5 mu/6 vs 0 for neutral mutants | **withdrawn: our misreading** | SI p.2 explains both entries (two-mutant rule); the printed entries are consistent |
 | D6 Fig. 3C, D labelling | confirmed (indirect) | SI Fig. 9B periods: about 140 at mu = nu = 0.02, beyond 2000 at very small mu |
-| D7 SI Fig. 9 axis labels | **new** | Caption: h horizontal, mu = nu vertical; panels: swapped labels |
+| D7 SI Fig. 9 axis labels | **new** | Caption: h horizontal, mu = nu vertical; panel labels exchanged |
 
 ## 5. Did the B3 gap close?
 

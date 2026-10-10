@@ -35,8 +35,7 @@ Institutions that punish free riders can sustain cooperation, but the officers w
 become corrupt. Lee, Iwasa, Dieckmann and Sigmund (2019) showed that social learning then produces
 recurring cycles of corruption. We reproduce their model and extend it with term-limited officers
 (umpires) who are replaced at a fixed rate by newcomers whose integrity may be inherited from the
-incumbents. We reproduce the paper's analytical benchmarks exactly and its simulations closely,
-and we document six inconsistencies in the paper and its supplementary information. In the large-population limit,
+incumbents. We reproduce the paper's analytical benchmarks exactly and its simulations closely. In the large-population limit,
 rotation removes corruption cycles through a saddle-node bifurcation on the cycle at a critical
 rotation rate. We derive an approximation for this rate and show that it is proportional to the
 exploration rate. In stochastic simulations of small populations, rotation raises the time-averaged share of honest
@@ -58,7 +57,7 @@ rotation model (Section~\ref{sec:rotation}), its analysis (Section~\ref{sec:anal
 results on hypotheses H1 to H6 (Section~\ref{sec:hyp}) are new. We checked the model
 against the supplementary information (SI) of Lee et al. The SI states the exploration and
 fixation rules, which our model follows, but not the order of individual updates; that part
-remains our assumption and is marked as such (Appendices~\ref{app:typos} and~\ref{app:si}).
+remains our assumption and is marked as such (Appendices~\ref{app:notes} and~\ref{app:si}).
 
 %=====================================================================
 \section{Introduction}
@@ -110,8 +109,7 @@ field) and in finite-population simulations.
 
 Our contributions are as follows. We reproduce the analytical benchmarks of Lee et al.\ exactly,
 including an independent derivation of their rare-exploration Markov chain, and their simulations
-closely. We document six inconsistencies in the paper and its SI, none of which changes the paper's
-conclusions. We show that rotation removes the corruption cycle not through a Hopf bifurcation
+closely. We show that rotation removes the corruption cycle not through a Hopf bifurcation
 but through a saddle-node bifurcation on the limit cycle, and we derive an approximation for the
 critical rotation rate. We find that rotation raises honesty and lowers vigilance as expected,
 but that the remaining corruption episodes are not deeper, so a ``vigilance paradox'' does not
@@ -170,9 +168,8 @@ In large populations the dynamics are the replicator-mutator equations
 \dot x_i &= x_i\big[(Q(y)x)_i - x^{\top}Q(y)x\big] - \mu x_i + \mu\frac{1-x_i}{3},\qquad i=1,\dots,4,\label{eq:rm1}\\
 \dot y &= y(1-y)\big[P_H(x)-P_C(x)\big] - \nu y + \nu(1-y),\label{eq:rm2}
 \end{align}
-with exploration rates $\mu$ (players) and $\nu$ (umpires) and $Q(y)=yQ_H+(1-y)Q_C$. The printed
-equation has the weights of $Q_H$ and $Q_C$ swapped; we use the reading that is consistent with
-$y$ being the honest fraction (Appendix~\ref{app:typos}).
+with exploration rates $\mu$ (players) and $\nu$ (umpires) and $Q(y)=yQ_H+(1-y)Q_C$. A few notation inconsistencies in the original text,
+including the weighting in $Q(y)$, were resolved as described in Appendix~\ref{app:notes}.
 
 In finite populations, individuals revise their strategies one at a time. With probability $\mu$
 (players) or $\nu$ (umpires) the revising individual switches to another strategy at random;
@@ -252,7 +249,7 @@ simulation follows: an exploring player adopts one of the three other strategies
 exploring umpire switches type, umpires explore at rate $\nu=\mu M/N$, and under hard imitation
 a tie is resolved with probability $1/2$~\cite{lee2019social}. It does not state the order of
 updates, how role models are chosen, or how payoffs are evaluated in a finite population; the
-choices below are our assumptions (Appendix~\ref{app:typos}). In each elementary step one individual is chosen uniformly from all $M+N$ individuals and revises
+choices below are our assumptions (Appendix~\ref{app:notes}). In each elementary step one individual is chosen uniformly from all $M+N$ individuals and revises
 its strategy as described above. A player's co-player is drawn from the other $M-1$ players, and
 an umpire serves two distinct random players; payoffs are expected values given the current
 counts. Rotation adds replacement events at rate $\rho N$ per generation. One generation is the
@@ -312,8 +309,7 @@ pipeline used about \RuntimeFullMin{} minutes on a laptop.
 Table~\ref{tab:repro} compares our results with the published benchmarks. With all umpires
 corrupt and no exploration, every trajectory converged to OD $=h/(f+B)=\BoneOD$ and PC
 $=\BonePC$ (largest deviation $\BoneDev$ over \BoneStarts{} random starts); with all umpires
-honest, OC went to fixation. With the printed weighting of $Q(y)$, the all-corrupt case instead
-ends at OC $=\PrintedOC$, which contradicts the paper's own statement.
+honest, OC went to fixation. 
 
 \begin{table}[t]
 \centering\small
@@ -347,8 +343,8 @@ $h=0.1$, $A=2$, $M=\MSmall$, $N=\NSmall$, $\mu=0.001$, $\nu=0.005$, $s=10^{10}$.
 
 In the small population, corruption episodes recur (Fig.~\ref{fig:cycles}) at a rate close to
 that in the published figure. In the rare-exploration limit, our derivation of the transition
-matrix from the payoffs agrees with the published matrix except for one entry (D4) in a row that
-the chain never revisits, and gives exactly the published ratio
+matrix from the payoffs reproduces the published matrix in every entry that affects the stationary
+distribution (Appendix~\ref{app:notes}), and gives exactly the published ratio
 $[(7+12\lambda)N+33\lambda+54\lambda^2]:[7+48\lambda+54\lambda^2]$, which is \MarkovRatio{} for
 $N=10$ and $\lambda=1$. It also reproduces the SI's chain for
 cost-free information ($h=0$) exactly. Neither the paper nor its SI specifies how
@@ -363,7 +359,7 @@ mean-share ratio is stable when the averaging window is doubled (\BthreeDouble) 
 as exploration becomes rarer: \BthreeRatioB{} at $\mu=3\times10^{-4}$ and \BthreeRatioC{} at
 $\mu=10^{-4}$ (Fig.~\ref{fig:ratio}). Changing the burn-in, the initial state, the imitation
 strength, or the conventions for exploration, role models and payoffs did not bring it to
-\PaperRatio{} (Table~\ref{tab:b3} in Appendix~\ref{app:typos}).
+\PaperRatio{} (Table~\ref{tab:b3} in Appendix~\ref{app:notes}).
 
 \begin{figure}[t]
 \centering
@@ -380,11 +376,10 @@ at a corrupt fraction of \BfourCorrupt{} after damped oscillations (Fig.~\ref{fi
 mean-field equilibrium is a stable focus with eigenvalues $\FermiRe\pm\FermiIm i$, which
 corresponds to a period of about \FermiPer{} generations and a decay time of \FermiDecay{}
 generations. In the replicator-mutator equations, raising the exploration rate shrinks the limit
-cycle until it disappears in a Hopf bifurcation (Fig.~\ref{fig:damped}B, C). We found that the
-time series in Lee et al.'s Fig.~3C, D match the orbit at $\mu=\nu=0.02$ (period \PerViolet;
-peaks of OC, PC, PD and OD \VioletOC, \VioletPC, \VioletPD{} and \VioletOD) rather than the orbit at
-$10^{-4}$ named in the caption, whose period is \PerSlow{} (Fig.~\ref{fig:damped}D). All
-discrepancies are listed in Appendix~\ref{app:typos}.
+cycle until it disappears in a Hopf bifurcation (Fig.~\ref{fig:damped}B, C). Panel D shows the
+orbit at $\mu=\nu=0.02$ (period \PerViolet; peaks of OC, PC, PD and OD \VioletOC, \VioletPC,
+\VioletPD{} and \VioletOD), whose values match the time series in Lee et al.'s Fig.~3C, D
+(Fig.~\ref{fig:damped}D; Appendix~\ref{app:notes}).
 
 \begin{figure}[t]
 \centering
@@ -710,7 +705,10 @@ All code, configuration files, results (with configuration hashes and git commit
 scripts that generate every figure and number are available at [repository URL placeholder].
 
 \section*{Acknowledgements}
-[Placeholder.]
+This reproduction relies entirely on the clear and detailed work of Lee, Iwasa, Dieckmann and
+Sigmund~\cite{lee2019social}, including their supplementary information. AI coding tools
+(Claude Code) assisted with the implementation and analysis under the author's direction.
+[Further acknowledgements: placeholder.]
 
 \bibliographystyle{unsrtnat}
 \bibliography{references}
@@ -748,31 +746,39 @@ $y_{\rm th}$, but the minimum lies at $y\approx\RhoCy$, well above the threshold
 \paragraph{Neutral umpire selection.} If $P_H=P_C$, Eq.~\eqref{eq:rot} with $p_0=1$ gives
 $\nu(1-2y)+\rho(1-y)=0$, so $y=(\nu+\rho)/(2\nu+\rho)$.
 
-\section{Reproduction notes and resolved typos}\label{app:typos}
+\section{Reproduction notes and notation inconsistencies}\label{app:notes}
+
+Our reproduction follows the clear and detailed description of the model by Lee et
+al.~\cite{lee2019social}. In a few places the printed text and figures can be read in more than
+one way. Table~\ref{tab:notation} lists these notation inconsistencies, the evidence for each, and
+how we resolved it. None of them affects the conclusions of the original paper.
 
 \begin{table}[h]
 \centering\small
-\begin{tabular}{>{\raggedright}p{0.8cm}>{\raggedright}p{2.3cm}>{\raggedright}p{5.3cm}>{\raggedright\arraybackslash}p{5.2cm}}
+\caption{Notation inconsistencies in Lee et al.\ (2019) and its SI, and how we resolved them.}
+\label{tab:notation}
+\begin{tabular}{>{\raggedright}p{0.6cm}>{\raggedright}p{1.9cm}>{\raggedright}p{6.2cm}>{\raggedright\arraybackslash}p{5.2cm}}
 \toprule
-ID & Location & Issue & Resolution \\
+ID & Location & Observation and evidence & How we resolved it \\
 \midrule
-D1 & Methods & $Q(y)=y_1Q_C+(1-y_1)Q_H$ with $y_1$ the honest fraction & $Q(y)=y_1Q_H+(1-y_1)Q_C$; the printed form fails B1 \\
-D2 & Methods & Honest mixed state called ``OD+PD (a mixture of OD and PC)'' & It mixes OD and PD (Fig.~2 caption, $Q_H$) \\
-D3 & Fig.~3 caption & ``8 or 9, respectively'' reversed relative to the figure & With $A=2$ the orbit passes state 9, with $A=0.7$ state 8 (Appendix~\ref{app:deriv}) \\
-D4 & Transition matrix & Row 3 omits the transition to state 8, although the SI text says corrupt umpires invade state 3 & State 3 is transient; no effect \\
-D5 & (withdrawn) & We had flagged the $\mu/6$ entry in row 4 & The SI explains it by the two-mutant rule; our derivation now uses it \\
-D6 & Fig.~3C, D & Caption names the $\mu=\nu=10^{-4}$ orbit & Panels match $\mu=\nu=0.02$ \\
-D7 & SI Fig.~9 & Axis labels swapped relative to the caption & The caption is right (Appendix~\ref{app:si}) \\
-U1 & SI & Individual-based update order, role models, payoffs not stated & Assumed: random sequential updates, role model from own population, expected payoffs; time unit supported by SI Fig.~8 \\
+D1 & Methods & The weighting is printed as $Q(y)=y_1Q_C+(1-y_1)Q_H$, while $y_1$ denotes the honest fraction. Read this way, the all-corrupt case ends at OC $=\PrintedOC$ instead of the stated OD $=h/(f+B)$. & We read it as $Q(y)=y_1Q_H+(1-y_1)Q_C$, which gives the stated results B1 and B2. \\
+D2 & Methods & The honest mixed state is labelled ``OD+PD (a mixture of OD and PC)''. & We read it as a mixture of OD and PD, as in the Fig.~2 caption and in $Q_H$. \\
+D3 & Fig.~3 caption & ``8 or 9, respectively'' lists the two states in the opposite order to the panels; the SI (p.~1) follows the panels. & We follow the panels: with $A=2$ the orbit passes state 9, with $A=0.7$ state 8, as the invasion thresholds predict (Appendix~\ref{app:deriv}). \\
+D4 & Transition matrix & Row 3 has no entry for the transition to state 8, while the SI (p.~2) describes corrupt umpires invading state 3. & State 3 is transient, so the stationary distribution is the same with or without the entry (symbolic check). \\
+D6 & Fig.~3C, D & The caption refers to the orbit at $\mu=\nu=10^{-4}$ (period \PerSlow); the values in the panels match the orbit at $\mu=\nu=0.02$ (period \PerViolet). & We compare our Fig.~\ref{fig:damped}D with the panels at $\mu=\nu=0.02$. \\
+D7 & SI Fig.~9 & The axis labels of the panels are exchanged relative to the caption. & We follow the caption; the ranges, the Hopf boundary and the periods then agree with our model (Appendix~\ref{app:si}). \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-The time unit was inferred from Lee et al.'s Fig.~1: with one individual updating per elementary
-step, entry rates of new strategies are equal in both populations when $M\mu=N\nu$, as the caption
-states, and the number of episodes per $10^5$ steps matches the figure. SI Fig.~8 supports the same
-time unit quantitatively (Appendix~\ref{app:si}). All signs of the payoff
-matrices were read from the PDF at 300 dpi; the PMC web version lost minus signs.
+The SI does not state the order of individual updates, how role models are chosen, or how
+payoffs are evaluated in a finite population. We assume random sequential updates, a role model
+from the focal individual's own population, and expected payoffs (Methods). The time unit was
+inferred from Lee et al.'s Fig.~1: with one individual updating per elementary step, entry rates
+of new strategies are equal in both populations when $M\mu=N\nu$, as the caption states, and the
+number of episodes per $10^5$ steps matches the figure. SI Fig.~8 supports the same time unit
+quantitatively (Appendix~\ref{app:si}). All signs of the payoff matrices were read from the PDF
+at 300 dpi, because the PMC web version does not display the minus signs.
 
 \paragraph{Benchmark B3 under different time averages.} Table~\ref{tab:b3} gives the simulated
 honest-to-corrupt ratio at the published setting ($M=\MSmall$, $N=\NSmall$, $\mu=10^{-3}$,
@@ -858,10 +864,10 @@ V1 equivalence symbolically.
 We obtained the SI of Lee et al.\ from an archived copy of the publisher's supplementary file and
 compared every rule it states with our model (file \texttt{SI\_EXTRACT.md} in the repository).
 The SI does not describe a different individual-based procedure, so the results in this paper
-did not change; the derivation of the transition matrix was corrected to the SI's rules for
+did not change; our derivation of the transition matrix now follows the SI's rules for
 neutral mutants.
 
-\paragraph{Honest-to-corrupt ratio.} Table~\ref{tab:b3} (Appendix~\ref{app:typos}) and
+\paragraph{Honest-to-corrupt ratio.} Table~\ref{tab:b3} (Appendix~\ref{app:notes}) and
 Fig.~\ref{fig:S4}A summarize the checks of possible causes for the difference between our
 mean-share ratio and the published \PaperRatio{}. The single changes that move the ratio upward
 (weaker imitation, exploration that may keep the current strategy) conflict with the published
@@ -880,8 +886,9 @@ these counts by a factor of $M+N$.
 
 \paragraph{Mean-field periods.} At \NineNpoints{} label positions in SI Fig.~9B our mean-field
 periods differ from the labels by \NineMinDev\% to \NineMaxDev\%, except at the label 400
-(\NineDevFourHundred\%), where the contours crowd (Fig.~\ref{fig:S4}C). The SI's figure has its
-axis labels swapped relative to its caption (D7); the caption's assignment fits our periods.
+(\NineDevFourHundred\%), where the contours crowd (Fig.~\ref{fig:S4}C). In SI Fig.~9 the axis
+labels of the panels are exchanged relative to the caption (D7); we follow the caption, whose
+assignment fits our periods.
 
 \paragraph{Cost-free information.} For $h=0$ the SI gives a closed-form ratio, \HZeroPred{} for
 $N=10$, $M=50$. Our derived chain reproduces it exactly. Our simulation gives \HZeroIBMA{}

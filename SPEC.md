@@ -89,13 +89,13 @@ Qbar    = sum_ik x_i Q_ik(y) x_k
 ```
 State space S = Delta_4 x [0, 1].
 
-DISCREPANCY D1 (typo in the PDF itself, not only PMC): the PDF prints
+NOTATION INCONSISTENCY D1 (in the PDF itself, not only PMC): the PDF prints
 Q(y) = y1 Q_C + (1 - y1) Q_H. With y1 the honest fraction (y1 = 1 at fixed point 5 with Q_H
 equilibrium x = (0, 0, h/(f+A), (f+A-h)/(f+A)) in Fig. 2 caption; y1 = 0 at fixed point 10 with
 the Q_C equilibrium; dy1/dt uses P_H - P_C), the printed weighting is inconsistent.
 RESOLUTION: Q(y) = y1 Q_H + (1 - y1) Q_C. Evidence: (a) Fig. 2 caption fixes y1 = 1 for the
 honest simplex; (b) B1 and B2 (text p.13278 col.2) hold only with this reading (verified in
-tests/test_fixed_points.py, which also shows the printed reading fails B1).
+tests/test_fixed_points.py, which also shows that the literal reading does not give B1).
 See DECISIONS.md D-001.
 
 ## 6. Fixed points and edges (Main p.13278, Fig. 2 and caption)
@@ -109,7 +109,7 @@ See DECISIONS.md D-001.
 - B2 (text p.13278 col.2): all umpires honest: OC -> 1.
 - Condition 4 guarantees honest umpires can invade fixed point 10.
 
-DISCREPANCY D2: Methods p.13281 col.1 calls the honest mixed state "OD+PD (a mixture of OD and PC)".
+NOTATION INCONSISTENCY D2: Methods p.13281 col.1 calls the honest mixed state "OD+PD (a mixture of OD and PC)".
 The Fig. 2 caption and Q_H show it is a mixture of OD and PD. Resolution: OD+PD.
 
 ## 7. Exploration rates and orbit shrinkage (Fig. 3, p.13279)
@@ -126,7 +126,7 @@ The Fig. 2 caption and Q_H show it is a mixture of OD and PD. Resolution: OD+PD.
   leaves the edge where all players are OCs to visit the absorbing state 8 or 9, respectively".
   At A = 2: 0.167 < 0.333 (inequality holds); at A = 0.7: 0.6 > 0.333. The figure shows the
   A = 2 orbit passing near 9 and the A = 0.7 orbit near 8, which is the reverse of the literal
-  "respectively". DISCREPANCY D3 (text vs figure), resolved numerically in Phase 2 and CONFIRMED
+  "respectively". NOTATION INCONSISTENCY D3 (text vs figure), resolved numerically in Phase 2 and CONFIRMED
   by the SI (p.1: "see Fig. 3 A, where PD can invade in this interval, and Fig. 3 B, where OD can
   invade instead").
 
@@ -200,11 +200,12 @@ Derivation (U2, VERIFIED from SI p.2-3; implemented in src/rare_exploration.py):
   A player mutant that is neutral as a single dissident fixes with probability 1/2 if two
   mutants already do better (entry mu/6), cannot fix if two do worse, and fixes with probability
   1/M if it is neutral throughout (only for h = 0, entry mu/(3M), SI p.3).
-- DISCREPANCY D4 (confirmed): row 3 (allOD, honest) omits the transition to 8, although the SI
+- NOTATION INCONSISTENCY D4 (reading supported by the SI): row 3 (allOD, honest) has no entry for the transition to 8, while the SI
   text says corrupt umpires invade (allOD, allH) (SI p.2). State 3 is transient, so the
   stationary distribution is unchanged.
-- D5 WITHDRAWN: the entry m/6 in row 4 is explained by the SI (p.2); the 0 in row 7 (PD into allPC
-  under corrupt umpires) follows from the same rule because two PD players do worse.
+- The entry m/6 in row 4 follows from the SI rule above (p.2); the 0 in row 7 (PD into allPC
+  under corrupt umpires) follows from the same rule because two PD players do worse. Our first
+  derivation had missed this rule (CHANGES_SI.md).
 - Cost-free information (h = 0, SI p.3): 8 absorbing states; H:C = 14 + 8N + 12M : 25 at
   lambda = 1. Reproduced exactly by our derivation (tests).
 
@@ -246,5 +247,5 @@ p_new evaluated from the current (or lagged) honest fraction.
   and compared with our model (supports A1).
 - SI Fig. 9 (p.9): mean-field cycle amplitude, period and payoffs over h (0-0.35) and
   mu = nu (0-0.08). Period labels compared with our replicator-mutator periods; supports D6.
-  DISCREPANCY D7: the panel axis labels are swapped relative to the caption (the caption is
+  NOTATION INCONSISTENCY D7: the panel axis labels are exchanged relative to the caption (the caption is
   correct).

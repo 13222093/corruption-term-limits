@@ -38,7 +38,7 @@ def test_B2_all_honest(p):
 
 
 def test_printed_weighting_fails_B1():
-    """With Q(y) = y Q_C + (1-y) Q_H as printed, y = 0 gives Q_H and OC -> 1, contradicting B1."""
+    """With Q(y) = y Q_C + (1-y) Q_H read literally, y = 0 gives Q_H and OC -> 1, which is not B1."""
     p = BASE.with_(mu=0.0, nu=0.0)
     m = Model(p)
     m.QH, m.QC = m.QC.copy(), m.QH.copy()  # printed weighting

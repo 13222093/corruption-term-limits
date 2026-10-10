@@ -19,27 +19,32 @@ All numbers below are generated from `results/full/`.
 
 The fallback project (Section 14 of CLAUDE.md) was not needed: B1 and B2 passed.
 
-## 2. Every discrepancy found
-- **D1** Q(y) weighting swapped in the printed Methods (in the PDF itself). Resolved to
-  y Q_H + (1 - y) Q_C; the printed form fails B1 (OC -> {{PrintedOC}} with all umpires corrupt).
-- **D2** Honest mixed state misnamed "OD+PD (a mixture of OD and PC)"; it is OD and PD.
-- **D3** Fig. 3 caption "8 or 9, respectively" reversed relative to the figure; explained by the
+## 2. Notation inconsistencies and other reproduction notes
+The reproduction relies on the clear and detailed description by Lee et al. (2019). In a few
+places the text can be read in more than one way; none of these affects their conclusions.
+- **D1** The printed Methods weight Q(y) as y Q_C + (1 - y) Q_H, while y is the honest fraction.
+  We read it as y Q_H + (1 - y) Q_C, which gives the stated B1 and B2; read literally, the
+  all-corrupt case ends at OC = {{PrintedOC}}.
+- **D2** The honest mixed state is labelled "OD+PD (a mixture of OD and PC)"; we read it as a
+  mixture of OD and PD.
+- **D3** The Fig. 3 caption lists "8 or 9, respectively" in the opposite order to the panels;
+  we follow the panels, as the SI does. This is explained by the
   invasion thresholds y_PD = {{yPD}} and y_OD = {{yODA}} (A = 2) or {{yODB}} (A = 0.7).
-- **D4** Printed T omits allOD(H) -> allOD(C); transient row, no effect. The SI text (p.2)
-  states that corrupt umpires invade this state, so the omission is confirmed.
-- **D5 (withdrawn)** We had flagged the mu/6 entry in row 4. The SI (p.2) gives the rule behind
-  it: a neutral player mutant fixes with probability 1/2 if two mutants do better. Our derivation
-  now uses the SI rules and reproduces the printed T except D4.
+- **D4** The printed T has no entry for allOD(H) -> allOD(C), while the SI text (p.2) describes
+  corrupt umpires invading this state. The row is transient, so the stationary distribution is
+  the same either way. Our derivation uses the SI's fixation rules and reproduces the printed T
+  in every other entry.
 - **D6** Fig. 3C, D are labeled as the mu = nu = 1e-4 orbit (period {{PerSlow}}), but match the
   mu = nu = 0.02 orbit.
-- **D7 (new, from the SI)** SI Fig. 9 axis labels are swapped relative to its caption; the
-  caption is right.
+- **D7 (from the SI)** In SI Fig. 9 the axis labels of the panels are exchanged relative to
+  the caption; we follow the caption.
 - **B3 definition** The published 2.15 is matched by the time with all umpires honest over the
   time with all umpires corrupt ({{BthreePure}}), not by the ratio of mean shares
   ({{BthreeRatio}}; {{LongRunMean}} in runs of {{LongRunSteps}} steps). Burn-in, starting state,
   imitation strength, exploration and payoff conventions do not explain the difference
   (CHANGES_SI.md Section 5). The SI does not state the definition (U3).
-- **PMC** web version lost minus signs; all signs taken from the PDF.
+- **PMC** The web version does not display the minus signs of the payoff matrices; all signs
+  were taken from the PDF.
 - **SI** read in full (SI_EXTRACT.md). It states the exploration rules, the fixation rules behind
   T and the cost-free chain; all match our model. It does not give the individual-based update
   order, role-model sampling, finite-population payoffs or the averaging behind 2.15; these

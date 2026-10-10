@@ -205,3 +205,14 @@ changes are new entries that reference the old one.
   release task (B3 wording in the paper, neutral wording), not in the middle of Part 1.
 - Why: the tag should point to the final content. Tagging first and then changing the paper and
   documents would make v1.0.0 differ from what the README describes.
+
+## D-025 Scope of the neutral-wording audit
+- What: the paper sources, Markdown templates, SPEC.md, SI_EXTRACT.md and code comments now
+  describe D1-D4, D6 and D7 as notation inconsistencies with evidence and our resolution. D5 is
+  described only in CHANGES_SI.md and in this log (D-019) as our misreading, plus one reminder in
+  NOTES_for_author.md Part 4, as the release task asks. The paper main text keeps one sentence on
+  notation inconsistencies (Model section); the details are in the appendix. Internal LaTeX labels
+  `app:typos` and `tab:typos` were renamed to `app:notes` and `tab:notation`.
+- Not changed: DECISIONS.md and PROGRESS.md entries written earlier, CHANGES_SI.md history and
+  results/pre_si/ keep the wording of the time, because they are dated logs and snapshots.
+  CLAUDE.md is the author's brief and was not edited. WORDING_AUDIT.md lists every replacement.

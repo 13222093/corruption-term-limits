@@ -183,19 +183,22 @@ by the author ([CLAUDE.md](CLAUDE.md)). Every number in the documents and the pa
 from the result files by scripts, and the test suite checks the code against the published
 equations and benchmarks.
 
-## Reproduction notes: discrepancies and resolved typos
+## Reproduction notes: notation inconsistencies and how we resolved them
 
-| ID | Where | Issue | Resolution |
+The reproduction relies on the clear and detailed description of the model by Lee et al. (2019)
+and its SI. In a few places the printed text or figures can be read in more than one way. None of
+these affects the conclusions of the original paper.
+
+| ID | Where | Observation | How we resolved it |
 |---|---|---|---|
-| D1 | Methods p.13281 | Q(y) printed as y1 Q_C + (1 - y1) Q_H although y1 is the honest fraction (also in the PDF, not only PMC) | Q(y) = y1 Q_H + (1 - y1) Q_C; the printed form fails B1 (test) |
-| D2 | Methods p.13281 | Honest mixed state called "OD+PD (a mixture of OD and PC)" | It is OD and PD (Fig. 2 caption, Q_H) |
-| D3 | Fig. 3 caption | "8 or 9, respectively" is reversed relative to the figure (the SI, p.1, agrees with the figure) | With A = 2 the orbit passes state 9 (distance {{SlowDistNine}}), with A = 0.7 state 8 (distance {{SlowBDistEight}}); explained by the invasion thresholds y_PD = {{yPD}}, y_OD = {{yODA}} (A = 2) or {{yODB}} (A = 0.7) |
-| D4 | Transition matrix T | Row 3 omits allOD (H) -> allOD (C), although the SI text (p.2) says corrupt umpires invade this state | State 3 is transient; stationary distribution unchanged (symbolic check). Confirmed by the SI |
-| D5 | (withdrawn) | We had called the mu/6 entry in row 4 inconsistent | The SI (p.2) explains it: a neutral dissident fixes with probability 1/2 when two copies already do better. Our derivation now uses this rule |
-| D6 | Fig. 3C, D | Caption says the orange orbit (mu = nu = 1e-4) is shown; its period is {{PerSlow}} time units | The panels match the mu = nu = 0.02 orbit (period {{PerViolet}}; peaks OC {{VioletOC}}, PC {{VioletPC}}, PD {{VioletPD}}, OD {{VioletOD}}) |
-| D7 | SI Fig. 9 | Axis labels swapped relative to the caption | The caption is right (ranges, Hopf boundary and periods agree with our model) |
+| D1 | Methods p.13281 | Q(y) is printed as y1 Q_C + (1 - y1) Q_H, while y1 denotes the honest fraction (in the PDF as well as on PMC) | We read it as Q(y) = y1 Q_H + (1 - y1) Q_C, which gives the stated results B1 and B2 (a test shows that the literal reading does not give B1) |
+| D2 | Methods p.13281 | The honest mixed state is labelled "OD+PD (a mixture of OD and PC)" | We read it as a mixture of OD and PD (Fig. 2 caption, Q_H) |
+| D3 | Fig. 3 caption | "8 or 9, respectively" lists the states in the opposite order to the panels (the SI, p.1, follows the panels) | With A = 2 the orbit passes state 9 (distance {{SlowDistNine}}), with A = 0.7 state 8 (distance {{SlowBDistEight}}); explained by the invasion thresholds y_PD = {{yPD}}, y_OD = {{yODA}} (A = 2) or {{yODB}} (A = 0.7) |
+| D4 | Transition matrix T | Row 3 has no entry for allOD (H) -> allOD (C), while the SI text (p.2) describes corrupt umpires invading this state | State 3 is transient, so the stationary distribution is the same with or without the entry (symbolic check) |
+| D6 | Fig. 3C, D | The caption refers to the orange orbit (mu = nu = 1e-4, period {{PerSlow}} time units) | The values in the panels match the mu = nu = 0.02 orbit, which we use for comparison (period {{PerViolet}}; peaks OC {{VioletOC}}, PC {{VioletPC}}, PD {{VioletPD}}, OD {{VioletOD}}) |
+| D7 | SI Fig. 9 | The axis labels of the panels are exchanged relative to the caption | We follow the caption; the ranges, the Hopf boundary and the periods then agree with our model |
 | U1-U4 | SI Appendix | Read in full ([SI_EXTRACT.md](SI_EXTRACT.md)) | Exploration rules verified; time unit supported by SI Fig. 8; update order and role-model sampling not stated (assumptions kept); T derivation verified; averaging behind 2.15 not stated |
-| PMC | Web version | Minus signs lost | All signs read from the PDF at 300 dpi and checked symbolically |
+| PMC | Web version | The PMC web version does not display the minus signs of the payoff matrices | All signs read from the PDF at 300 dpi and checked symbolically |
 
 ## Citation
 

@@ -124,7 +124,8 @@ def test_ratio_independent_of_game_parameters(p):
 
 
 def test_states_3_4_5_transient():
-    """States 3, 4, 5 receive no transitions from recurrent states, so D4, D5 are harmless."""
+    """States 3, 4, 5 receive no transitions from recurrent states, so their rows (D4) do not affect
+    the stationary distribution."""
     T = rx.printed_T(1e-3, 1.0, 10)
     pi = rx.stationary(T)
     assert np.allclose(pi[2:5], 0.0, atol=1e-14)
