@@ -1,0 +1,388 @@
+{
+ "meta": {
+  "name": "rep_markov",
+  "config_hash": "6b76140b623e",
+  "git_commit": "84de345",
+  "profile": "full",
+  "created": "2026-10-10T20:09:26",
+  "config": {
+   "params": {
+    "b": 1.0,
+    "c": 0.5,
+    "f": 0.2,
+    "B": 0.2,
+    "h": 0.1,
+    "A": 2.0
+   },
+   "ode": {
+    "method": "LSODA",
+    "rtol": 1e-09,
+    "atol": 1e-11,
+    "mu": 0.01,
+    "nu": 0.01,
+    "t_burn": 10000,
+    "t_win": 10000,
+    "dt": 0.5
+   },
+   "ibm_small": {
+    "M": 50,
+    "N": 10,
+    "mu": 0.001,
+    "nu": 0.005,
+    "s": 10000000000.0
+   },
+   "ibm_large": {
+    "M": 5000,
+    "N": 1000,
+    "mu": 0.01,
+    "nu": 0.05,
+    "s": 0.3
+   },
+   "n_jobs": 14,
+   "seed": 20261010,
+   "reps": 30,
+   "ibm_small_run": {
+    "burn": 5000,
+    "win": 100000,
+    "rec_dt": 0.5
+   },
+   "ibm_large_run": {
+    "burn": 1000,
+    "win": 5000,
+    "rec_dt": 1.0
+   },
+   "b3": {
+    "gens": 200000,
+    "reps": 30,
+    "mu_scan": [
+     0.001,
+     0.0003,
+     0.0001
+    ]
+   },
+   "grids": {
+    "fig3_mu_n": 40,
+    "e1_rho": [
+     0.0,
+     0.0025,
+     0.005,
+     0.0075,
+     0.01,
+     0.0125,
+     0.015,
+     0.0175,
+     0.02,
+     0.025,
+     0.03,
+     0.035,
+     0.04,
+     0.05,
+     0.06,
+     0.07,
+     0.08,
+     0.09,
+     0.1,
+     0.12,
+     0.15
+    ],
+    "e1_h": [
+     0.01,
+     0.02,
+     0.04,
+     0.06,
+     0.08,
+     0.1,
+     0.12,
+     0.14,
+     0.16,
+     0.18,
+     0.2,
+     0.22,
+     0.24,
+     0.26,
+     0.27,
+     0.28,
+     0.29,
+     0.3,
+     0.32,
+     0.34
+    ],
+    "e2_rho": [
+     0.0,
+     0.005,
+     0.01,
+     0.015,
+     0.02,
+     0.025,
+     0.03,
+     0.04,
+     0.05,
+     0.06,
+     0.07,
+     0.08,
+     0.1,
+     0.12,
+     0.15,
+     0.2
+    ],
+    "e2_kappa": [
+     0.0,
+     0.1,
+     0.2,
+     0.3,
+     0.4,
+     0.5,
+     0.6,
+     0.7,
+     0.8,
+     0.85,
+     0.9,
+     0.95
+    ],
+    "e4_rho_mf_n": 60,
+    "ibm_rho": [
+     0.0,
+     0.003,
+     0.01,
+     0.02,
+     0.03,
+     0.05,
+     0.1,
+     0.2,
+     0.3
+    ],
+    "ibm_kappa": [
+     0.0,
+     0.25,
+     0.5,
+     0.75,
+     0.9
+    ],
+    "ibm_h": [
+     0.05,
+     0.1,
+     0.15,
+     0.2,
+     0.25
+    ],
+    "e6_kappa_n": 21,
+    "e6_lag_n": 25,
+    "twopar_mu_n": 30,
+    "finite_M": [
+     50,
+     100,
+     200,
+     400
+    ]
+   },
+   "profile": "full"
+  }
+ },
+ "data": {
+  "ratio_printed": "(12*N*lambda + 7*N + 54*lambda**2 + 33*lambda)/(54*lambda**2 + 48*lambda + 7)",
+  "ratio_derived": "(12*N*lambda + 7*N + 54*lambda**2 + 33*lambda)/(54*lambda**2 + 48*lambda + 7)",
+  "derived_minus_printed": [
+   [
+    3,
+    3,
+    "-lambda*mu"
+   ],
+   [
+    3,
+    8,
+    "lambda*mu"
+   ],
+   [
+    4,
+    2,
+    "-mu/6"
+   ],
+   [
+    4,
+    4,
+    "mu/6"
+   ]
+  ],
+  "events": [
+   {
+    "frm": "H:allOC",
+    "to": "C:allOC",
+    "kind": "umpire",
+    "mutant": 1,
+    "outcome": "neutral"
+   },
+   {
+    "frm": "H:allPC",
+    "to": "H:allOC",
+    "kind": "player",
+    "mutant": 0,
+    "outcome": "advantageous"
+   },
+   {
+    "frm": "H:allOD",
+    "to": "H:allOC",
+    "kind": "player",
+    "mutant": 0,
+    "outcome": "advantageous"
+   },
+   {
+    "frm": "H:allOD",
+    "to": "H:allPC",
+    "kind": "player",
+    "mutant": 1,
+    "outcome": "advantageous"
+   },
+   {
+    "frm": "H:allOD",
+    "to": "H:OD+PD",
+    "kind": "player",
+    "mutant": 3,
+    "outcome": "advantageous"
+   },
+   {
+    "frm": "H:allOD",
+    "to": "C:allOD",
+    "kind": "umpire",
+    "mutant": 1,
+    "outcome": "advantageous"
+   },
+   {
+    "frm": "H:allPD",
+    "to": "H:allOC",
+    "kind": "player",
+    "mutant": 0,
+    "outcome": "advantageous"
+   },
+   {
+    "frm": "H:allPD",
+    "to": "H:allPC",
+    "kind": "player",
+    "mutant": 1,
+    "outcome": "neutral"
+   },
+   {
+    "frm": "H:allPD",
+    "to": "H:OD+PD",
+    "kind": "player",
+    "mutant": 2,
+    "outcome": "advantageous"
+   },
+   {
+    "frm": "H:allPD",
+    "to": "C:allPD",
+    "kind": "umpire",
+    "mutant": 1,
+    "outcome": "advantageous"
+   },
+   {
+    "frm": "H:OD+PD",
+    "to": "H:allOC",
+    "kind": "player",
+    "mutant": 0,
+    "outcome": "advantageous"
+   },
+   {
+    "frm": "H:OD+PD",
+    "to": "C:allOD",
+    "kind": "umpire",
+    "mutant": 1,
+    "outcome": "advantageous"
+   },
+   {
+    "frm": "C:allOC",
+    "to": "C:allOD",
+    "kind": "player",
+    "mutant": 2,
+    "outcome": "advantageous"
+   },
+   {
+    "frm": "C:allOC",
+    "to": "C:allPD",
+    "kind": "player",
+    "mutant": 3,
+    "outcome": "advantageous"
+   },
+   {
+    "frm": "C:allOC",
+    "to": "H:allOC",
+    "kind": "umpire",
+    "mutant": 0,
+    "outcome": "neutral"
+   },
+   {
+    "frm": "C:allPC",
+    "to": "C:allOC",
+    "kind": "player",
+    "mutant": 0,
+    "outcome": "advantageous"
+   },
+   {
+    "frm": "C:allPC",
+    "to": "C:OD+PC",
+    "kind": "player",
+    "mutant": 2,
+    "outcome": "advantageous"
+   },
+   {
+    "frm": "C:allPC",
+    "to": "C:allPD",
+    "kind": "player",
+    "mutant": 3,
+    "outcome": "neutral"
+   },
+   {
+    "frm": "C:allPC",
+    "to": "H:allPC",
+    "kind": "umpire",
+    "mutant": 0,
+    "outcome": "advantageous"
+   },
+   {
+    "frm": "C:allOD",
+    "to": "C:OD+PC",
+    "kind": "player",
+    "mutant": 1,
+    "outcome": "advantageous"
+   },
+   {
+    "frm": "C:allPD",
+    "to": "C:allPC",
+    "kind": "player",
+    "mutant": 1,
+    "outcome": "advantageous"
+   },
+   {
+    "frm": "C:allPD",
+    "to": "C:allOD",
+    "kind": "player",
+    "mutant": 2,
+    "outcome": "advantageous"
+   },
+   {
+    "frm": "C:OD+PC",
+    "to": "H:allPC",
+    "kind": "umpire",
+    "mutant": 0,
+    "outcome": "advantageous"
+   }
+  ],
+  "ratio_N5_lam1": 1.6697247706422018,
+  "ratio_N10_lam1": 2.541284403669725,
+  "ratio_N20_lam1": 4.284403669724771,
+  "ratio_finiteM_N10_M50": 2.5400805270865003,
+  "stationary_N10_lam1": [
+   0.5699481865284008,
+   0.14766839378249014,
+   2.914335439641036e-16,
+   0.0,
+   -8.326672684688674e-17,
+   0.07772020725386977,
+   0.007772020725386436,
+   0.1165803108808153,
+   0.038860103626932575,
+   0.041450777202105084
+  ],
+  "mu_pop_per_generation": 0.05,
+  "runtime_s": 1.3822236061096191
+ }
+}
