@@ -35,7 +35,22 @@ def load_config(profile: str = "quick") -> dict:
         prof = yaml.safe_load(fh) or {}
     cfg = deep_update(base, prof)
     cfg["profile"] = profile
+    _check_numeric(cfg)
     return cfg
+
+
+def _check_numeric(cfg, path=""):
+    """Guard against YAML 1.1 parsing '1.0e10' (no exponent sign) as a string."""
+    for k, v in cfg.items():
+        if isinstance(v, dict):
+            _check_numeric(v, f"{path}{k}.")
+        elif isinstance(v, str) and k != "profile" and k != "method":
+            try:
+                float(v)
+            except ValueError:
+                continue
+            raise ValueError(f"config value {path}{k} = {v!r} parsed as string; "
+                             "write exponents with a sign, e.g. 1.0e+10")
 
 
 def config_hash(cfg) -> str:

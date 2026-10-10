@@ -87,7 +87,8 @@ def summarize(t: np.ndarray, x: np.ndarray, y: np.ndarray, p: Params, kind: str 
     out = {"ybar": y.mean(), "Cbar": C.mean(), "Rbar": R.mean(), "Wbar": W.mean(),
            "x1bar": x[:, 0].mean(), "x2bar": x[:, 1].mean(), "x3bar": x[:, 2].mean(),
            "x4bar": x[:, 3].mean(), "corrupt_majority_time": float(np.mean(y < theta)),
-           "y_sd": y.std(), "C_sd": C.std(), "C_absmin": C.min(), "y_absmin": y.min()}
+           "y_sd": y.std(), "C_sd": C.std(), "C_absmin": C.min(), "y_absmin": y.min(),
+           "y_absmax": y.max()}
     if kind == "ode":
         out["A_y"] = y.max() - y.min()
         out["A_C"] = C.max() - C.min()

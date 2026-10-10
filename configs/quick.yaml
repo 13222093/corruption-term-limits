@@ -1,0 +1,20 @@
+# Quick profile: validates the pipeline in minutes. Same code paths, smaller grids and runs.
+ode: {t_burn: 4000, t_win: 4000}
+reps: 8
+ibm_small_run: {burn: 1000, win: 20000, rec_dt: 0.5}
+ibm_large_run: {burn: 500, win: 1000, rec_dt: 1.0}
+b3: {gens: 40000, reps: 8, mu_scan: [0.001, 0.0003]}
+grids:
+  fig3_mu_n: 12
+  e1_rho: [0.0, 0.01, 0.02, 0.05, 0.1]
+  e1_h: [0.02, 0.1, 0.2, 0.27, 0.32]
+  e2_rho: [0.0, 0.02, 0.05, 0.1]
+  e2_kappa: [0.0, 0.3, 0.6, 0.9]
+  e4_rho_mf_n: 12
+  ibm_rho: [0.0, 0.01, 0.03, 0.1, 0.3]
+  ibm_kappa: [0.0, 0.5, 0.9]
+  ibm_h: [0.05, 0.1, 0.2]
+  e6_kappa_n: 6
+  e6_lag_n: 6
+  twopar_mu_n: 8
+  finite_M: [50, 100, 200]

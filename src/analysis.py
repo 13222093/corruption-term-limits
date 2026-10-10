@@ -208,16 +208,19 @@ def locate_hopf(make_model, lo, hi, u_guess, xtol: float = 1e-10, n_scan: int = 
     for (v1, u1, g1, n1), (v2, u2, g2, n2) in zip(vals[:-1], vals[1:]):
         # genuine Hopf: a complex pair crosses (n_unstable changes by 2)
         if np.isfinite(g1) and np.isfinite(g2) and g1 * g2 < 0 and abs(n1 - n2) == 2:
-            bracket = (v2, v1, u1)
+            bracket = (v2, v1, u2, u1)
             break
     if bracket is None:
         return None
-    a, b, u_b = bracket
+    a, b, u_a, u_b = bracket
     state = {"u": np.asarray(u_b, float)}
 
     def g(v):
         m = make_model(v)
-        u = refine_equilibrium(m, state["u"])
+        # initial guess: linear interpolation between the bracketing branch points
+        w = (v - a) / (b - a)
+        guess = (1 - w) * np.asarray(u_a) + w * np.asarray(u_b)
+        u = refine_equilibrium(m, guess)
         if u is None:
             raise RuntimeError("lost equilibrium")
         state["u"] = u
