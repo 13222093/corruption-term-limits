@@ -1,0 +1,49 @@
+cff-version: 1.2.0
+message: >-
+  If you use this software, please cite it as below, and cite the original model of
+  Lee, Iwasa, Dieckmann and Sigmund (2019) listed under references.
+title: >-
+  Who guards the guardians when the guardians rotate? Umpire rotation and inherited
+  integrity in an evolutionary model of institutional corruption
+type: software
+authors:
+  - family-names: Aziz
+    given-names: Mohammad Ari Alexander
+    affiliation: >-
+      School of Electrical Engineering and Informatics, Institut Teknologi Bandung,
+      Indonesia
+version: 1.0.0
+date-released: "2026-10-10"
+license: MIT
+keywords:
+  - corruption
+  - evolutionary game theory
+  - institutions
+  - term limits
+  - replicator dynamics
+  - bifurcation
+abstract: >-
+  Reproduction of the institutional corruption model of Lee, Iwasa, Dieckmann and
+  Sigmund (PNAS 2019), verified against its SI Appendix, and an extension with
+  term-limited umpires whose newcomers may inherit the integrity of incumbents.
+  Includes mean-field analysis, individual-based simulations, a rare-exploration
+  Markov chain, all numeric results and a draft paper.
+references:
+  - type: article
+    authors:
+      - family-names: Lee
+        given-names: Joung-Hun
+      - family-names: Iwasa
+        given-names: Yoh
+      - family-names: Dieckmann
+        given-names: Ulf
+      - family-names: Sigmund
+        given-names: Karl
+    title: Social evolution leads to persistent corruption
+    journal: Proceedings of the National Academy of Sciences
+    year: 2019
+    volume: 116
+    issue: 27
+    start: 13276
+    end: 13281
+    doi: 10.1073/pnas.1900078116

@@ -21,3 +21,8 @@ paper/ieee/*.blg
 paper/ieee/*.out
 paper/ieee/*.fls
 paper/ieee/*.synctex.gz
+# Regenerable outputs kept out of the repository (DECISIONS D-023)
+logs/
+results/quick/
+figures/quick/
+paper/ieee/*.toc

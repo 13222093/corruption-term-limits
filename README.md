@@ -3,21 +3,49 @@
 
 Umpire rotation and inherited integrity in an evolutionary model of institutional corruption.
 
-This repository (1) reproduces the corruption model of Lee, Iwasa, Dieckmann and Sigmund,
-"Social evolution leads to persistent corruption", PNAS 116:13276-13281 (2019),
-doi:[10.1073/pnas.1900078116](https://doi.org/10.1073/pnas.1900078116), and (2) extends it with
-term-limited umpires (rotation) whose newcomers may inherit the integrity of their predecessors.
-It contains the code, all numeric results, figures, a first-draft paper in two layouts
-(`paper/main.pdf`, single-column preprint; `paper/ieee/main_ieee.pdf`, IEEE two-column journal
-format with IEEEtran) and notes for the author.
+Institutions that punish free riders can keep cooperation going, but the officials who run them
+can become corrupt. Lee, Iwasa, Dieckmann and Sigmund (2019) showed in an evolutionary game model
+that social learning then produces recurring cycles of corruption. This repository reproduces
+their model, checked against the paper and its SI Appendix, and asks what happens when the
+officials ("umpires") serve limited terms and are replaced by newcomers. There are three main
+findings. First, in the deterministic large-population model, rotation with honest newcomers
+removes the corruption cycles once the rotation rate passes a critical value
+(rho_c = 0.0133); in stochastic simulations of small populations it raises the share of honest
+umpires from 0.669 to 0.978 (rotation rate 0 to 0.3 per
+generation). Second, rotation makes players less vigilant, as
+expected, but the corruption episodes that remain become shallower and shorter, not deeper.
+Third, when newcomers inherit the integrity of the body they join, much of the benefit of
+rotation is lost; with linear inheritance, rotation acts exactly like slower rotation with fresh
+newcomers (mean field).
 
-> **SI verification.** The SI Appendix of Lee et al. (2019) was read in full on the branch
-> `si-verification` ([SI_EXTRACT.md](SI_EXTRACT.md), [CHANGES_SI.md](CHANGES_SI.md)). It does not
-> describe the individual-based update procedure (update order, time unit, finite-population
-> payoffs). Every rule it does state is satisfied by our model, and its Fig. 8 supports our time
-> unit quantitatively, so the simulated process did not change. The SI corrected our derivation of
-> the rare-exploration matrix (discrepancy D5 withdrawn). The update order and role-model sampling
-> remain documented assumptions ([SPEC.md](SPEC.md) Section 8).
+![Mean-field bifurcation diagram in the rotation rate](figures/fig04_bifurcation_rho.png)
+
+*Mean-field bifurcation in the rotation rate rho (mu = nu = 0.01, other parameters as in Lee
+et al. 2019). (A) Honest umpire fraction: below rho_c the system cycles (shaded band: range of
+the cycle); above it a stable honest equilibrium exists. (B) Near rho_c the cycle period grows
+like (rho_c - rho)^(-1/2), the signature of a saddle-node bifurcation on the cycle. (C) rho_c grows
+in proportion to the exploration rate until close to the Hopf points (crosses).*
+
+**Original work.** This project reproduces and extends:
+
+> Lee J-H, Iwasa Y, Dieckmann U, Sigmund K (2019). Social evolution leads to persistent
+> corruption. *Proceedings of the National Academy of Sciences* 116(27):13276-13281.
+> doi:[10.1073/pnas.1900078116](https://doi.org/10.1073/pnas.1900078116)
+
+The base model, its parameters and its benchmarks are theirs. The rotation extension, its
+analysis and the results on hypotheses H1 to H6 are new.
+
+**Read more:** [paper (PDF)](paper/main.pdf) (single-column preprint draft; an IEEE two-column
+version is in [paper/ieee/main_ieee.pdf](paper/ieee/main_ieee.pdf)),
+[FINAL_REPORT.md](FINAL_REPORT.md) (what was reproduced and how closely, hypothesis outcomes,
+limitations) and [CHANGES_SI.md](CHANGES_SI.md) (verification against the SI Appendix).
+
+> **SI verification.** The SI Appendix of Lee et al. (2019) was checked line by line
+> ([SI_EXTRACT.md](SI_EXTRACT.md), [CHANGES_SI.md](CHANGES_SI.md)). Every rule it states holds in
+> our model, and its Fig. 8 supports our time unit. It does not describe the order of individual
+> updates or how role models are sampled; these remain documented assumptions
+> ([SPEC.md](SPEC.md) Section 8). The rerun after the verification changed no simulation result
+> and no hypothesis outcome.
 
 ## Question
 
@@ -102,8 +130,9 @@ experiments/    digitize_si.py, run_reproduction.py, run_extension.py, run_sensi
 tests/          pytest suite (payoffs, fixed points, IBM vs ODE, Markov chain, rotation limits,
                 rho_eff equivalence, rules stated in the SI)
 configs/        base.yaml, quick.yaml, full.yaml
-results/        JSON outputs with config hash and git commit (full/ and quick/)
-figures/        PNG and vector PDF (figures/quick/ for the quick profile)
+results/        JSON outputs with config hash and git commit (full/ is the reported run;
+                quick/ is generated locally); pre_si/ holds the numbers before the SI check
+figures/        PNG and vector PDF (figures/quick/ is generated locally)
 paper/          main.tex, references.bib, autogen_numbers.tex, main.pdf
   ieee/         main_ieee.tex (IEEEtran journal), refs_ieee.bib (generated), main_ieee.pdf
 docs_src/       templates for the Markdown documents (numbers are filled in automatically)
@@ -118,27 +147,41 @@ the SI verification).
 
 ## How to run
 
-Requirements: Python 3.12 (3.11 should work), the packages in `requirements.txt` or
-`environment.yml`, and a TeX distribution for the paper. Put the reference PDFs in `refs/`
-(not distributed).
+Requirements: Python 3.11 or 3.12, the packages in `requirements.txt` (or `environment.yml`), and
+a TeX distribution (TeX Live or MiKTeX) to build the paper. On Windows, use `mingw32-make` in
+place of `make`, or `python run_all.py`. The reference PDFs (the paper and its SI) are
+copyrighted and not distributed; the pipeline runs without them and then uses the committed SI
+read-offs in `results/full/si_digitized.json`.
 
 ```bash
-pip install -r requirements.txt
-python -m pytest
-make all                     # on Windows: mingw32-make all
-python run_all.py full       # same pipeline without make
-make quick                   # fast check with the quick profile
+pip install -r requirements.txt   # install
+python -m pytest                  # 100 tests, under a minute
+make quick                        # quick pipeline: small grids, few replicates
+make all                          # full pipeline: tests, all experiments, figures, numbers, docs, paper
+python run_all.py full            # the full pipeline without make
 ```
 
-Recorded compute: about 17 minutes for the full profile and 3 minutes for
-the quick profile on a 16-thread laptop (14 worker processes).
-Individual steps: `python experiments/digitize_si.py full` (needs the SI PDF in refs/),
-`python experiments/run_reproduction.py full`,
+Expected runtimes on a 16-thread laptop (14 worker processes): about 3 minutes
+for the quick pipeline and about 17 minutes of recorded compute for the full
+pipeline, plus about a minute to build the two papers. `make numbers docs paper` regenerates the
+number macros, the Markdown documents and the PDFs from the committed results without rerunning
+the experiments.
+
+Individual steps: `python experiments/digitize_si.py full` (reads the SI PDF from refs/ if it is
+present), `python experiments/run_reproduction.py full`,
 `python experiments/run_extension.py full [bif e1 e2 e3 e4 e5 e5b e6]`,
 `python experiments/run_sensitivity.py full`, `python experiments/evaluate_hypotheses.py full`,
 `python experiments/make_figures.py full`, `python experiments/make_numbers.py full`,
 `python experiments/make_changes_si.py`, `python experiments/render_docs.py`,
 `python experiments/build_paper.py`.
+
+## Tools and assistance
+
+The implementation and analysis were carried out with the help of AI coding tools (Claude Code)
+under the author's direction. The research question, the extension and the hypotheses were set
+by the author ([CLAUDE.md](CLAUDE.md)). Every number in the documents and the paper is generated
+from the result files by scripts, and the test suite checks the code against the published
+equations and benchmarks.
 
 ## Reproduction notes: discrepancies and resolved typos
 
@@ -156,7 +199,8 @@ Individual steps: `python experiments/digitize_si.py full` (needs the SI PDF in 
 
 ## Citation
 
-If you use this code, cite the original model:
+Citation metadata is in [CITATION.cff](CITATION.cff). If you use this code, cite the original
+model:
 
 Lee J-H, Iwasa Y, Dieckmann U, Sigmund K (2019). Social evolution leads to persistent corruption.
 *Proceedings of the National Academy of Sciences* 116(27):13276-13281. doi:10.1073/pnas.1900078116

@@ -20,6 +20,7 @@ Usage: python experiments/digitize_si.py [profile]  ->  results/<profile>/si_dig
 from __future__ import annotations
 
 import os
+import shutil
 import sys
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -112,6 +113,17 @@ def fig9b_points():
 
 def main(profile="full"):
     cfg = load_config(profile)
+    if not os.path.exists(SI):
+        # refs/ is not distributed (copyright). The read-offs do not depend on the profile, so a
+        # clone without the SI reuses the committed results/full/si_digitized.json.
+        src = os.path.join(ROOT, "results", "full", "si_digitized.json")
+        dst = os.path.join(ROOT, "results", profile, "si_digitized.json")
+        print(f"SI PDF not found at {os.path.relpath(SI, ROOT)}; using committed read-offs "
+              f"in {os.path.relpath(src, ROOT)}")
+        if os.path.abspath(src) != os.path.abspath(dst):
+            os.makedirs(os.path.dirname(dst), exist_ok=True)
+            shutil.copyfile(src, dst)
+        return
     data = {"source": "refs/pnas.1900078116.sapp.pdf", "fig8": digitize_fig8(),
             "fig9b_label_points": fig9b_points(),
             "note": "Read-offs from SI figures; approximate (see module docstring)."}
