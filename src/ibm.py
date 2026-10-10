@@ -30,6 +30,7 @@ from .payoffs import Q_C, Q_H
 
 ROT_OFF, ROT_CONT, ROT_PULSE = 0, 1, 2
 V0, V1, V2, V3 = 0, 1, 2, 3
+IBM_VARIANTS = ("si", "reconstructed")
 
 
 @njit(cache=True)
@@ -220,9 +221,21 @@ def run_ibm(p: Params, M: int, N: int, s: float, t_end: float, rec_dt: float, se
             x0=None, y0: float = 1.0, rot_mode: int = ROT_OFF, rho: float = 0.0,
             variant: int = V0, p0: float = 1.0, kappa: float = 0.0, kexp: float = 2.0,
             T_lag: float = 0.0, pulse_T: float = 1.0, pulse_tau: float = 0.0,
-            hist_dt: float | None = None) -> dict:
+            hist_dt: float | None = None, ibm_variant: str = "si") -> dict:
     """Python wrapper. x0: initial player frequencies (default all OD as in Fig. 1C); y0 honest
-    fraction (default 1, Fig. 1D starts with honest umpires)."""
+    fraction (default 1, Fig. 1D starts with honest umpires).
+
+    ibm_variant: "si" (default) or "reconstructed". The SI of Lee et al. (2019) does not state
+    the update order, the time unit or how finite-population payoffs are evaluated; every rule it
+    does state (exploration to one of the other strategies without a role model, nu = mu M / N,
+    ties imitated with probability 1/2, a single neutral dissident doing exactly as well as the
+    residents, neutral umpire fixation 1/N) is already satisfied by the pre-SI reconstruction
+    (SI_EXTRACT.md). The two variants therefore run the same kernel and give identical output
+    for the same seed (tests/test_si_rules.py); the switch is kept so that a future difference
+    (for example the authors' code) can be compared directly. DECISIONS.md D-017.
+    """
+    if ibm_variant not in IBM_VARIANTS:
+        raise ValueError(f"unknown ibm_variant {ibm_variant!r}; choose from {IBM_VARIANTS}")
     if x0 is None:
         x0 = np.array([0.0, 0.0, 1.0, 0.0])
     x0 = np.asarray(x0, dtype=float)

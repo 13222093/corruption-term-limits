@@ -210,7 +210,8 @@ def b4_small(cfg):
     p = params_from(cfg, mu=S["mu"], nu=S["nu"])
     steps_per_gen = S["M"] + S["N"]
     t_end = 3e5 / steps_per_gen
-    r = run_ibm(p, S["M"], S["N"], S["s"], t_end, 0.5, cfg["seed"] + 1)
+    r = run_ibm(p, S["M"], S["N"], S["s"], t_end, 0.5, cfg["seed"] + 1,
+                ibm_variant=S["ibm_variant"])
     w = r["t"] >= 2e5 / steps_per_gen
     return {"t_steps": (r["t"][w] * steps_per_gen).tolist(), "x": r["x"][w].tolist(),
             "y": r["y"][w].tolist(),
@@ -218,7 +219,7 @@ def b4_small(cfg):
 
 
 def _large_run(p, L, T, seed):
-    r = run_ibm(p, L["M"], L["N"], L["s"], T, 1.0, seed)
+    r = run_ibm(p, L["M"], L["N"], L["s"], T, 1.0, seed, ibm_variant=L["ibm_variant"])
     return {"t": r["t"].tolist(), "x": r["x"].tolist(), "y": r["y"].tolist()}
 
 
@@ -255,8 +256,8 @@ def b4_large(cfg):
             "paper_readoff": {"OC": 0.5, "PC": 0.2, "OD": 0.05, "PD": 0.22, "corrupt": 0.53}}
 
 
-def _val_run(p, M, N, s, T, seed):
-    r = run_ibm(p, M, N, s, T, 1.0, seed)
+def _val_run(p, M, N, s, T, seed, ibm_variant="si"):
+    r = run_ibm(p, M, N, s, T, 1.0, seed, ibm_variant=ibm_variant)
     return np.column_stack([r["x"], r["y"]])
 
 
@@ -273,7 +274,8 @@ def validation(cfg):
     for M in (500, 2000, 8000, 32000):
         N = M // 5
         reps = 8
-        Zs = parallel([(_val_run, dict(p=p, M=M, N=N, s=L["s"], T=T, seed=cfg["seed"] + M + k))
+        Zs = parallel([(_val_run, dict(p=p, M=M, N=N, s=L["s"], T=T, seed=cfg["seed"] + M + k,
+                                       ibm_variant=L["ibm_variant"]))
                        for k in range(reps)], cfg["n_jobs"])
         rms = [float(np.sqrt(np.mean((Z[:len(t)] - Zode) ** 2))) for Z in Zs]
         out.append({"M": M, "N": N, "rms": bootstrap_ci(rms), "rms_all": rms})

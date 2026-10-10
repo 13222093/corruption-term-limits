@@ -125,3 +125,43 @@ changes are new entries that reference the old one.
   2019 (M3AS, corrupt enforcers), Shi et al. 2023 and Zhou et al. 2023 (AMC, supervision of
   umpires), Abbink 2004 (experimental staff rotation), Ferraz and Finan 2011 (empirical term
   limits). The paper says "to our knowledge" and lists these.
+
+## D-017 SI verification: the SI does not specify the individual-based procedure
+- What: the SI (refs/pnas.1900078116.sapp.pdf, obtained 2026-10-10 from the Internet Archive copy
+  of the publisher's file; see SI_EXTRACT.md) contains no update order, time unit, finite-
+  population payoff rule or averaging procedure. Every rule it does state (exploration targets,
+  nu = mu M / N, ties at 1/2, the single-dissident argument implying self-excluded payoffs,
+  neutral umpire fixation 1/N) is already satisfied by the reconstruction. The "SI-faithful"
+  default (`ibm_variant: si`) therefore runs the same kernel as `ibm_variant: reconstructed`;
+  both give identical output for the same seed (test). The switch is kept so that a future
+  difference can be compared without code changes.
+- Why: integrity rules forbid inventing a procedure the SI does not state; changing the model
+  without SI support would be tuning.
+- Alternatives: (i) adopt a different plausible scheme as "si" (rejected: no SI basis);
+  (ii) remove the switch (rejected: the task asks for a selectable comparison).
+
+## D-018 Replaced test on the derived transition matrix
+- What: `test_derived_T_matches_printed_except_documented_entries` expected the derived T to
+  differ from the printed T at (4,2) because neutral player mutants were ignored. The SI (p.2)
+  states the rule that produces mu/6 there (a neutral dissident that gains an advantage once there
+  are two copies fixes with probability 1/2). The test was replaced by
+  `test_derived_T_matches_printed_except_D4` plus tests of the SI rule and of the SI's h = 0
+  chain. The replaced test encoded our reconstruction, which the SI contradicts.
+
+## D-019 Discrepancy D5 withdrawn; D7 added
+- What: D5 (mu/6 inconsistent with 0 elsewhere) was a misreading; the SI explains both entries.
+  New D7: SI Fig. 9 axis labels are swapped relative to its caption (the caption and our
+  computations agree). Counting D1-D4, D6 and D7, there are still six inconsistencies, now "in
+  the published paper and its SI".
+
+## D-020 Source of the SI file
+- What: the publisher's SI file as archived by the Internet Archive (snapshot 2022-01-20),
+  after PNAS (403), PMC (CAPTCHA, not bypassed), Europe PMC (not open access), IIASA PURE and the
+  Kyushu portal failed. Content checked against the main text (identical T and stationary
+  distribution). SHA-256 recorded in SI_EXTRACT.md.
+
+## D-021 Read-offs from SI figures are digitized by script
+- What: cycle counts in SI Fig. 8 are digitized from the vector PDF by
+  experiments/digitize_si.py (line colors and hysteresis thresholds stated in the script), and
+  the positions of the period labels in SI Fig. 9B are read from the rendered page and stored in
+  that script. Both are approximate and are labelled as read-offs wherever they are used.

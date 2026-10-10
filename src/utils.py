@@ -35,6 +35,10 @@ def load_config(profile: str = "quick") -> dict:
         prof = yaml.safe_load(fh) or {}
     cfg = deep_update(base, prof)
     cfg["profile"] = profile
+    cfg.setdefault("ibm_variant", "si")
+    for key in ("ibm_small", "ibm_large"):
+        if key in cfg:
+            cfg[key].setdefault("ibm_variant", cfg["ibm_variant"])
     _check_numeric(cfg)
     return cfg
 
@@ -44,7 +48,7 @@ def _check_numeric(cfg, path=""):
     for k, v in cfg.items():
         if isinstance(v, dict):
             _check_numeric(v, f"{path}{k}.")
-        elif isinstance(v, str) and k != "profile" and k != "method":
+        elif isinstance(v, str) and k not in ("profile", "method", "ibm_variant"):
             try:
                 float(v)
             except ValueError:
