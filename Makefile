@@ -3,9 +3,9 @@
 PYTHON ?= python
 PROFILE ?= full
 
-.PHONY: all test reproduce extension sensitivity hypotheses figures numbers paper quick clean
+.PHONY: all test reproduce extension sensitivity hypotheses figures numbers docs paper quick clean
 
-all: test reproduce extension sensitivity hypotheses figures numbers paper
+all: test reproduce extension sensitivity hypotheses figures numbers docs paper
 
 test:
 	$(PYTHON) -m pytest
@@ -27,6 +27,9 @@ figures:
 
 numbers:
 	$(PYTHON) experiments/make_numbers.py $(PROFILE)
+
+docs: numbers
+	$(PYTHON) experiments/render_docs.py
 
 paper: numbers
 	$(PYTHON) experiments/build_paper.py
