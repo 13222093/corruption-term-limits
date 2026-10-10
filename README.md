@@ -7,8 +7,9 @@ This repository (1) reproduces the corruption model of Lee, Iwasa, Dieckmann and
 "Social evolution leads to persistent corruption", PNAS 116:13276-13281 (2019),
 doi:[10.1073/pnas.1900078116](https://doi.org/10.1073/pnas.1900078116), and (2) extends it with
 term-limited umpires (rotation) whose newcomers may inherit the integrity of their predecessors.
-It contains the code, all numeric results, figures, a first-draft paper (`paper/main.pdf`) and
-notes for the author.
+It contains the code, all numeric results, figures, a first-draft paper in two layouts
+(`paper/main.pdf`, single-column preprint; `paper/ieee/main_ieee.pdf`, IEEE two-column journal
+format with IEEEtran) and notes for the author.
 
 > **Important limitation.** The SI Appendix of Lee et al. (2019) could not be obtained (PMC shows a
 > CAPTCHA, PNAS returns HTTP 403). Everything the main text delegates to the SI, in particular the
@@ -97,6 +98,7 @@ configs/        base.yaml, quick.yaml, full.yaml
 results/        JSON outputs with config hash and git commit (full/ and quick/)
 figures/        PNG and vector PDF (figures/quick/ for the quick profile)
 paper/          main.tex, references.bib, autogen_numbers.tex, main.pdf
+  ieee/         main_ieee.tex (IEEEtran journal), refs_ieee.bib (generated), main_ieee.pdf
 docs_src/       templates for the Markdown documents (numbers are filled in automatically)
 ```
 

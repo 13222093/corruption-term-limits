@@ -107,6 +107,7 @@ Recorded compute: about 17 minutes (full) and 2 minutes (quick).
 - [x] H1 to H6 each marked supported, not supported or mixed.
 - [x] All figures generated with full captions (paper/main.tex).
 - [x] README, NOTES_for_author.md, SOP_sentences.md complete.
-- [x] paper/main.pdf compiled; numbers via macros only.
+- [x] paper/main.pdf compiled; numbers via macros only. IEEE two-column version:
+      paper/ieee/main_ieee.pdf (same content, same macros, IEEEtran journal format).
 - [x] REVIEW.md and CITATIONS_TODO.md complete.
 - [x] FINAL_REPORT.md (this file).

@@ -124,3 +124,13 @@ Log of completed tasks: what was done, results, next step. Newest entries at the
   errors; `mingw32-make numbers docs paper` regenerated identical content (only line endings and
   PDF timestamp differ).
 - FINAL_REPORT.md written. Project complete; open items for the author listed there.
+
+## 2026-10-10 IEEE version of the paper (user request)
+- paper/ieee/main_ieee.tex: IEEEtran two-column journal format (Index Terms, IEEE section
+  numbering, table captions above tables, figure* for multi-panel figures, appendices before the
+  acknowledgment, IEEEtran.bst references). Same text, figures and number macros as
+  paper/main.tex.
+- IEEEtran.bst ignores the doi field, so experiments/build_paper.py generates
+  paper/ieee/refs_ieee.bib from paper/references.bib with each DOI added as a "doi:" note.
+- Compiled to paper/ieee/main_ieee.pdf: 13 pages, no errors, no overfull boxes, no undefined
+  references; all 26 references show their DOI. `make paper` now builds both versions.

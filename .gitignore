@@ -14,3 +14,10 @@ paper/*.fdb_latexmk
 paper/*.synctex.gz
 results/cache/
 *.tmp
+paper/ieee/*.aux
+paper/ieee/*.log
+paper/ieee/*.bbl
+paper/ieee/*.blg
+paper/ieee/*.out
+paper/ieee/*.fls
+paper/ieee/*.synctex.gz
