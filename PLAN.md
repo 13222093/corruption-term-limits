@@ -29,7 +29,7 @@ extension with umpire rotation and inherited integrity.
 
 | Risk | Mitigation |
 |---|---|
-| SI Appendix not available (PMC CAPTCHA, PNAS 403) | Use main text as source; mark IBM details as ASSUMPTION; derive Markov chain independently from payoffs |
+| SI Appendix not available (PMC CAPTCHA, PNAS 403) | Use main text as source; mark IBM details as ASSUMPTION; derive Markov chain independently from payoffs. Later resolved: SI obtained from an archived copy and checked (SI_EXTRACT.md, CHANGES_SI.md) |
 | Q(y) weighting typo in the PDF | Resolve from Fig. 2 and limits (B1, B2); test both readings |
 | IBM time unit unknown | Infer from Fig. 1 time axes and caption; document; report time in both steps and generations |
 | s = 1e10 overflow in Fermi function | Numerically stable logistic; ties give exactly 1/2 |

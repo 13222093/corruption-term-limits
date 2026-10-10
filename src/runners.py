@@ -40,7 +40,7 @@ def ibm_replicate(p: Params, setting: dict, run: dict, seed: int, rho: float = 0
     r = run_ibm(pp, setting["M"], setting["N"], setting["s"], t_end, run["rec_dt"], seed,
                 x0=x0, y0=y0, rot_mode=mode, rho=rho, variant=VAR_IBM[variant], p0=p0,
                 kappa=kappa, kexp=kexp, T_lag=T_lag, pulse_T=pulse_T or 1.0,
-                pulse_tau=pulse_tau)
+                pulse_tau=pulse_tau, ibm_variant=setting.get("ibm_variant", "si"))
     w = r["t"] >= run["burn"]
     out = summarize(r["t"][w], r["x"][w], r["y"][w], pp, kind="ibm")
     out["seed"] = int(seed)

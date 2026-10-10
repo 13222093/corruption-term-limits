@@ -38,8 +38,8 @@
 \newcommand{\yPD}{0.333}  % y_PD
 \newcommand{\yODB}{0.600}  % y_OD at A=0.7
 \newcommand{\MarkovRatio}{2.541}  % Markov H:C at N=10
-\newcommand{\MarkovRatioFinM}{2.540}  % Markov with 1/M neutral player fixation
-\newcommand{\MarkovNdiff}{4}  % number of differing entries
+\newcommand{\MarkovRatioFinM}{2.541}  % Markov, M = 50, SI fixation rules (1/M for neutral players)
+\newcommand{\MarkovNdiff}{2}  % number of differing entries
 \newcommand{\BthreeRatio}{2.030}  % IBM H:C at mu=1e-3
 \newcommand{\BthreeRatioLo}{2.003}  % IBM H:C at mu=1e-3 (95% CI low)
 \newcommand{\BthreeRatioHi}{2.057}  % IBM H:C at mu=1e-3 (95% CI high)
@@ -272,5 +272,93 @@
 \newcommand{\SLargeTenLow}{0.749}  % same at 0.8 s
 \newcommand{\SLargeTenHigh}{0.749}  % same at 1.2 s
 \newcommand{\NeutralMaxDev}{0.008}  % max |ybar - (nu+rho)/(2nu+rho)| for rho>=0.05 (large IBM)
+\newcommand{\SIVariantsIdentical}{yes}  % si and reconstructed variants identical
+\newcommand{\SIBthreeRatio}{2.030}  % B3 ratio, si variant
+\newcommand{\SIBthreeRatioLo}{2.003}  % B3 ratio, si variant (95% CI low)
+\newcommand{\SIBthreeRatioHi}{2.057}  % B3 ratio, si variant (95% CI high)
+\newcommand{\RecBthreeRatio}{2.030}  % B3 ratio, reconstructed variant
+\newcommand{\RecBthreeRatioLo}{2.003}  % B3 ratio, reconstructed variant (95% CI low)
+\newcommand{\RecBthreeRatioHi}{2.057}  % B3 ratio, reconstructed variant (95% CI high)
+\newcommand{\BthreeMajority}{2.110}  % B3, majority-time definition
+\newcommand{\BthreeMajorityLo}{2.080}  % B3, majority-time definition (95% CI low)
+\newcommand{\BthreeMajorityHi}{2.139}  % B3, majority-time definition (95% CI high)
+\newcommand{\BthreePure}{2.134}  % B3, all-honest vs all-corrupt time
+\newcommand{\BthreePureLo}{2.102}  % B3, all-honest vs all-corrupt time (95% CI low)
+\newcommand{\BthreePureHi}{2.165}  % B3, all-honest vs all-corrupt time (95% CI high)
+\newcommand{\BthreePerRepSD}{0.077}  % SD of per-replicate ratio
+\newcommand{\BthreePerRepFrac}{3}  % share of replicates >= 2.15
+\newcommand{\DiagExploreAny}{2.512}  % B3 with switch explore_any
+\newcommand{\DiagExploreAnyLo}{2.465}  % B3 with switch explore_any (95% CI low)
+\newcommand{\DiagExploreAnyHi}{2.558}  % B3 with switch explore_any (95% CI high)
+\newcommand{\DiagRoleAny}{2.010}  % B3 with switch role_any
+\newcommand{\DiagRoleAnyLo}{1.988}  % B3 with switch role_any (95% CI low)
+\newcommand{\DiagRoleAnyHi}{2.033}  % B3 with switch role_any (95% CI high)
+\newcommand{\DiagSelfPayoff}{2.018}  % B3 with switch self_payoff
+\newcommand{\DiagSelfPayoffLo}{1.993}  % B3 with switch self_payoff (95% CI low)
+\newcommand{\DiagSelfPayoffHi}{2.043}  % B3 with switch self_payoff (95% CI high)
+\newcommand{\DiagPairStep}{1.266}  % B3 with switch pair_step
+\newcommand{\DiagPairStepLo}{1.255}  % B3 with switch pair_step (95% CI low)
+\newcommand{\DiagPairStepHi}{1.278}  % B3 with switch pair_step (95% CI high)
+\newcommand{\DiagSelThousand}{2.029}  % B3 with s = 1e3
+\newcommand{\DiagSelThousandLo}{2.003}  % B3 with s = 1e3 (95% CI low)
+\newcommand{\DiagSelThousandHi}{2.056}  % B3 with s = 1e3 (95% CI high)
+\newcommand{\DiagSelTen}{2.422}  % B3 with s = 10
+\newcommand{\DiagSelTenLo}{2.387}  % B3 with s = 10 (95% CI low)
+\newcommand{\DiagSelTenHi}{2.457}  % B3 with s = 10 (95% CI high)
+\newcommand{\DiagBurn}{2.003}  % B3 with burn-in 50000 generations
+\newcommand{\DiagBurnLo}{1.976}  % B3 with burn-in 50000 generations (95% CI low)
+\newcommand{\DiagBurnHi}{2.031}  % B3 with burn-in 50000 generations (95% CI high)
+\newcommand{\DiagStartOC}{2.030}  % B3 starting from all OC
+\newcommand{\DiagStartOCLo}{2.003}  % B3 starting from all OC (95% CI low)
+\newcommand{\DiagStartOCHi}{2.056}  % B3 starting from all OC (95% CI high)
+\newcommand{\ShortRunN}{300}  % number of short runs
+\newcommand{\ShortRunMean}{2.39}  % short runs (1e5 steps): mean ratio
+\newcommand{\ShortRunSD}{1.13}  % short runs: SD
+\newcommand{\ShortRunQlo}{1.12}  % short runs: 5% quantile
+\newcommand{\ShortRunQhi}{4.87}  % short runs: 95% quantile
+\newcommand{\ShortRunFrac}{48}  % short runs: share >= 2.15
+\newcommand{\LongRunN}{10}  % number of long runs
+\newcommand{\LongRunSteps}{2.2\times 10^{8}}  % long run length (steps)
+\newcommand{\LongRunMean}{2.037}  % long runs: mean ratio
+\newcommand{\LongRunSD}{0.025}  % long runs: SD
+\newcommand{\LongRunMax}{2.075}  % long runs: maximum
+\newcommand{\SIEightA}{17}  % SI Fig. 8A cycles (digitized)
+\newcommand{\OurEightA}{18.0}  % our cycles at SI Fig. 8A settings
+\newcommand{\OurEightAMin}{18}  % min over replicates, 8A
+\newcommand{\OurEightAMax}{18}  % max over replicates, 8A
+\newcommand{\SIEightD}{25}  % SI Fig. 8D cycles (digitized)
+\newcommand{\OurEightD}{25.8}  % our cycles at SI Fig. 8D settings
+\newcommand{\OurEightDMin}{25}  % min over replicates, 8D
+\newcommand{\OurEightDMax}{27}  % max over replicates, 8D
+\newcommand{\SIEightG}{53}  % SI Fig. 8G cycles (digitized)
+\newcommand{\OurEightG}{51.2}  % our cycles at SI Fig. 8G settings
+\newcommand{\OurEightGMin}{50}  % min over replicates, 8G
+\newcommand{\OurEightGMax}{53}  % max over replicates, 8G
+\newcommand{\SIEightB}{6}  % SI Fig. 8B cycles (digitized)
+\newcommand{\OurEightB}{6.0}  % our cycles at SI Fig. 8B settings
+\newcommand{\OurEightBMin}{6}  % min over replicates, 8B
+\newcommand{\OurEightBMax}{6}  % max over replicates, 8B
+\newcommand{\SIEightE}{6}  % SI Fig. 8E cycles (digitized)
+\newcommand{\OurEightE}{8.2}  % our cycles at SI Fig. 8E settings
+\newcommand{\OurEightEMin}{7}  % min over replicates, 8E
+\newcommand{\OurEightEMax}{9}  % max over replicates, 8E
+\newcommand{\SIEightH}{14}  % SI Fig. 8H cycles (digitized)
+\newcommand{\OurEightH}{17.2}  % our cycles at SI Fig. 8H settings
+\newcommand{\OurEightHMin}{16}  % min over replicates, 8H
+\newcommand{\OurEightHMax}{18}  % max over replicates, 8H
+\newcommand{\EightMaxDevStrong}{6}  % max |rel diff| of cycle counts, s = 10
+\newcommand{\EightMinDevWeak}{0}  % min rel diff, s = 1
+\newcommand{\EightMaxDevWeak}{38}  % max rel diff, s = 1
+\newcommand{\NineNpoints}{8}  % SI Fig. 9B label points compared
+\newcommand{\NineMaxDev}{5.6}  % max |rel diff| of period, excluding label 400
+\newcommand{\NineMinDev}{2.5}  % min |rel diff| of period
+\newcommand{\NineDevFourHundred}{20}  % rel diff at label 400
+\newcommand{\HZeroPred}{27.76}  % h = 0 Markov H:C (SI closed form)
+\newcommand{\HZeroIBMA}{7.90}  % h = 0 IBM ratio at mu = 0.001
+\newcommand{\HZeroIBMALo}{7.76}  % h = 0 IBM ratio at mu = 0.001 (95% CI low)
+\newcommand{\HZeroIBMAHi}{8.04}  % h = 0 IBM ratio at mu = 0.001 (95% CI high)
+\newcommand{\HZeroIBMB}{15.32}  % h = 0 IBM ratio at mu = 0.0003
+\newcommand{\HZeroIBMBLo}{14.80}  % h = 0 IBM ratio at mu = 0.0003 (95% CI low)
+\newcommand{\HZeroIBMBHi}{15.85}  % h = 0 IBM ratio at mu = 0.0003 (95% CI high)
 \newcommand{\RuntimeFullMin}{17}  % total recorded compute, full profile (minutes)
-\newcommand{\RuntimeQuickMin}{2}  % total recorded compute, quick profile (minutes)
+\newcommand{\RuntimeQuickMin}{3}  % total recorded compute, quick profile (minutes)

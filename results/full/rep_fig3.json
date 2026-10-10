@@ -1,10 +1,10 @@
 {
  "meta": {
   "name": "rep_fig3",
-  "config_hash": "6b76140b623e",
-  "git_commit": "84de345-dirty",
+  "config_hash": "1bb6d80af734",
+  "git_commit": "0925a29-dirty",
   "profile": "full",
-  "created": "2026-10-10T20:26:08",
+  "created": "2026-10-10T21:55:58",
   "config": {
    "params": {
     "b": 1.0,
@@ -29,15 +29,18 @@
     "N": 10,
     "mu": 0.001,
     "nu": 0.005,
-    "s": 10000000000.0
+    "s": 10000000000.0,
+    "ibm_variant": "si"
    },
    "ibm_large": {
     "M": 5000,
     "N": 1000,
     "mu": 0.01,
     "nu": 0.05,
-    "s": 0.3
+    "s": 0.3,
+    "ibm_variant": "si"
    },
+   "ibm_variant": "si",
    "n_jobs": 14,
    "seed": 20261010,
    "reps": 30,
@@ -669699,6 +669702,6 @@
     "y_PD": 0.33333333333333326
    }
   },
-  "runtime_s": 3.714219808578491
+  "runtime_s": 3.8028275966644287
  }
 }

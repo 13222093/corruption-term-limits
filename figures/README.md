@@ -19,6 +19,7 @@ citation and differ slightly from the file numbers.
 | figS1_time_series | Representative time series (E3) | Fig. S1 |
 | figS2_sensitivity | One-at-a-time sensitivity (R5) | Fig. S2 |
 | figS3_robustness | Pulses vs continuous, p0 < 1, A = 0.7, other exploration rates | Fig. S3 |
+| figS4_si_checks | Checks against the SI: B3 definitions and diagnostics, SI Fig. 8 cycle counts, SI Fig. 9B periods | Fig. S4 |
 
 Full captions with parameters, replicate numbers and the meaning of error bars are in
 `paper/main.tex`. Colors: strategy palette validated for color-vision deficiency

@@ -641,9 +641,70 @@ def figS(profile):
     save(fig, fig_path("figS3_robustness", profile))
 
 
+def figS4(profile):
+    """SI verification: B3 definitions and diagnostics; SI Fig. 8 and Fig. 9B comparisons."""
+    d = L("rep_b3_diag", profile)["data"]
+    c = L("rep_si_checks", profile)["data"]
+    fig, axs = plt.subplots(1, 3, figsize=(12.0, 3.9), gridspec_kw={"width_ratios": [1.5, 1, 1]})
+    ax = axs[0]
+    rows = [("mean honest / mean corrupt (default)", d["baseline"]["ratio_means"], CAT[0]),
+            ("time honest majority / corrupt majority", d["baseline"]["ratio_majority"], CAT[0]),
+            ("time all honest / all corrupt", d["baseline"]["ratio_pure"], CAT[0]),
+            ("burn-in 50000 generations", d["burn_in_50000"], INK2),
+            ("start from all OC", d["start_allOC"], INK2),
+            ("s = 1000", d["selection"]["1000.0"], INK2),
+            ("s = 10", d["selection"]["10.0"], INK2),
+            ("exploration may keep own strategy", d["switches"]["explore_any"], CAT[1]),
+            ("role model may be oneself", d["switches"]["role_any"], CAT[1]),
+            ("payoffs include self-play", d["switches"]["self_payoff"], CAT[1]),
+            ("one player + one umpire per step", d["switches"]["pair_step"], CAT[1])]
+    for i, (lab, v, col) in enumerate(rows):
+        ax.errorbar(v[0], i, xerr=[[v[0] - v[1]], [v[2] - v[0]]], fmt="o", color=col, ms=4,
+                    capsize=2)
+    ax.axvline(d["published"], color=CORRUPT, ls="--", lw=1.2, label="published 2.15")
+    ax.axvline(d["markov"], color=INK, ls=":", lw=1.2, label=f"Markov {d['markov']:.2f}")
+    ax.set_yticks(range(len(rows)), [r[0] for r in rows], fontsize=7)
+    ax.invert_yaxis()
+    ax.set_xlabel("Honest : corrupt ratio (mean, 95% CI)")
+    ax.set_title("B3 gap: definitions and alternative update rules", fontsize=8)
+    ax.legend(fontsize=7, loc="lower right")
+    panel_label(ax, "A")
+    ax = axs[1]
+    keys = list(c["fig8"])
+    for i, k in enumerate(keys):
+        v = c["fig8"][k]
+        ax.plot([i], [v["cycles"]], "s", color=CORRUPT, ms=6, label="SI Fig. 8 (digitized)"
+                if i == 0 else None)
+        ax.errorbar([i], [v["ours_mean"]], yerr=[[v["ours_mean"] - min(v["ours"])],
+                                                 [max(v["ours"]) - v["ours_mean"]]],
+                    fmt="o", color=CAT[0], capsize=3, label="our model (mean, range)"
+                    if i == 0 else None)
+    ax.set_xticks(range(len(keys)), [f"{k}\nM={c['fig8'][k]['M']}\ns={c['fig8'][k]['s']:g}"
+                                     for k in keys], fontsize=7)
+    ax.set_yscale("log")
+    ax.set_ylabel(r"Cycles in $5\times10^6$ steps")
+    ax.set_title("IBM time unit: SI Fig. 8", fontsize=8)
+    ax.legend(fontsize=7)
+    panel_label(ax, "B")
+    ax = axs[2]
+    pts = [q for q in c["fig9b"] if q["ours"] is not None]
+    lab = np.array([q["label_period"] for q in pts], float)
+    ours = np.array([q["ours"] for q in pts], float)
+    ax.loglog(lab, ours, "o", color=CAT[0], ms=5)
+    lim = [min(lab.min(), ours.min()) * 0.8, max(lab.max(), ours.max()) * 1.2]
+    ax.loglog(lim, lim, "--", color=INK2, lw=1, label="equal")
+    ax.set_xlabel("Period label in SI Fig. 9B")
+    ax.set_ylabel("Our mean-field period at the label position")
+    ax.set_title("Mean-field periods: SI Fig. 9B", fontsize=8)
+    ax.legend(fontsize=7)
+    panel_label(ax, "C")
+    fig.tight_layout()
+    save(fig, fig_path("figS4_si_checks", profile))
+
+
 def main(profile):
     setup()
-    for f in (fig01, fig02, fig03, fig04, fig05, fig06, fig07, fig08, fig09, fig10, figS):
+    for f in (fig01, fig02, fig03, fig04, fig05, fig06, fig07, fig08, fig09, fig10, figS, figS4):
         try:
             f(profile)
             print("ok", f.__name__)

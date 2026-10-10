@@ -6,20 +6,27 @@ File: `refs/Social evolution leads to persistent corruption.pdf` (6 pages, scann
 visually page by page at 150-300 dpi). Page numbers below are journal pages (13276 = p.1).
 
 Abbreviations: "Main p.13277 col.2" = journal page 13277, right column.
-"SI" = SI Appendix (not available, see Section 0).
+"SI" = SI Appendix (`refs/pnas.1900078116.sapp.pdf`, obtained on branch si-verification; see Section 0 and SI_EXTRACT.md).
 
 ## 0. Availability of sources
 
 | Source | Status |
 |---|---|
 | Main text PDF | Available in refs/. All equations below were read from it. |
-| SI Appendix (pnas.1900078116.sapp.pdf) | NOT AVAILABLE. PMC copy is behind a CAPTCHA; PNAS returned HTTP 403; IIASA repository blocked automated access (attempted 2026-10-10). Elements that the main text delegates to the SI are marked UNVERIFIED below. |
+| SI Appendix (pnas.1900078116.sapp.pdf) | AVAILABLE since 2026-10-10 (branch si-verification): refs/pnas.1900078116.sapp.pdf, 10 pages, obtained from the Internet Archive copy of the publisher's file (DECISIONS.md D-020). Read in full; see SI_EXTRACT.md. |
 
-Elements affected by the missing SI (all UNVERIFIED):
-- U1. Exact individual-based update procedure (time unit, sampling of focal and role model, payoff evaluation in finite populations).
-- U2. Derivation of the rare-exploration transition matrix T (fixation probabilities behind each entry).
-- U3. How the simulated time-averaged H:C ratio of 2.15 (Fig. 1 caption) was computed (run length, burn-in).
-- U4. Parameters of SI Figs. S7-S9 (not used).
+Status of the items that depended on the SI (details in SI_EXTRACT.md):
+- U1. Individual-based update procedure. **The SI does not describe it.** Still reconstructed
+  (A1-A4 below), but now checked against everything the SI states: A4 verified (SI p.2);
+  A3 player part supported (SI p.2 single-dissident argument); A1 time unit supported
+  quantitatively by SI Fig. 8 (cycle counts) and qualitatively by its caption; A2 consistent
+  with SI p.2. No SI statement contradicts the reconstruction.
+- U2. Derivation of T. **Verified from the SI** (p.2-3), including the fixation rules for neutral
+  mutants; our derivation now follows them and reproduces the printed T except D4, and the SI's
+  h = 0 chain exactly.
+- U3. How 2.15 was computed. **Still unverified**: the SI does not say. SI Fig. 7 shows runs
+  extending beyond 2.2 x 10^8 time units.
+- U4. Parameters of SI Figs. 7-9. **Resolved** (SI Fig. captions; listed in SI_EXTRACT.md).
 
 ## 1. Players, umpires, strategies
 
@@ -119,7 +126,9 @@ The Fig. 2 caption and Q_H show it is a mixture of OD and PD. Resolution: OD+PD.
   leaves the edge where all players are OCs to visit the absorbing state 8 or 9, respectively".
   At A = 2: 0.167 < 0.333 (inequality holds); at A = 0.7: 0.6 > 0.333. The figure shows the
   A = 2 orbit passing near 9 and the A = 0.7 orbit near 8, which is the reverse of the literal
-  "respectively". DISCREPANCY D3 (text vs figure). To be resolved numerically (Phase 2).
+  "respectively". DISCREPANCY D3 (text vs figure), resolved numerically in Phase 2 and CONFIRMED
+  by the SI (p.1: "see Fig. 3 A, where PD can invade in this interval, and Fig. 3 B, where OD can
+  invade instead").
 
 ## 8. Individual-based model (Main p.13277 col.2; Methods p.13280 col.2 "Dynamics"; Fig. 1)
 
@@ -138,18 +147,25 @@ Stated in the main text:
   units. C, D: after the transient, OC about 0.5, PC about 0.2, PD about 0.2-0.25, OD about 0.05,
   corrupt fraction about 0.50-0.55.
 
-UNVERIFIED (U1), resolved by ASSUMPTION (DECISIONS.md D-003 to D-006):
+U1: the SI does not specify the procedure. Status of each assumption after reading the SI
+(DECISIONS.md D-003 to D-006, D-017; SI_EXTRACT.md):
 - A1. Asynchronous random sequential updating: each elementary step picks one individual uniformly
   from all M + N individuals. Time is measured in elementary steps for comparison with Fig. 1
-  (and also reported in generations, 1 generation = M + N steps). Reason: with this choice the
-  per-unit-time entry rates are M mu and N nu (equal, as the caption states), and the episode
-  frequency in Fig. 1A matches the order of magnitude predicted by the Markov chain.
-- A2. Role model drawn uniformly from the other individuals of the same population.
+  (and also reported in generations, 1 generation = M + N steps). STILL RECONSTRUCTED (not stated
+  in the SI) but SUPPORTED: SI Fig. 7 caption (nu = mu M / N, equal entry rates), SI Fig. 8
+  caption (smaller populations accelerate the dynamics) and the digitized SI Fig. 8 cycle counts,
+  which our model reproduces at the same settings.
+- A2. Role model drawn uniformly from the other individuals of the same population. STILL
+  RECONSTRUCTED; consistent with the SI p.2 argument (a neutral dissident's next imitation step
+  goes either way with probability 1/2).
 - A3. Expected payoffs from current counts. A player's co-player is drawn from the other M - 1
   players; its umpire is honest with probability N1/N. An umpire serves a random pair of two
-  distinct players (sampling without replacement).
+  distinct players (sampling without replacement). Player part SUPPORTED by SI p.2 (a single
+  neutral dissident "does exactly as well as the residents", which requires self-exclusion);
+  umpire pair sampling STILL RECONSTRUCTED (no consequence at pure states or for large M).
 - A4. Exploration switches to one of the other strategies uniformly (3 for players, 1 for umpires).
-  This matches the -mu x_i + mu (1 - x_i)/3 term of the ODE.
+  VERIFIED (SI p.2: "to one of the three alternative strategies"; umpires switch "to the
+  alternative strategy at random (i.e., without considering a role model)").
 
 ## 9. Rare-exploration limit (Methods p.13281)
 
@@ -179,15 +195,18 @@ row 10: 0     lm    0 0 0     0     0     0     0     *
   3, 45, 15, 16), H:C = 19N + 87 : 109 (= 2.541 for N = 10).
 - B3 simulated value: "time-averaged ratio of honest-to-corrupt umpires is 2.15" (Fig. 1 caption).
 
-Independent check (UNVERIFIED U2, our derivation from the payoff matrices, Phase 4):
-- Rows 1, 2, 6, 7, 8, 9, 10 follow from hard-imitation invasion analysis of Q_H, Q_C and umpire
-  incomes, with neutral player mutants ignored (fixation 1/M -> 0) and neutral umpire mutants
-  fixing with probability 1/N.
-- DISCREPANCY D4: row 3 (allOD, honest) omits the transition to 8 (a corrupt mutant umpire earns
-  2f + 2B > 2f and should fix). DISCREPANCY D5: row 4 entry m/6 (PC into allPD, honest) is a
-  neutral player mutant, which elsewhere is given 0 (row 7, PD into allPC, corrupt).
-  States 3, 4, 5 have no incoming transitions from recurrent states, so D4 and D5 do not change
-  the stationary distribution. Verified symbolically in Phase 4.
+Derivation (U2, VERIFIED from SI p.2-3; implemented in src/rare_exploration.py):
+- Advantageous mutants fix with probability 1. Neutral umpire mutants fix with probability 1/N.
+  A player mutant that is neutral as a single dissident fixes with probability 1/2 if two
+  mutants already do better (entry mu/6), cannot fix if two do worse, and fixes with probability
+  1/M if it is neutral throughout (only for h = 0, entry mu/(3M), SI p.3).
+- DISCREPANCY D4 (confirmed): row 3 (allOD, honest) omits the transition to 8, although the SI
+  text says corrupt umpires invade (allOD, allH) (SI p.2). State 3 is transient, so the
+  stationary distribution is unchanged.
+- D5 WITHDRAWN: the entry m/6 in row 4 is explained by the SI (p.2); the 0 in row 7 (PD into allPC
+  under corrupt umpires) follows from the same rule because two PD players do worse.
+- Cost-free information (h = 0, SI p.3): 8 absorbing states; H:C = 14 + 8N + 12M : 25 at
+  lambda = 1. Reproduced exactly by our derivation (tests).
 
 ## 10. Parameters (base)
 
@@ -218,3 +237,14 @@ y1 -> (1 - tau) y1 + tau p_new. Average rotation rate rho = tau / T.
 IBM rotation: each umpire is replaced at rate rho per generation (continuous), or round(tau N)
 random umpires are replaced every T generations (pulse); each newcomer is honest with probability
 p_new evaluated from the current (or lagged) honest fraction.
+
+## 12. SI figures used for checks (SI_EXTRACT.md)
+- SI Fig. 7 (p.7): individual-based runs at mu in {1e-3, 1e-6}, s in {1e10, 10}, nu = mu M / N,
+  M = 50, N = 10. Time axes start at 1.4 x 10^8.
+- SI Fig. 8 (p.8): individual-based runs at M in {3000, 2000, 1000}, N = M / 5, s in {10, 1, 0.3},
+  mu = 0.01, nu = 0.05, 5 x 10^6 time units. Cycle counts digitized by experiments/digitize_si.py
+  and compared with our model (supports A1).
+- SI Fig. 9 (p.9): mean-field cycle amplitude, period and payoffs over h (0-0.35) and
+  mu = nu (0-0.08). Period labels compared with our replicator-mutator periods; supports D6.
+  DISCREPANCY D7: the panel axis labels are swapped relative to the caption (the caption is
+  correct).

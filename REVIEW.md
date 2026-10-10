@@ -2,8 +2,8 @@
 # REVIEW.md: self-review as a critical referee
 
 ## Summary (3 sentences)
-The manuscript reproduces the corruption model of Lee et al. (2019) from the main text alone and
-extends it with term-limited umpires whose newcomers may inherit the integrity of incumbents. The
+The manuscript reproduces the corruption model of Lee et al. (2019), checked against the main
+text and the SI Appendix, and extends it with term-limited umpires whose newcomers may inherit the integrity of incumbents. The
 main analytical claim is that rotation removes corruption cycles through a saddle-node on the
 limit cycle at a critical rate rho_c = 0.0133 (mean field), approximated within 2.5% by
 a formula proportional to the exploration rate. Pre-registered hypotheses are evaluated in the
@@ -11,12 +11,15 @@ mean field and in finite populations: H1 supported, H2 not supported, H3 support
 H4 substitutes (mean field and IBM agree), H5 mixed, H6 not supported.
 
 ## Major weaknesses
-1. **Reconstructed individual-based model.** The SI of Lee et al. was not available, so the
-   update procedure, payoff evaluation and time unit are assumptions. They reproduce the published
-   figures closely, but the simulated honest:corrupt ratio is 2.030
-   [2.003, 2.057] versus the published 2.15. Every
-   finite-population result depends on these assumptions. *Action taken:* stated prominently in
-   README, paper (Section 1 and Appendix B) and SPEC.md (U1-U4); the author should obtain the SI.
+1. **Individual-based procedure partly assumed.** The SI of Lee et al. states the exploration
+   rules and the fixation rules, and its Fig. 8 supports our time unit, but it does not give the
+   update order, role-model sampling or finite-population payoffs. These remain assumptions, and
+   every finite-population result depends on them. The published ratio 2.15 is matched only
+   under one definition of the time average (time all honest / all corrupt 2.134
+   [2.102, 2.165]; ratio of mean shares 2.030
+   [2.003, 2.057]). *Action taken:* SI checked line by line
+   (SI_EXTRACT.md), candidate causes of the B3 gap tested one at a time (CHANGES_SI.md), and the
+   remaining assumptions stated in README, paper and SPEC.md.
 2. **Limited novelty of fresh-cohort rotation.** In the mean field, V0 rotation is algebraically
    biased exploration of umpires toward honesty, an idea close to enforcer "education"
    (Lee et al. 2015) and enforcer exploration (Zhou et al. 2023). *Action taken:* the equivalence
@@ -65,8 +68,8 @@ H4 substitutes (mean field and IBM agree), H5 mixed, H6 not supported.
 | Hypothesis outcomes match figures | Yes: H1 (Figs. 4, 6, 10), H2 (Fig. 6), H3 (Fig. 7), H4 (Fig. 5), H5 (Fig. 8), H6 (Fig. 9); outcomes computed by experiments/evaluate_hypotheses.py from the same files. |
 | Mean-field and finite-population results separated | Yes, in text, tables and figure panels. |
 | Limitations stated | Yes: Discussion and this review. |
-| Discrepancies with the original paper reported | Yes: D1-D6 and U1-U4 (README, paper Appendix B, SPEC.md). |
-| Tests pass; pipeline regenerates from a clean clone | Yes: 80 tests; quick pipeline and numbers/docs/paper regenerated in a fresh clone. |
+| Discrepancies with the original paper reported | Yes: D1-D4, D6, D7 (D5 withdrawn after reading the SI) and U1-U4 (README, paper Appendix B, SPEC.md, SI_EXTRACT.md). |
+| Tests pass; pipeline regenerates from a clean clone | Yes: 100 tests; quick pipeline and numbers/docs/paper regenerated in a fresh clone; full pipeline rerun on the si-verification branch. |
 
 ## Fixes made during review
 - Specified "small populations" for the IBM numbers in the abstract.
@@ -74,3 +77,23 @@ H4 substitutes (mean field and IBM agree), H5 mixed, H6 not supported.
 - Marked the H2 mechanism as untested.
 - Replaced hard-coded counts with macros where they are results.
 - Narrowed tables to remove overfull boxes; added float barriers so figures appear near the text.
+
+## What the SI verification resolved and what remains
+Resolved:
+- Exploration: players switch to one of the three other strategies, umpires flip, nu = mu M / N
+  (SI p.3, Fig. 7, Fig. 8). Our model already did this.
+- Time unit: SI Fig. 8 cycle counts agree with ours at the same settings (within
+  6% for s = 10). A per-generation time unit would be off by a factor of
+  1200 to 3600.
+- Markov chain: the SI fixation rules for neutral mutants explain every printed entry of T
+  except D4. D5 was our error and is withdrawn. The SI's cost-free chain is reproduced exactly.
+- Fig. 3 caption (D3) and the T omission (D4) are confirmed by the SI text.
+
+Remains:
+- Update order (asynchronous random sequential in our model), role-model sampling and
+  finite-population payoffs (no self-play) are not stated in the SI.
+- The time average behind the published 2.15 is not defined. Our simulation matches 2.15 only if
+  it counts time with all umpires honest against time with all umpires corrupt.
+- SI Fig. 8 panels with s = 1 show 0% to 38% fewer cycles than
+  our model; each SI panel is one run, so this is weak evidence of a difference.
+- New inconsistency D7: SI Fig. 9 axis labels are swapped relative to its caption.

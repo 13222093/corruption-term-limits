@@ -40,6 +40,10 @@ def main():
                 missing.add(k)
                 return m.group(0)
             return vals[k]
+        def inc(m):
+            with open(os.path.join(ROOT, m.group(1)), encoding="utf-8") as fh2:
+                return fh2.read()
+        text = re.sub(r"\{\{include:([^}]+)\}\}", inc, text)
         out = re.sub(r"\{\{([A-Za-z]+)\}\}", rep, text)
         dst = os.path.join(ROOT, os.path.basename(src)[:-3])
         with open(dst, "w", encoding="utf-8") as fh:

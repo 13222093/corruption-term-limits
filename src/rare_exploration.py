@@ -4,12 +4,13 @@ Source: Lee et al. (2019), Methods p.13281 ("Rare-Exploration Limit"): hard imit
 ten absorbing states (1-5 honest umpires: allOC, allPC, allOD, allPD, OD+PD; 6-10 corrupt umpires:
 allOC, allPC, allOD, allPD, OD+PC), printed transition matrix T and its stationary distribution.
 
-We (a) encode the printed T, and (b) derive T independently from the payoffs by invasion analysis
-(SPEC U2; the SI derivation was not available):
+We (a) encode the printed T, and (b) derive T from the payoffs by invasion analysis, using the
+fixation rules stated in the SI Appendix p.2-3 (SPEC U2, DECISIONS D-018):
 - A player mutant (rate mu/3 per mutant type) invades if its payoff exceeds the resident payoff
   in the infinite-population limit. It then fixes with probability 1 (hard imitation), and the
   destination is found by integrating the replicator dynamics of the player population with the
-  umpire type held fixed. A neutral player mutant fixes with probability 1/M (0 in the paper's
+  umpire type held fixed. A neutral player mutant fixes with probability 1/2 if two mutants do
+  better than the residents, 0 if they do worse, and 1/M if they stay neutral (0 in the
   M -> infinity convention).
 - An umpire mutant (rate lambda mu) fixes with probability 1 if it earns more, 1/N if it earns the
   same, 0 otherwise. After fixation the player population moves to the attractor of the
@@ -28,13 +29,28 @@ STATE_NAMES = ["H:allOC", "H:allPC", "H:allOD", "H:allPD", "H:OD+PD",
                "C:allOC", "C:allPC", "C:allOD", "C:allPD", "C:OD+PC"]
 
 
+STATE_NAMES_H0 = ["H:allOC", "H:allPC", "H:allOD", "H:allPD",
+                  "C:allOC", "C:allPC", "C:allOD", "C:allPD"]
+
+
 def absorbing_states(p: Params):
-    """Return list of (x, honest) for states 1..10 (Fig. 2 caption, Methods p.13281)."""
+    """Return list of (x, honest) for the absorbing states.
+
+    h > 0: states 1..10 (Fig. 2 caption, Methods p.13281; SI p.2).
+    h = 0: the eight pure states only; the mixtures OD+PD and OD+PC disappear (SI p.3,
+    "Cost-free information").
+    """
     e = np.eye(4)
+    if p.h == 0:
+        return [(e[i], True) for i in range(4)] + [(e[i], False) for i in range(4)]
     fp5 = np.array([0, 0, p.h / (p.f + p.A), (p.f + p.A - p.h) / (p.f + p.A)])
     fp10 = np.array([0, (p.f + p.B - p.h) / (p.f + p.B), p.h / (p.f + p.B), 0])
     return ([(e[i], True) for i in range(4)] + [(fp5, True)]
             + [(e[i], False) for i in range(4)] + [(fp10, False)])
+
+
+def state_names(p: Params):
+    return STATE_NAMES if p.h != 0 else STATE_NAMES_H0
 
 
 def printed_T(mu, lam, N):
@@ -119,14 +135,38 @@ def derive_transitions(p: Params, eps: float = 1e-4, tie_tol: float = 1e-12):
                 dest = _classify(p, _player_attractor(p, x0, honest), honest)
                 events.append(dict(frm=k, to=dest, kind="player", mutant=j,
                                    outcome="advantageous"))
-            else:
-                # neutral mutant: if it fixes by drift the population becomes pure j
-                xj = np.zeros(4)
-                xj[j] = 1.0
-                dest = _classify(p, xj, honest) if np.all(present == (x > 1 - 1e-12)) else None
-                if dest is not None:
-                    events.append(dict(frm=k, to=dest, kind="player", mutant=j,
-                                       outcome="neutral"))
+            elif np.all(present == (x > 1 - 1e-12)):
+                # Neutral at the resident state (pure residents r only). Rule from the SI
+                # (p.2): look at the finite population with one and then two mutants, with the
+                # co-player drawn from the other M - 1 players. With Q[j,r] = Q[r,r]:
+                #   one mutant:  (M-1)(P_mut - P_res) = Q[r,r] - Q[r,j]
+                #   two mutants: (M-1)(P_mut - P_res) = Q[j,j] - 2 Q[r,j] + Q[r,r]
+                # If two mutants do strictly better, the mutant fixes with probability 1/2
+                # (hard imitation: the first imitation step involving the dissident goes either
+                # way with probability 1/2, after that mutants spread); if they do worse it
+                # cannot fix; if both differences vanish it is neutral throughout (1/M).
+                r = int(np.argmax(x))
+                d1 = Q[r, r] - Q[r, j]
+                d2 = Q[j, j] - 2 * Q[r, j] + Q[r, r]
+                if d1 > tie_tol:
+                    outcome = "advantageous"
+                elif d1 < -tie_tol:
+                    continue
+                elif d2 > tie_tol:
+                    outcome = "neutral_then_advantage"
+                elif d2 < -tie_tol:
+                    continue
+                else:
+                    outcome = "neutral"
+                if outcome == "neutral":
+                    xj = np.zeros(4)
+                    xj[j] = 1.0
+                    dest = _classify(p, xj, honest)
+                else:
+                    x0 = (1 - eps) * x
+                    x0[j] += eps
+                    dest = _classify(p, _player_attractor(p, x0, honest), honest)
+                events.append(dict(frm=k, to=dest, kind="player", mutant=j, outcome=outcome))
         PH, PCr = umpire_payoffs(p, x)
         adv = (PCr - PH) if honest else (PH - PCr)
         if adv < -tie_tol:
@@ -146,21 +186,26 @@ def derive_transitions(p: Params, eps: float = 1e-4, tie_tol: float = 1e-12):
 
 
 def derived_T(p: Params, mu, lam, N, M=None):
-    """Transition matrix from derive_transitions. M=None uses the paper's convention that
-    neutral player mutants never fix (M -> infinity); otherwise they fix with probability 1/M."""
+    """Transition matrix from derive_transitions, with the fixation rules of the SI (p.2-3):
+    advantageous mutants fix with probability 1; neutral mutants that gain an advantage once
+    there are two of them fix with probability 1/2 (entry mu/6); umpire mutants that are
+    neutral fix with probability 1/N; player mutants that are neutral throughout fix with
+    probability 1/M (entry mu/(3M), SI p.3; M=None drops these entries, as for M -> infinity)."""
     events = derive_transitions(p)
+    n = len(absorbing_states(p))
     symbolic = any(isinstance(v, sp.Basic) for v in (mu, lam, N)) or isinstance(M, sp.Basic)
-    T = sp.zeros(10, 10) if symbolic else np.zeros((10, 10))
+    T = sp.zeros(n, n) if symbolic else np.zeros((n, n))
     for ev in events:
         if ev["kind"] == "player":
             rate = mu / 3
-            prob = 1 if ev["outcome"] == "advantageous" else (0 if M is None else 1 / M)
+            prob = {"advantageous": 1, "neutral_then_advantage": sp.Rational(1, 2)
+                    if symbolic else 0.5}.get(ev["outcome"], 0 if M is None else 1 / M)
         else:
             rate = lam * mu
             prob = 1 if ev["outcome"] == "advantageous" else 1 / N
         T[ev["frm"], ev["to"]] += rate * prob
-    for i in range(10):
-        T[i, i] = 1 - sum(T[i, j] for j in range(10) if j != i)
+    for i in range(n):
+        T[i, i] = 1 - sum(T[i, j] for j in range(n) if j != i)
     return T
 
 
@@ -191,8 +236,10 @@ def paper_stationary(lam, N):
 
 
 def hc_ratio(pi) -> float:
+    """Honest : corrupt time ratio; the first half of the states have honest umpires."""
     pi = np.asarray(pi, dtype=float)
-    return pi[:5].sum() / pi[5:].sum()
+    k = len(pi) // 2
+    return pi[:k].sum() / pi[k:].sum()
 
 
 def expected_cycle_time(T, mu_scale: float = 1.0) -> dict:

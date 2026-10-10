@@ -114,7 +114,7 @@ def build(profile):
 
     mk = R("rep_markov", profile)
     M("MarkovRatio", mk["ratio_N10_lam1"], "Markov H:C at N=10", 3)
-    M("MarkovRatioFinM", mk["ratio_finiteM_N10_M50"], "Markov with 1/M neutral player fixation", 3)
+    M("MarkovRatioFinM", mk["ratio_finiteM_N10_M50"], "Markov, M = 50, SI fixation rules (1/M for neutral players)", 3)
     M("MarkovNdiff", len(mk["derived_minus_printed"]), "number of differing entries", kind="raw")
 
     b3 = R("rep_b3", profile)
@@ -333,6 +333,70 @@ def build(profile):
     pred = {r: (nu_l + r) / (2 * nu_l + r) for r in lg}
     M("NeutralMaxDev", max(abs(lg[r] - pred[r]) for r in lg if r >= 0.05),
       "max |ybar - (nu+rho)/(2nu+rho)| for rho>=0.05 (large IBM)", 3)
+    # ---- SI verification (branch si-verification) ----
+    def opt(name):
+        try:
+            return R(name, profile)
+        except FileNotFoundError:
+            return None
+    sc = opt("rep_si_compare")
+    if sc is not None:
+        M("SIVariantsIdentical", "yes" if sc["identical"] else "no",
+          "si and reconstructed variants identical", kind="raw")
+        ci("SIBthreeRatio", sc["si"]["b3_ratio"], "B3 ratio, si variant")
+        ci("RecBthreeRatio", sc["reconstructed"]["b3_ratio"], "B3 ratio, reconstructed variant")
+    bd = opt("rep_b3_diag")
+    if bd is not None:
+        ci("BthreeMajority", bd["baseline"]["ratio_majority"], "B3, majority-time definition")
+        ci("BthreePure", bd["baseline"]["ratio_pure"], "B3, all-honest vs all-corrupt time")
+        M("BthreePerRepSD", bd["baseline_per_rep_sd"], "SD of per-replicate ratio", 3)
+        M("BthreePerRepFrac", bd["baseline_frac_ge_published"], "share of replicates >= 2.15",
+          0, "pct")
+        for key, nm in (("explore_any", "ExploreAny"), ("role_any", "RoleAny"),
+                        ("self_payoff", "SelfPayoff"), ("pair_step", "PairStep")):
+            ci(f"Diag{nm}", bd["switches"][key], f"B3 with switch {key}")
+        ci("DiagSelThousand", bd["selection"]["1000.0"], "B3 with s = 1e3")
+        ci("DiagSelTen", bd["selection"]["10.0"], "B3 with s = 10")
+        ci("DiagBurn", bd["burn_in_50000"], "B3 with burn-in 50000 generations")
+        ci("DiagStartOC", bd["start_allOC"], "B3 starting from all OC")
+        sr = bd["short_runs_1e5_steps"]
+        M("ShortRunN", sr["n"], "number of short runs", kind="raw")
+        M("ShortRunMean", sr["mean"], "short runs (1e5 steps): mean ratio", 2)
+        M("ShortRunSD", sr["sd"], "short runs: SD", 2)
+        M("ShortRunQlo", sr["q05"], "short runs: 5% quantile", 2)
+        M("ShortRunQhi", sr["q95"], "short runs: 95% quantile", 2)
+        M("ShortRunFrac", sr["frac_ge_published"], "short runs: share >= 2.15", 0, "pct")
+        lr = bd["long_runs"]
+        M("LongRunN", lr["n"], "number of long runs", kind="raw")
+        M("LongRunSteps", lr["steps"], "long run length (steps)", 1, "s")
+        M("LongRunMean", lr["mean"], "long runs: mean ratio", 3)
+        M("LongRunSD", lr["sd"], "long runs: SD", 3)
+        M("LongRunMax", max(lr["values"]), "long runs: maximum", 3)
+    sic = opt("rep_si_checks")
+    if sic is not None:
+        for key, v in sic["fig8"].items():
+            M(f"SIEight{key}", v["cycles"], f"SI Fig. 8{key} cycles (digitized)", kind="raw")
+            M(f"OurEight{key}", v["ours_mean"], f"our cycles at SI Fig. 8{key} settings", 1)
+            M(f"OurEight{key}Min", min(v["ours"]), f"min over replicates, 8{key}", kind="raw")
+            M(f"OurEight{key}Max", max(v["ours"]), f"max over replicates, 8{key}", kind="raw")
+        s10 = [abs(v["rel_diff"]) for v in sic["fig8"].values() if v["s"] >= 10]
+        s1 = [v["rel_diff"] for v in sic["fig8"].values() if v["s"] < 10]
+        M("EightMaxDevStrong", max(s10), "max |rel diff| of cycle counts, s = 10", 0, "pct")
+        M("EightMinDevWeak", min(s1), "min rel diff, s = 1", 0, "pct")
+        M("EightMaxDevWeak", max(s1), "max rel diff, s = 1", 0, "pct")
+        f9 = [q for q in sic["fig9b"] if q["rel_diff"] is not None]
+        good = [abs(q["rel_diff"]) for q in f9 if q["label_period"] != 400]
+        M("NineNpoints", len(f9), "SI Fig. 9B label points compared", kind="raw")
+        M("NineMaxDev", max(good), "max |rel diff| of period, excluding label 400", 1, "pct")
+        M("NineMinDev", min(good), "min |rel diff| of period", 1, "pct")
+        q400 = [q for q in f9 if q["label_period"] == 400]
+        if q400:
+            M("NineDevFourHundred", q400[0]["rel_diff"], "rel diff at label 400", 0, "pct")
+        M("HZeroPred", sic["h0"]["markov_prediction"], "h = 0 Markov H:C (SI closed form)", 2)
+        mus = sorted(sic["h0"]["ibm"], key=float, reverse=True)
+        ci("HZeroIBMA", sic["h0"]["ibm"][mus[0]], f"h = 0 IBM ratio at mu = {mus[0]}", 2)
+        ci("HZeroIBMB", sic["h0"]["ibm"][mus[1]], f"h = 0 IBM ratio at mu = {mus[1]}", 2)
+
     # compute time recorded in the results files
     for prof, nm in ((profile, "Full"), ("quick", "Quick")):
         d = os.path.join(RESULTS, prof)

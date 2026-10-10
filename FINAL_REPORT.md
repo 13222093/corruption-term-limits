@@ -12,7 +12,7 @@ All numbers below are generated from `results/full/`.
 | B1 all corrupt | OD 0.25, PC 0.75 | OD 0.25, PC 0.75; max deviation 4.8e-12 (20 random starts) | exact |
 | B2 all honest | OC -> 1 | OC -> 1; max deviation 2.4e-11 | exact |
 | B3 Markov ratio (N = 10) | (19N+87):109 = 2.54 | 2.541; same closed form from an independent derivation of T | exact |
-| B3 simulated ratio | about 2.15 | 2.030 [2.003, 2.057]; rarer exploration: 2.318, 2.459 | close; lower than published; CI excludes 2.15 |
+| B3 simulated ratio | about 2.15 | time all honest / all corrupt 2.134 [2.102, 2.165]; ratio of mean shares 2.030 [2.003, 2.057]; rarer exploration (mean shares): 2.318, 2.459 | matched under the Markov-type definition; the SI does not state the definition |
 | B4 sustained cycles | about 7 episodes per 1e5 steps (read off) | 6.0 [6.0, 6.1] | consistent |
 | B4 damped oscillations | corrupt about 0.50-0.55 (read off) | 0.541 [0.535, 0.545]; stable focus -0.0081 +- 0.0089i | consistent |
 | B4 orbit shrinkage | qualitative | Hopf at mu = nu = 0.0616 (A = 2), 0.0314 (A = 0.7) | reproduced |
@@ -26,15 +26,27 @@ The fallback project (Section 14 of CLAUDE.md) was not needed: B1 and B2 passed.
 - **D2** Honest mixed state misnamed "OD+PD (a mixture of OD and PC)"; it is OD and PD.
 - **D3** Fig. 3 caption "8 or 9, respectively" reversed relative to the figure; explained by the
   invasion thresholds y_PD = 0.333 and y_OD = 0.167 (A = 2) or 0.600 (A = 0.7).
-- **D4** Printed T omits allOD(H) -> allOD(C); transient row, no effect.
-- **D5** Printed T gives mu/6 to a neutral player mutant in row 4; transient row, no effect.
+- **D4** Printed T omits allOD(H) -> allOD(C); transient row, no effect. The SI text (p.2)
+  states that corrupt umpires invade this state, so the omission is confirmed.
+- **D5 (withdrawn)** We had flagged the mu/6 entry in row 4. The SI (p.2) gives the rule behind
+  it: a neutral player mutant fixes with probability 1/2 if two mutants do better. Our derivation
+  now uses the SI rules and reproduces the printed T except D4.
 - **D6** Fig. 3C, D are labeled as the mu = nu = 1e-4 orbit (period 9437), but match the
   mu = nu = 0.02 orbit.
-- **B3 gap** Simulated ratio 2.030 vs published 2.15; most likely due to the
-  reconstructed update procedure (SI unavailable).
+- **D7 (new, from the SI)** SI Fig. 9 axis labels are swapped relative to its caption; the
+  caption is right.
+- **B3 definition** The published 2.15 is matched by the time with all umpires honest over the
+  time with all umpires corrupt (2.134), not by the ratio of mean shares
+  (2.030; 2.037 in runs of 2.2e8 steps). Burn-in, starting state,
+  imitation strength, exploration and payoff conventions do not explain the difference
+  (CHANGES_SI.md Section 5). The SI does not state the definition (U3).
 - **PMC** web version lost minus signs; all signs taken from the PDF.
-- **SI** not available (U1-U4 in SPEC.md): IBM update scheme, payoff evaluation, time unit, and
-  T derivation were reconstructed or re-derived.
+- **SI** read in full (SI_EXTRACT.md). It states the exploration rules, the fixation rules behind
+  T and the cost-free chain; all match our model. It does not give the individual-based update
+  order, role-model sampling, finite-population payoffs or the averaging behind 2.15; these
+  remain documented assumptions. SI Fig. 8 cycle counts support our time unit: s = 10 panels
+  within 6%, s = 1 panels 0% to 38% higher
+  in our model (single SI runs).
 
 ## 3. Hypothesis outcomes (pre-registered rules in METRICS.md)
 | Hypothesis | Outcome | Mean field | Finite population |
@@ -66,14 +78,16 @@ The fallback project (Section 14 of CLAUDE.md) was not needed: B1 and B2 passed.
 - Large populations: honesty with rotation is within 0.008 of (nu + rho)/(2 nu + rho).
 
 ## 6. Limitations
-Reconstructed IBM (SI unavailable); qualitative cross-level comparison (different time units and
+IBM update order and role-model sampling are assumptions (the SI does not state them, although
+every rule it states holds and its Fig. 8 supports the time unit); the definition of the time
+average behind the published 2.15 is not stated; qualitative cross-level comparison (different time units and
 imitation rules); well-mixed populations; equal learning rates; simple inheritance rules;
 two-player games; global attraction above rho_c shown numerically, not proved; H5 region found by
 a follow-up. See REVIEW.md.
 
 ## 7. Open items for the author
-1. Download the SI Appendix (pnas.1900078116.sapp.pdf) manually, put it in refs/, and check
-   SPEC.md items U1-U4; if the update rule differs, rerun `make all`.
+1. The SI was obtained and checked (SI_EXTRACT.md, CHANGES_SI.md). Remaining: ask the authors
+   which time average gave 2.15 and which update order their simulation used (U1, U3).
 2. Fill in the repository URL, email, ORCID and acknowledgements in paper/main.tex and README.
 3. Decide whether to keep A = 0.7 and the two-parameter Hopf region in the main text.
 4. Consider a formal derivation of rho_c (matched asymptotics) and an analysis of pulses as a
@@ -88,19 +102,21 @@ mingw32-make all            # or: make all (Linux/macOS), or: python run_all.py 
 ```
 Equivalent step by step:
 ```bash
+python experiments/digitize_si.py full      # needs refs/pnas.1900078116.sapp.pdf
 python experiments/run_reproduction.py full
 python experiments/run_extension.py full
 python experiments/run_sensitivity.py full
 python experiments/evaluate_hypotheses.py full
 python experiments/make_figures.py full
 python experiments/make_numbers.py full
+python experiments/make_changes_si.py
 python experiments/render_docs.py
 python experiments/build_paper.py
 ```
-Recorded compute: about 17 minutes (full) and 2 minutes (quick).
+Recorded compute: about 17 minutes (full) and 3 minutes (quick).
 
 ## 9. Definition of done (CLAUDE.md Section 15)
-- [x] All tests pass (80); `make all` regenerates everything (quick pipeline, numbers, docs and
+- [x] All tests pass (100); `make all` regenerates everything (quick pipeline, numbers, docs and
       paper verified from a clean clone; the full profile was run in the working copy).
 - [x] SPEC.md, DECISIONS.md, METRICS.md, PROGRESS.md complete.
 - [x] B1 to B4 attempted and reported with numbers.
@@ -111,3 +127,15 @@ Recorded compute: about 17 minutes (full) and 2 minutes (quick).
       paper/ieee/main_ieee.pdf (same content, same macros, IEEEtran journal format).
 - [x] REVIEW.md and CITATIONS_TODO.md complete.
 - [x] FINAL_REPORT.md (this file).
+
+## 10. SI verification (branch si-verification)
+- SI obtained from an Internet Archive copy of the PNAS supplementary file (SI_EXTRACT.md
+  Section 1; 10 pages, SHA-256 recorded there).
+- `ibm_variant: si` is the default; `ibm_variant: reconstructed` is kept selectable. Because the
+  SI does not specify the update procedure, both run the same kernel (identical results:
+  yes).
+- Markov derivation updated to the SI fixation rules; the SI's cost-free chain and closed form
+  reproduced exactly (tests in `tests/test_rare_exploration.py`, `tests/test_si_rules.py`).
+- Full pipeline rerun: no simulated value and no hypothesis outcome changed; two diagnostics of
+  the derived Markov chain changed as expected
+  (CHANGES_SI.md Section 3).

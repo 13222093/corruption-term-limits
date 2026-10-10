@@ -11,5 +11,8 @@ ode:
   dt: 0.5
 ibm_small: {M: 50, N: 10, mu: 0.001, nu: 0.005, s: 1.0e+10}   # Fig. 1 A, B
 ibm_large: {M: 5000, N: 1000, mu: 0.01, nu: 0.05, s: 0.3}    # Fig. 1 C, D
+# Individual-based update scheme: "si" (as specified in the SI of Lee et al. 2019) or
+# "reconstructed" (the pre-SI reconstruction, kept for comparison; DECISIONS.md D-017).
+ibm_variant: si
 n_jobs: 14
 seed: 20261010

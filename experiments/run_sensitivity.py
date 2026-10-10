@@ -87,7 +87,8 @@ def oat(cfg):
     p = params_from(cfg, mu=S["mu"], nu=S["nu"])
     ys = {}
     for fac in (0.8, 1.0, 1.2):
-        r = run_ibm(p, S["M"], S["N"], S["s"] * fac, 2000.0, 0.5, cfg["seed"] + 5)
+        r = run_ibm(p, S["M"], S["N"], S["s"] * fac, 2000.0, 0.5, cfg["seed"] + 5,
+                    ibm_variant=S["ibm_variant"])
         ys[fac] = r["n_honest"]
     out["ibm_small_s_identical"] = bool(np.array_equal(ys[0.8], ys[1.0])
                                         and np.array_equal(ys[1.2], ys[1.0]))

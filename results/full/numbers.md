@@ -39,8 +39,8 @@
 | \yPD | 0.333 | y_PD |
 | \yODB | 0.600 | y_OD at A=0.7 |
 | \MarkovRatio | 2.541 | Markov H:C at N=10 |
-| \MarkovRatioFinM | 2.540 | Markov with 1/M neutral player fixation |
-| \MarkovNdiff | 4 | number of differing entries |
+| \MarkovRatioFinM | 2.541 | Markov, M = 50, SI fixation rules (1/M for neutral players) |
+| \MarkovNdiff | 2 | number of differing entries |
 | \BthreeRatio | 2.030 | IBM H:C at mu=1e-3 |
 | \BthreeRatioLo | 2.003 | IBM H:C at mu=1e-3 (95% CI low) |
 | \BthreeRatioHi | 2.057 | IBM H:C at mu=1e-3 (95% CI high) |
@@ -273,5 +273,93 @@
 | \SLargeTenLow | 0.749 | same at 0.8 s |
 | \SLargeTenHigh | 0.749 | same at 1.2 s |
 | \NeutralMaxDev | 0.008 | max |ybar - (nu+rho)/(2nu+rho)| for rho>=0.05 (large IBM) |
+| \SIVariantsIdentical | yes | si and reconstructed variants identical |
+| \SIBthreeRatio | 2.030 | B3 ratio, si variant |
+| \SIBthreeRatioLo | 2.003 | B3 ratio, si variant (95% CI low) |
+| \SIBthreeRatioHi | 2.057 | B3 ratio, si variant (95% CI high) |
+| \RecBthreeRatio | 2.030 | B3 ratio, reconstructed variant |
+| \RecBthreeRatioLo | 2.003 | B3 ratio, reconstructed variant (95% CI low) |
+| \RecBthreeRatioHi | 2.057 | B3 ratio, reconstructed variant (95% CI high) |
+| \BthreeMajority | 2.110 | B3, majority-time definition |
+| \BthreeMajorityLo | 2.080 | B3, majority-time definition (95% CI low) |
+| \BthreeMajorityHi | 2.139 | B3, majority-time definition (95% CI high) |
+| \BthreePure | 2.134 | B3, all-honest vs all-corrupt time |
+| \BthreePureLo | 2.102 | B3, all-honest vs all-corrupt time (95% CI low) |
+| \BthreePureHi | 2.165 | B3, all-honest vs all-corrupt time (95% CI high) |
+| \BthreePerRepSD | 0.077 | SD of per-replicate ratio |
+| \BthreePerRepFrac | 3 | share of replicates >= 2.15 |
+| \DiagExploreAny | 2.512 | B3 with switch explore_any |
+| \DiagExploreAnyLo | 2.465 | B3 with switch explore_any (95% CI low) |
+| \DiagExploreAnyHi | 2.558 | B3 with switch explore_any (95% CI high) |
+| \DiagRoleAny | 2.010 | B3 with switch role_any |
+| \DiagRoleAnyLo | 1.988 | B3 with switch role_any (95% CI low) |
+| \DiagRoleAnyHi | 2.033 | B3 with switch role_any (95% CI high) |
+| \DiagSelfPayoff | 2.018 | B3 with switch self_payoff |
+| \DiagSelfPayoffLo | 1.993 | B3 with switch self_payoff (95% CI low) |
+| \DiagSelfPayoffHi | 2.043 | B3 with switch self_payoff (95% CI high) |
+| \DiagPairStep | 1.266 | B3 with switch pair_step |
+| \DiagPairStepLo | 1.255 | B3 with switch pair_step (95% CI low) |
+| \DiagPairStepHi | 1.278 | B3 with switch pair_step (95% CI high) |
+| \DiagSelThousand | 2.029 | B3 with s = 1e3 |
+| \DiagSelThousandLo | 2.003 | B3 with s = 1e3 (95% CI low) |
+| \DiagSelThousandHi | 2.056 | B3 with s = 1e3 (95% CI high) |
+| \DiagSelTen | 2.422 | B3 with s = 10 |
+| \DiagSelTenLo | 2.387 | B3 with s = 10 (95% CI low) |
+| \DiagSelTenHi | 2.457 | B3 with s = 10 (95% CI high) |
+| \DiagBurn | 2.003 | B3 with burn-in 50000 generations |
+| \DiagBurnLo | 1.976 | B3 with burn-in 50000 generations (95% CI low) |
+| \DiagBurnHi | 2.031 | B3 with burn-in 50000 generations (95% CI high) |
+| \DiagStartOC | 2.030 | B3 starting from all OC |
+| \DiagStartOCLo | 2.003 | B3 starting from all OC (95% CI low) |
+| \DiagStartOCHi | 2.056 | B3 starting from all OC (95% CI high) |
+| \ShortRunN | 300 | number of short runs |
+| \ShortRunMean | 2.39 | short runs (1e5 steps): mean ratio |
+| \ShortRunSD | 1.13 | short runs: SD |
+| \ShortRunQlo | 1.12 | short runs: 5% quantile |
+| \ShortRunQhi | 4.87 | short runs: 95% quantile |
+| \ShortRunFrac | 48 | short runs: share >= 2.15 |
+| \LongRunN | 10 | number of long runs |
+| \LongRunSteps | 2.2\times 10^{8} | long run length (steps) |
+| \LongRunMean | 2.037 | long runs: mean ratio |
+| \LongRunSD | 0.025 | long runs: SD |
+| \LongRunMax | 2.075 | long runs: maximum |
+| \SIEightA | 17 | SI Fig. 8A cycles (digitized) |
+| \OurEightA | 18.0 | our cycles at SI Fig. 8A settings |
+| \OurEightAMin | 18 | min over replicates, 8A |
+| \OurEightAMax | 18 | max over replicates, 8A |
+| \SIEightD | 25 | SI Fig. 8D cycles (digitized) |
+| \OurEightD | 25.8 | our cycles at SI Fig. 8D settings |
+| \OurEightDMin | 25 | min over replicates, 8D |
+| \OurEightDMax | 27 | max over replicates, 8D |
+| \SIEightG | 53 | SI Fig. 8G cycles (digitized) |
+| \OurEightG | 51.2 | our cycles at SI Fig. 8G settings |
+| \OurEightGMin | 50 | min over replicates, 8G |
+| \OurEightGMax | 53 | max over replicates, 8G |
+| \SIEightB | 6 | SI Fig. 8B cycles (digitized) |
+| \OurEightB | 6.0 | our cycles at SI Fig. 8B settings |
+| \OurEightBMin | 6 | min over replicates, 8B |
+| \OurEightBMax | 6 | max over replicates, 8B |
+| \SIEightE | 6 | SI Fig. 8E cycles (digitized) |
+| \OurEightE | 8.2 | our cycles at SI Fig. 8E settings |
+| \OurEightEMin | 7 | min over replicates, 8E |
+| \OurEightEMax | 9 | max over replicates, 8E |
+| \SIEightH | 14 | SI Fig. 8H cycles (digitized) |
+| \OurEightH | 17.2 | our cycles at SI Fig. 8H settings |
+| \OurEightHMin | 16 | min over replicates, 8H |
+| \OurEightHMax | 18 | max over replicates, 8H |
+| \EightMaxDevStrong | 6 | max |rel diff| of cycle counts, s = 10 |
+| \EightMinDevWeak | 0 | min rel diff, s = 1 |
+| \EightMaxDevWeak | 38 | max rel diff, s = 1 |
+| \NineNpoints | 8 | SI Fig. 9B label points compared |
+| \NineMaxDev | 5.6 | max |rel diff| of period, excluding label 400 |
+| \NineMinDev | 2.5 | min |rel diff| of period |
+| \NineDevFourHundred | 20 | rel diff at label 400 |
+| \HZeroPred | 27.76 | h = 0 Markov H:C (SI closed form) |
+| \HZeroIBMA | 7.90 | h = 0 IBM ratio at mu = 0.001 |
+| \HZeroIBMALo | 7.76 | h = 0 IBM ratio at mu = 0.001 (95% CI low) |
+| \HZeroIBMAHi | 8.04 | h = 0 IBM ratio at mu = 0.001 (95% CI high) |
+| \HZeroIBMB | 15.32 | h = 0 IBM ratio at mu = 0.0003 |
+| \HZeroIBMBLo | 14.80 | h = 0 IBM ratio at mu = 0.0003 (95% CI low) |
+| \HZeroIBMBHi | 15.85 | h = 0 IBM ratio at mu = 0.0003 (95% CI high) |
 | \RuntimeFullMin | 17 | total recorded compute, full profile (minutes) |
-| \RuntimeQuickMin | 2 | total recorded compute, quick profile (minutes) |
+| \RuntimeQuickMin | 3 | total recorded compute, quick profile (minutes) |

@@ -210,7 +210,8 @@ def b4_small(cfg):
     p = params_from(cfg, mu=S["mu"], nu=S["nu"])
     steps_per_gen = S["M"] + S["N"]
     t_end = 3e5 / steps_per_gen
-    r = run_ibm(p, S["M"], S["N"], S["s"], t_end, 0.5, cfg["seed"] + 1)
+    r = run_ibm(p, S["M"], S["N"], S["s"], t_end, 0.5, cfg["seed"] + 1,
+                ibm_variant=S["ibm_variant"])
     w = r["t"] >= 2e5 / steps_per_gen
     return {"t_steps": (r["t"][w] * steps_per_gen).tolist(), "x": r["x"][w].tolist(),
             "y": r["y"][w].tolist(),
@@ -218,7 +219,7 @@ def b4_small(cfg):
 
 
 def _large_run(p, L, T, seed):
-    r = run_ibm(p, L["M"], L["N"], L["s"], T, 1.0, seed)
+    r = run_ibm(p, L["M"], L["N"], L["s"], T, 1.0, seed, ibm_variant=L["ibm_variant"])
     return {"t": r["t"].tolist(), "x": r["x"].tolist(), "y": r["y"].tolist()}
 
 
@@ -255,8 +256,8 @@ def b4_large(cfg):
             "paper_readoff": {"OC": 0.5, "PC": 0.2, "OD": 0.05, "PD": 0.22, "corrupt": 0.53}}
 
 
-def _val_run(p, M, N, s, T, seed):
-    r = run_ibm(p, M, N, s, T, 1.0, seed)
+def _val_run(p, M, N, s, T, seed, ibm_variant="si"):
+    r = run_ibm(p, M, N, s, T, 1.0, seed, ibm_variant=ibm_variant)
     return np.column_stack([r["x"], r["y"]])
 
 
@@ -273,16 +274,231 @@ def validation(cfg):
     for M in (500, 2000, 8000, 32000):
         N = M // 5
         reps = 8
-        Zs = parallel([(_val_run, dict(p=p, M=M, N=N, s=L["s"], T=T, seed=cfg["seed"] + M + k))
+        Zs = parallel([(_val_run, dict(p=p, M=M, N=N, s=L["s"], T=T, seed=cfg["seed"] + M + k,
+                                       ibm_variant=L["ibm_variant"]))
                        for k in range(reps)], cfg["n_jobs"])
         rms = [float(np.sqrt(np.mean((Z[:len(t)] - Zode) ** 2))) for Z in Zs]
         out.append({"M": M, "N": N, "rms": bootstrap_ci(rms), "rms_all": rms})
     return {"points": out, "T": T, "t": t.tolist(), "ode": Zode.tolist()}
 
 
+# ---------------------------------------------------------------------------
+# SI verification (branch si-verification): side-by-side variants, B3 investigation,
+# comparisons with SI figures. See SI_EXTRACT.md and CHANGES_SI.md.
+# ---------------------------------------------------------------------------
+
+def _hc_defs(y):
+    """Three definitions of a time-averaged honest-to-corrupt ratio from a recorded series y."""
+    y = np.asarray(y, float)
+    yb = y.mean()
+    maj_h = np.mean(y > 0.5) + 0.5 * np.mean(y == 0.5)
+    maj_c = np.mean(y < 0.5) + 0.5 * np.mean(y == 0.5)
+    pure_h, pure_c = np.mean(y == 1.0), np.mean(y == 0.0)
+    return {"ybar": float(yb), "ratio_means": float(yb / (1 - yb)),
+            "ratio_majority": float(maj_h / maj_c) if maj_c > 0 else float("nan"),
+            "ratio_pure": float(pure_h / pure_c) if pure_c > 0 else float("nan")}
+
+
+def _b3_rep(p, S, burn, win, rec_dt, seed, diag=None, s=None, variant=None, x0=None):
+    """One small-population replicate; returns the three ratio definitions on the window."""
+    from src.ibm_diag import run_diag
+    pp = p.with_(mu=S["mu"], nu=S["nu"])
+    ss = S["s"] if s is None else s
+    if diag:
+        r = run_diag(pp, S["M"], S["N"], ss, burn + win, rec_dt, seed, x0=x0, **diag)
+    else:
+        r = run_ibm(pp, S["M"], S["N"], ss, burn + win, rec_dt, seed, x0=x0,
+                    ibm_variant=variant or S.get("ibm_variant", "si"))
+    w = r["t"] >= burn
+    out = _hc_defs(r["y"][w])
+    ep = summarize(r["t"][w], r["x"][w], r["y"][w], pp, kind="ibm")
+    out["episodes_per_1e5_steps"] = ep["episode_freq_per_1000"] / 1000 * 1e5 / (S["M"] + S["N"])
+    return out
+
+
+def _summ(rows, key):
+    return bootstrap_ci([r[key] for r in rows])
+
+
+def si_compare(cfg):
+    """B3 and B4 with ibm_variant = si and = reconstructed, same seeds (Step 3 of the SI task)."""
+    S0 = cfg["ibm_small"]
+    L0 = cfg["ibm_large"]
+    p = params_from(cfg)
+    b3c = cfg["b3"]
+    out = {}
+    for variant in ("si", "reconstructed"):
+        S = dict(S0, ibm_variant=variant)
+        tasks = [(_b3_rep, dict(p=p, S=S, burn=5000, win=b3c["gens"], rec_dt=0.5,
+                                seed=cfg["seed"] + 1000 * k + int(1e6 * S["mu"])))
+                 for k in range(b3c["reps"])]
+        rows = parallel(tasks, cfg["n_jobs"])
+        L = dict(L0, ibm_variant=variant)
+        pl = params_from(cfg, mu=L["mu"], nu=L["nu"])
+        T = 5e6 / (L["M"] + L["N"])
+        reps = min(cfg["reps"], 10)
+        runs = parallel([(_large_run, dict(p=pl, L=L, T=T, seed=cfg["seed"] + 50 + k))
+                         for k in range(reps)], cfg["n_jobs"])
+        tt = np.array(runs[0]["t"])
+        X = np.array([r["x"] for r in runs])
+        Y = np.array([r["y"] for r in runs])
+        late = tt >= 400
+        out[variant] = {
+            "b3_ratio": _summ(rows, "ratio_means"), "b3_ratios": [r["ratio_means"] for r in rows],
+            "b4_small_episodes_per_1e5_steps": _summ(rows, "episodes_per_1e5_steps"),
+            "b4_large_late": {"OC": bootstrap_ci(X[:, late, 0].mean(axis=1)),
+                              "PC": bootstrap_ci(X[:, late, 1].mean(axis=1)),
+                              "OD": bootstrap_ci(X[:, late, 2].mean(axis=1)),
+                              "PD": bootstrap_ci(X[:, late, 3].mean(axis=1)),
+                              "corrupt": bootstrap_ci(1 - Y[:, late].mean(axis=1))}}
+    out["identical"] = bool(out["si"]["b3_ratios"] == out["reconstructed"]["b3_ratios"]
+                            and out["si"]["b4_large_late"] == out["reconstructed"]["b4_large_late"])
+    return out
+
+
+def b3_diag(cfg):
+    """Investigation of the remaining B3 gap (published 2.15). Nothing here changes the default
+    model; each check varies one plausible cause and reports the resulting ratio."""
+    S = cfg["ibm_small"]
+    p = params_from(cfg)
+    reps = cfg["b3"]["reps"]
+    gens = cfg["b3"]["gens"]
+    seeds = [cfg["seed"] + 1000 * k + int(1e6 * S["mu"]) for k in range(reps)]
+
+    def batch(**kw):
+        burn = kw.pop("burn", 5000)
+        win = kw.pop("win", gens)
+        rec = kw.pop("rec_dt", 0.5)
+        n = kw.pop("n", reps)
+        sd = kw.pop("seeds", seeds)
+        return parallel([(_b3_rep, dict(p=p, S=S, burn=burn, win=win, rec_dt=rec, seed=sd[k],
+                                        **kw)) for k in range(n)], cfg["n_jobs"])
+
+    out = {"published": 2.15, "markov": float((19 * S["N"] + 87) / 109)}
+    base = batch()
+    out["baseline"] = {k: _summ(base, k) for k in ("ratio_means", "ratio_majority", "ratio_pure",
+                                                   "ybar")}
+    out["baseline_per_rep_ratio"] = [r["ratio_means"] for r in base]
+    vals = np.array(out["baseline_per_rep_ratio"])
+    out["baseline_per_rep_sd"] = float(vals.std(ddof=1))
+    out["baseline_frac_ge_published"] = float(np.mean(vals >= 2.15))
+    out["switches"] = {}
+    for sw in ("explore_any", "role_any", "self_payoff", "pair_step"):
+        rows = batch(diag={sw: True})
+        out["switches"][sw] = _summ(rows, "ratio_means")
+    out["selection"] = {}
+    for s in (1e3, 10.0):
+        rows = batch(s=s)
+        out["selection"][str(s)] = _summ(rows, "ratio_means")
+    rows = batch(burn=50000)
+    out["burn_in_50000"] = _summ(rows, "ratio_means")
+    rows = batch(x0=[1.0, 0.0, 0.0, 0.0])
+    out["start_allOC"] = _summ(rows, "ratio_means")
+    # run length: Fig. 1A window (1e5 steps) and SI Fig. 7 length (2.2e8 steps)
+    steps_per_gen = S["M"] + S["N"]
+    short_n = 300 if cfg["profile"] == "full" else 40
+    short = batch(win=1e5 / steps_per_gen, n=short_n,
+                  seeds=[cfg["seed"] + 77 + k for k in range(short_n)])
+    sv = np.array([r["ratio_means"] for r in short if np.isfinite(r["ratio_means"])])
+    out["short_runs_1e5_steps"] = {"n": int(len(sv)), "mean": float(sv.mean()),
+                                   "sd": float(sv.std(ddof=1)),
+                                   "q05": float(np.quantile(sv, 0.05)),
+                                   "q95": float(np.quantile(sv, 0.95)),
+                                   "frac_ge_published": float(np.mean(sv >= 2.15))}
+    long_n = 10 if cfg["profile"] == "full" else 3
+    long_win = (2.2e8 if cfg["profile"] == "full" else 2.2e7) / steps_per_gen
+    longr = batch(win=long_win, rec_dt=5.0, n=long_n,
+                  seeds=[cfg["seed"] + 991 + k for k in range(long_n)])
+    lv = np.array([r["ratio_means"] for r in longr])
+    out["long_runs"] = {"steps": long_win * steps_per_gen, "n": long_n, "values": lv.tolist(),
+                        "mean": float(lv.mean()), "sd": float(lv.std(ddof=1)),
+                        "frac_ge_published": float(np.mean(lv >= 2.15))}
+    return out
+
+
+def _hyst(v, hi, lo):
+    state, n = None, 0
+    for a in v:
+        if a > hi:
+            if state == "low":
+                n += 1
+            state = "high"
+        elif a < lo:
+            state = "low"
+    return n
+
+
+def _fig8_count(p, M, s, seed, ibm_variant):
+    """Cycles in 5e6 elementary steps, counted as for the digitized SI Fig. 8."""
+    N = M // 5
+    pp = p.with_(mu=0.01, nu=0.05)
+    T = 5e6 / (M + N)
+    r = run_ibm(pp, M, N, s, T, 0.5, seed, ibm_variant=ibm_variant)
+    x = r["x"]
+    if s >= 10:
+        return _hyst(x[:, 3], 0.35, 0.08)
+    return _hyst(x[:, 0], 0.7, 0.3)
+
+
+def _period_at(p):
+    T = 40000.0 if p.mu < 0.005 else 12000.0
+    m = Model(p)
+    sol = integrate(m, state(FIG3_X0, 1.0), T, t_eval=np.arange(T / 2, T + 1e-9, 0.25))
+    c = classify_attractor(sol.t, sol.y[4])
+    return c["period"] if c["type"] != "equilibrium" else float("nan")
+
+
+def si_checks(cfg):
+    """Our model against SI Fig. 8 (IBM cycle counts), SI Fig. 9B (mean-field periods), and the
+    cost-free (h = 0) Markov-chain closed form of SI p.3 (IBM simulation)."""
+    import json
+    from src.utils import RESULTS
+    with open(os.path.join(RESULTS, cfg["profile"], "si_digitized.json")) as fh:
+        dig = json.load(fh)["data"]
+    p = params_from(cfg)
+    reps = 4 if cfg["profile"] == "full" else 2
+    out = {"fig8": {}}
+    keys = list(dig["fig8"])
+    tasks = []
+    for k in keys:
+        d = dig["fig8"][k]
+        for r in range(reps):
+            tasks.append((_fig8_count, dict(p=p, M=d["M"], s=d["s"],
+                                            seed=cfg["seed"] + 313 * r + d["M"] + int(d["s"]),
+                                            ibm_variant=cfg["ibm_variant"])))
+    res = parallel(tasks, cfg["n_jobs"])
+    for i, k in enumerate(keys):
+        ours = res[i * reps:(i + 1) * reps]
+        out["fig8"][k] = {**dig["fig8"][k], "ours": ours, "ours_mean": float(np.mean(ours)),
+                          "rel_diff": float(np.mean(ours) / dig["fig8"][k]["cycles"] - 1)}
+    pts = dig["fig9b_label_points"]
+    per = parallel([(_period_at, dict(p=params_from(cfg, h=q["h"], mu=q["mu"], nu=q["mu"])))
+                    for q in pts], cfg["n_jobs"])
+    out["fig9b"] = [{**q, "ours": pr, "rel_diff": (pr / q["label_period"] - 1)
+                     if np.isfinite(pr) else None} for q, pr in zip(pts, per)]
+    # h = 0: IBM vs SI closed form 14 + 8N + 12M : 25 (lambda = 1)
+    S = cfg["ibm_small"]
+    pred = (14 + 8 * S["N"] + 12 * S["M"]) / 25
+    p0 = params_from(cfg, h=0.0)
+    h0 = {}
+    for mu in cfg["b3"]["mu_scan"][:2]:
+        scale = S["mu"] / mu
+        setting = dict(S, mu=mu, nu=mu * S["nu"] / S["mu"])
+        rows = parallel([(_b3_rep, dict(p=p0, S=setting, burn=5000 * scale,
+                                        win=cfg["b3"]["gens"] * scale,
+                                        rec_dt=0.5 if scale <= 1 else 5.0,
+                                        seed=cfg["seed"] + 4242 + k))
+                         for k in range(cfg["b3"]["reps"])], cfg["n_jobs"])
+        h0[str(mu)] = _summ(rows, "ratio_means")
+    out["h0"] = {"markov_prediction": pred, "ibm": h0}
+    return out
+
+
 SECTIONS = [("rep_b1b2", b1_b2), ("rep_fig3", fig3), ("rep_shrinkage", shrinkage),
             ("rep_markov", markov), ("rep_b3", b3), ("rep_b4_small", b4_small),
-            ("rep_b4_large", b4_large), ("rep_validation", validation)]
+            ("rep_b4_large", b4_large), ("rep_validation", validation),
+            ("rep_si_compare", si_compare), ("rep_b3_diag", b3_diag),
+            ("rep_si_checks", si_checks)]
 
 
 def main(profile, only=None):
