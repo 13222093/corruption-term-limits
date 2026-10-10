@@ -76,3 +76,31 @@ Log of completed tasks: what was done, results, next step. Newest entries at the
 - Bug fixed in the IBM: records at pulse times now show the post-pulse state, matching the
   mean-field pulse map.
 - Next: Phase 6 experiments (reproduction runner first, then E1-E7).
+
+## 2026-10-10 Phase 6: experiments (full profile)
+- Total full-run compute: 16.8 min for the main pipeline plus about 2 min for patched reruns
+  (rep_fig3, rep_shrinkage, ext_e5, ext_e5b) on 14 worker processes. Well inside the 4 h budget;
+  no reductions needed.
+- B3: IBM H:C = 2.03 [2.00, 2.06] at the paper's rates (paper: 2.15; Markov: 2.54); rarer
+  exploration moves it to 2.32 (mu = 3e-4) and 2.46 (mu = 1e-4), toward the Markov value.
+  Doubled window: 2.03. Mismatch with 2.15 reported, not tuned (integrity rule 4).
+- B4 large: late means OC 0.53, PC 0.19, OD 0.05, PD 0.23, corrupt 0.54; exact mean field
+  predicts a stable focus (eigenvalues -0.0081 +- 0.0089 i): damped oscillations.
+- Mean-field rotation: SNIC at rho_c = 0.0133 (formula 0.0137); period exponent -0.478.
+- Hypotheses (results/full/hypotheses.json): H1 supported; H2 not supported (vigilance falls but
+  remaining episodes are shallower and shorter); H3 supported (inheritance weakens rotation; the
+  V1 = V0(rho_eff) equivalence fails the strict pre-registered IBM test at 2 of 15 points, holds
+  with Bonferroni adjustment); H4 substitutes for honesty (mixed for cooperation); H5 mixed
+  (bistability only for kappa near 1; pre-registered sweep shows no loop; post-hoc sweep from the
+  corrupt state does; no start dependence in the IBM); H6 not supported (1375 points, rightmost
+  root never above -3.2e-4).
+- Follow-up E5b added after E5 found one bistable point; it is reported as a targeted follow-up,
+  and the pre-registered verdict is kept separate.
+- Bug found and fixed: IBM two-start runs in E5 used identical seeds, so chains coalesced; now
+  independent seeds.
+- Extra findings: pulses (whole-cohort replacement) give higher honesty than continuous rotation
+  at the same average rate; newcomers with p0 <= 0.75 can lower honesty; in the large IBM,
+  honesty with rotation follows (nu + rho)/(2 nu + rho) within 0.01.
+- Figures 1-10 and S1-S3 generated from results only; 271 LaTeX macros in
+  paper/autogen_numbers.tex.
+- Next: Phase 7 documentation.

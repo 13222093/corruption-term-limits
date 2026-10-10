@@ -104,3 +104,24 @@ changes are new entries that reference the old one.
   matching the violet orbit (mu = nu = 0.02) and treat the caption as a labeling error.
 - Alternatives: different time scaling of the ODE. Rejected: no single time factor maps the 1e-4
   orbit amplitudes onto the figure.
+
+## D-015 Relation of V0 rotation to biased exploration (honest reporting)
+- What: in the mean field, V0 rotation with p0 = 1 adds rho (1 - y) to dy/dt. Together with the
+  exploration term nu (1 - 2y) this is (nu + rho)(1 - y) - nu y: umpire exploration that is biased
+  toward honesty. The paper and README state this equivalence explicitly. Rotation differs from
+  biased exploration in the IBM only through who is replaced (any umpire, at a fixed rate,
+  independent of the imitation step), and in the extension variants (inheritance V1-V3, pulses).
+- Why: Lee, Sigmund, Dieckmann, Iwasa (2015, illegal logging) studied enforcer "education" that
+  raises the trial rate of honest conduct; Zhou et al. (2023) found higher enforcer exploration
+  rates reduce corruption. Our V0 result is close in spirit; novelty is claimed only for
+  (a) the bifurcation structure (SNIC at a critical rate rho_c proportional to the exploration
+  rate, with a small-mu formula) in the Lee et al. (2019) model, and (b) the inheritance variants.
+- Alternatives: claim rotation as entirely new. Rejected: not supported by the search.
+
+## D-016 Literature search (CLAUDE.md Section 13)
+- What: web searches (2026-10-10) for evolutionary-game models of corruption with rotation, term
+  limits or turnover of enforcers. Found none that model rotation of enforcers in an
+  evolutionary game. Related: Lee et al. 2015 (JTB, enforcer education), Liu, Chen and Szolnoki
+  2019 (M3AS, corrupt enforcers), Shi et al. 2023 and Zhou et al. 2023 (AMC, supervision of
+  umpires), Abbink 2004 (experimental staff rotation), Ferraz and Finan 2011 (empirical term
+  limits). The paper says "to our knowledge" and lists these.

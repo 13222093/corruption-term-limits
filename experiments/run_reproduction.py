@@ -57,7 +57,18 @@ def _orbit(p, T, n_keep=4000):
     step = max(1, len(t) // n_keep)
     d8 = float(np.min(np.hypot(1 - Z[:, 2], Z[:, 4])))
     d9 = float(np.min(np.hypot(1 - Z[:, 3], Z[:, 4])))
-    return {"attractor": c["type"], "period": c["period"], "ybar": float(Z[:, 4].mean()),
+    # period from successive downward crossings of y = 0.5 (robust for slow orbits)
+    cr = np.where((Z[:-1, 4] >= 0.5) & (Z[1:, 4] < 0.5))[0]
+    period_cross = float(np.mean(np.diff(t[cr]))) if len(cr) >= 2 else float("nan")
+    if c["type"] != "equilibrium" and not np.isfinite(c["period"]):
+        c["period"] = period_cross
+    # one full-resolution cycle (or the last 200 time units at an equilibrium) for plotting
+    span = 1.2 * c["period"] if np.isfinite(c["period"]) else 200.0
+    one = t >= t[-1] - span
+    cyc_step = max(1, int(one.sum() // 20000))
+    return {"cycle_t": t[one][::cyc_step].tolist(), "cycle_z": Z[one][::cyc_step].tolist(),
+            "attractor": c["type"], "period": c["period"], "period_cross": period_cross,
+            "ybar": float(Z[:, 4].mean()),
             "max_x": Z[:, :4].max(axis=0).tolist(), "min_y": float(Z[:, 4].min()),
             "max_y": float(Z[:, 4].max()), "dist_state8": d8, "dist_state9": d9,
             "full_t": sol.t[::max(1, len(sol.t) // n_keep)].tolist(),
@@ -96,6 +107,9 @@ def _shrink_point(p):
     y = sol.y[4]
     C = sol.y[0] + sol.y[1]
     c = classify_attractor(sol.t, y)
+    cr = np.where((y[:-1] >= 0.5) & (y[1:] < 0.5))[0]
+    if c["type"] != "equilibrium" and not np.isfinite(c["period"]) and len(cr) >= 2:
+        c["period"] = float(np.mean(np.diff(sol.t[cr])))
     return {"mu": p.mu, "A": p.A, "A_y": float(y.max() - y.min()),
             "A_C": float(C.max() - C.min()), "ybar": float(y.mean()), "period": c["period"],
             "attractor": c["type"]}
@@ -266,12 +280,17 @@ def validation(cfg):
     return {"points": out, "T": T, "t": t.tolist(), "ode": Zode.tolist()}
 
 
-def main(profile):
+SECTIONS = [("rep_b1b2", b1_b2), ("rep_fig3", fig3), ("rep_shrinkage", shrinkage),
+            ("rep_markov", markov), ("rep_b3", b3), ("rep_b4_small", b4_small),
+            ("rep_b4_large", b4_large), ("rep_validation", validation)]
+
+
+def main(profile, only=None):
     cfg = load_config(profile)
     t0 = time.time()
-    for name, fn in [("rep_b1b2", b1_b2), ("rep_fig3", fig3), ("rep_shrinkage", shrinkage),
-                     ("rep_markov", markov), ("rep_b3", b3), ("rep_b4_small", b4_small),
-                     ("rep_b4_large", b4_large), ("rep_validation", validation)]:
+    for name, fn in SECTIONS:
+        if only and name not in only:
+            continue
         t1 = time.time()
         data = fn(cfg)
         data["runtime_s"] = time.time() - t1
@@ -281,4 +300,4 @@ def main(profile):
 
 
 if __name__ == "__main__":
-    main(sys.argv[1] if len(sys.argv) > 1 else "quick")
+    main(sys.argv[1] if len(sys.argv) > 1 else "quick", sys.argv[2:] or None)

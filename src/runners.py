@@ -22,7 +22,7 @@ def ibm_replicate(p: Params, setting: dict, run: dict, seed: int, rho: float = 0
                   variant: str = "V0", kappa: float = 0.0, p0: float = 1.0,
                   pulse_T: float | None = None, pulse_tau: float = 0.0,
                   T_lag: float | None = None, x0=None, y0: float = 1.0,
-                  keep_series: int = 0) -> dict:
+                  keep_series: int = 0, kexp: float = 2.0) -> dict:
     """Run one IBM replicate and summarize the window after burn-in.
 
     setting: dict with M, N, mu, nu, s. run: dict with burn, win, rec_dt (generations).
@@ -39,7 +39,8 @@ def ibm_replicate(p: Params, setting: dict, run: dict, seed: int, rho: float = 0
     t_end = run["burn"] + run["win"]
     r = run_ibm(pp, setting["M"], setting["N"], setting["s"], t_end, run["rec_dt"], seed,
                 x0=x0, y0=y0, rot_mode=mode, rho=rho, variant=VAR_IBM[variant], p0=p0,
-                kappa=kappa, T_lag=T_lag, pulse_T=pulse_T or 1.0, pulse_tau=pulse_tau)
+                kappa=kappa, kexp=kexp, T_lag=T_lag, pulse_T=pulse_T or 1.0,
+                pulse_tau=pulse_tau)
     w = r["t"] >= run["burn"]
     out = summarize(r["t"][w], r["x"][w], r["y"][w], pp, kind="ibm")
     out["seed"] = int(seed)

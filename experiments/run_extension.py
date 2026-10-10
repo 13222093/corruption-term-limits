@@ -312,8 +312,94 @@ def e5(cfg):
             conds.append(({"variant": "V2", "rho": 0.1, "kappa": k, "start": name},
                           ibm_condition(cfg, "ibm_small", rho=0.1, variant="V2", kappa=k,
                                         x0=z0[:4] / z0[:4].sum(), y0=float(z0[4]),
-                                        seed_offset=31)))
+                                        seed_offset=31 if name == "honest" else 37)))
     out["ibm_small"] = run_conditions(cfg, conds)
+    return out
+
+
+def _sweep_kappa(p, rho, kappas, kexp, t_burn, t_win, z_start=None, direction="updown"):
+    """V2 kappa sweep continuing the state between steps. direction 'updown' is the
+    pre-registered protocol (start honest at the lowest kappa, sweep up, then down);
+    'down' starts at the highest kappa from z_start and sweeps down (post-hoc)."""
+    def step(k, z):
+        q = mf_point(p, "V2", rho, k, z0=z, t_burn=t_burn, t_win=t_win, kexp=kexp)
+        return {"kappa": k, "ybar": q["ybar"], "A_y": q["A_y"], "attractor": q["attractor"]},             np.array(q["z_end"])
+    if direction == "down":
+        z = np.array(z_start)
+        down = []
+        for k in kappas[::-1]:
+            r, z = step(k, z)
+            down.append(r)
+        return {"rho": rho, "kexp": kexp, "direction": "down", "down": down[::-1]}
+    up, down = [], []
+    z = HONEST_START.copy()
+    for k in kappas:
+        r, z = step(k, z)
+        up.append(r)
+    for k in kappas[::-1]:
+        r, z = step(k, z)
+        down.append(r)
+    return {"rho": rho, "kexp": kexp, "direction": "updown", "up": up, "down": down[::-1]}
+
+
+E5B_CASES = ((0.1, 2.0), (0.27, 2.0), (0.29, 4.0))
+
+
+def e5b(cfg):
+    """Targeted follow-up of the E5 scan, which found bistability only at kappa close to 1:
+    two-start maps in (rho, kappa), pre-registered and post-hoc kappa sweeps, IBM two starts."""
+    full = cfg["profile"] == "full"
+    tb = 8000 if full else 2000
+    out = {"maps": []}
+    rhos = list(np.linspace(0.05, 0.6, 12 if full else 4))
+    kaps = [0.8, 0.85, 0.9, 0.93, 0.95, 0.97, 0.98, 0.99, 0.995] if full else [0.9, 0.99]
+    for h, ke in E5B_CASES:
+        p = mf_params(cfg, h=h)
+        tasks, keys = [], []
+        for r in rhos:
+            for k in kaps:
+                for name, z0 in (("honest", HONEST_START), ("corrupt", CORRUPT_START)):
+                    tasks.append((mf_point, dict(p=p, variant="V2", rho=float(r), kappa=float(k),
+                                                 kexp=ke, z0=z0, t_burn=tb, t_win=tb)))
+                    keys.append((r, k, name))
+        res = parallel(tasks, cfg["n_jobs"])
+        grid = {}
+        for (r, k, name), q in zip(keys, res):
+            grid.setdefault((r, k), {})[name] = q["ybar"]
+        out["maps"].append({"h": h, "kexp": ke, "rows": [
+            {"rho": float(r), "kappa": float(k), "honest": v["honest"], "corrupt": v["corrupt"],
+             "bistable": abs(v["honest"] - v["corrupt"]) > 0.05} for (r, k), v in grid.items()]})
+    sweep_k = list(np.r_[np.linspace(0.0, 0.9, 10), np.linspace(0.92, 0.995, 9 if full else 3)])
+    tasks = []
+    for h, ke in ((0.1, 2.0), (0.29, 4.0)):
+        p = mf_params(cfg, h=h)
+        for r in (0.2, 0.4):
+            tasks.append((_sweep_kappa, dict(p=p, rho=r, kappas=sweep_k, kexp=ke, t_burn=tb,
+                                             t_win=tb)))
+            tasks.append((_sweep_kappa, dict(p=p, rho=r, kappas=[k for k in sweep_k if k >= 0.8],
+                                             kexp=ke, t_burn=tb, t_win=tb,
+                                             z_start=CORRUPT_START, direction="down")))
+    sw = parallel(tasks, cfg["n_jobs"])
+    labels = [(h, ke, r, d) for h, ke in ((0.1, 2.0), (0.29, 4.0)) for r in (0.2, 0.4)
+              for d in ("updown", "down")]
+    out["sweeps"] = [{"h": h, **q} for (h, ke, r, d), q in zip(labels, sw)]
+    conds = []
+    S = cfg["ibm_small"]
+    for h, ke, k, r in ((0.1, 2.0, 0.99, 0.4), (0.29, 4.0, 0.95, 0.2)):
+        for name, z0, off in (("honest", HONEST_START, 131), ("corrupt", CORRUPT_START, 137)):
+            for size, M in (("small", 50), ("medium", 500)):
+                setting = dict(S, M=M, N=M // 5)
+                run = cfg["ibm_small_run"] if size == "small" else dict(cfg["ibm_small_run"],
+                                                                         win=cfg["ibm_small_run"]["win"] // 5)
+                p = params_from(cfg, h=h)
+                tasks = [(ibm_replicate, dict(p=p, setting=setting, run=run,
+                                              seed=cfg["seed"] + off + M + 7919 * q, rho=r,
+                                              variant="V2", kappa=k, kexp=ke,
+                                              x0=z0[:4] / z0[:4].sum(), y0=float(z0[4])))
+                         for q in range(cfg["reps"])]
+                conds.append(({"start": name, "h": h, "kexp": ke, "kappa": k, "rho": r,
+                               "M": M, "N": M // 5}, tasks))
+    out["ibm"] = run_conditions(cfg, conds)
     return out
 
 
@@ -429,7 +515,8 @@ def e6(cfg):
     return out
 
 
-SECTIONS = {"bif": bif, "e1": e1, "e2": e2, "e3": e3, "e4": e4, "e5": e5, "e6": e6}
+SECTIONS = {"bif": bif, "e1": e1, "e2": e2, "e3": e3, "e4": e4, "e5": e5, "e5b": e5b,
+            "e6": e6}
 
 
 def main(profile, sections):
