@@ -123,3 +123,17 @@ def test_interior_equilibrium_and_hopf_in_exploration():
     hopf = an.locate_hopf(mk, 0.02, 0.07, interior[0])
     assert hopf is not None
     assert 0.02 < hopf[0] < 0.07
+
+
+def test_focus_to_node_is_not_reported_as_hopf():
+    """A = 0.7, mu = nu = 0.01: the corrupt focus turns into a node before the fold; this must
+    not be flagged as a Hopf point (n_unstable does not change by 2)."""
+    from src.rotation import make_model
+    p = BASE.with_(A=0.7, mu=0.01, nu=0.01)
+
+    def mk(r):
+        return make_model(p, "V0", r)
+    u0 = an.find_equilibria(mk(0.0))[0]
+    br = an.continue_equilibria(mk, u0, 0.0, 0.0, 1.0, ds=1e-3)
+    assert br["hopf_idx"] == []
+    assert len(br["fold_idx"]) == 2

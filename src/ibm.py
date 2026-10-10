@@ -130,15 +130,6 @@ def simulate(QH, QC, f, B, M, N, mu, nu, s, cnt0, n1_0, t_end, rec_dt, seed,
     next_rec = 0.0
     n_events = 0
     while True:
-        while k_rec < n_rec and t >= next_rec:
-            times[k_rec] = next_rec
-            for q in range(4):
-                rc[k_rec, q] = cnt[q]
-            rn[k_rec] = n1
-            k_rec += 1
-            next_rec = k_rec * rec_dt
-        if k_rec >= n_rec:
-            break
         if use_hist:
             while t >= next_hist:
                 hist[k_hist % L] = n1 / Nf
@@ -168,6 +159,16 @@ def simulate(QH, QC, f, B, M, N, mu, nu, s, cnt0, n1_0, t_end, rec_dt, seed,
                     new_h += 1
             n1 = h_left + new_h
             next_pulse += pulse_T
+        # record after any pulse at this time (same convention as the mean-field pulse map)
+        while k_rec < n_rec and t >= next_rec:
+            times[k_rec] = next_rec
+            for q in range(4):
+                rc[k_rec, q] = cnt[q]
+            rn[k_rec] = n1
+            k_rec += 1
+            next_rec = k_rec * rec_dt
+        if k_rec >= n_rec:
+            break
         u = np.random.random() * R
         y = n1 / Nf
         if u < Mf:

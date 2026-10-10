@@ -189,12 +189,31 @@ def track_equilibrium(make_model, values, u_start):
     return out
 
 
-def locate_hopf(make_model, lo, hi, u_guess, xtol: float = 1e-10):
-    """Locate a Hopf point between lo and hi by bisection on the leading complex real part.
+def locate_hopf(make_model, lo, hi, u_guess, xtol: float = 1e-10, n_scan: int = 60,
+                log_scan: bool = None):
+    """Locate the Hopf point closest to hi in [lo, hi].
 
-    Returns (value, u, imaginary part) or None if no sign change of a complex pair.
+    The equilibrium is continued from hi towards lo on a scan grid (log-spaced if lo > 0 and
+    hi / lo > 20), the first sign change of the real part of the leading complex pair is
+    bracketed, and refined by Brent's method. u_guess must be the equilibrium near hi.
+    Returns (value, u, |imaginary part|) or None if no sign change of a complex pair.
     """
-    state = {"u": np.asarray(u_guess, float)}
+    if log_scan is None:
+        log_scan = lo > 0 and hi / lo > 20
+    grid = np.geomspace(hi, lo, n_scan) if log_scan else np.linspace(hi, lo, n_scan)
+    branch = track_equilibrium(make_model, grid, u_guess)
+    vals = [(v, u, leading_complex_real_part(ev), int(np.sum(np.real(ev) > 0)))
+            for v, u, ev in branch]
+    bracket = None
+    for (v1, u1, g1, n1), (v2, u2, g2, n2) in zip(vals[:-1], vals[1:]):
+        # genuine Hopf: a complex pair crosses (n_unstable changes by 2)
+        if np.isfinite(g1) and np.isfinite(g2) and g1 * g2 < 0 and abs(n1 - n2) == 2:
+            bracket = (v2, v1, u1)
+            break
+    if bracket is None:
+        return None
+    a, b, u_b = bracket
+    state = {"u": np.asarray(u_b, float)}
 
     def g(v):
         m = make_model(v)
@@ -204,16 +223,175 @@ def locate_hopf(make_model, lo, hi, u_guess, xtol: float = 1e-10):
         state["u"] = u
         return leading_complex_real_part(eigenvalues(m, u))
 
-    glo, ghi = g(lo), g(hi)
-    if not (np.isfinite(glo) and np.isfinite(ghi)) or glo * ghi > 0:
-        return None
-    v = brentq(g, lo, hi, xtol=xtol)
+    v = brentq(g, a, b, xtol=xtol)
     m = make_model(v)
     u = refine_equilibrium(m, state["u"])
     ev = eigenvalues(m, u)
     cplx = [e for e in ev if abs(e.imag) > 1e-9]
     lead = max(cplx, key=lambda e: e.real)
     return v, u, abs(lead.imag)
+
+
+# ---------------------------------------------------------------------------
+# Near-closed-form approximation of the critical rotation rate (author's
+# derivation; verified against continuation in tests and results).
+# ---------------------------------------------------------------------------
+
+def invasion_thresholds(p: Params):
+    """Honest fractions below which OD and PD can invade a population of OCs (mu -> 0).
+
+    OD - OC payoff at the OC vertex: c - B - y (A - B)  -> y_OD = (c - B) / (A - B).
+    PD - OC payoff at the OC vertex: (c - B - h) - y (b - f - B) -> y_PD = (c - B - h)/(b - f - B).
+    These are the two ratios in the Fig. 3 caption of Lee et al.
+    """
+    return (p.c - p.B) / (p.A - p.B), (p.c - p.B - p.h) / (p.b - p.f - p.B)
+
+
+def _G_honest(y, p: Params, p0: float = 1.0):
+    """Rotation rate that makes honest fraction y an equilibrium near the OC vertex.
+
+    Mutation-selection balance near x = (1, 0, 0, 0): a rare type j has frequency
+    x_j = mu / (3 d_j(y)), with payoff deficits relative to OC
+      d_PC = (1 - y)(b - c - f) + h,  d_OD = y (A - B) - (c - B),  d_PD = y (b - f - B) - (c - B - h).
+    To first order in x_j, P_H - P_C = 4 f (x2 - x4) - 2 B (x3 + x4). The umpire equation
+    y (1 - y)(P_H - P_C) + nu (1 - 2 y) + rho (p0 - y) = 0 then gives rho = G(y).
+    """
+    dPC = (1 - y) * (p.b - p.c - p.f) + p.h
+    dOD = y * (p.A - p.B) - (p.c - p.B)
+    dPD = y * (p.b - p.f - p.B) - (p.c - p.B - p.h)
+    x2, x3, x4 = p.mu / (3 * dPC), p.mu / (3 * dOD), p.mu / (3 * dPD)
+    dP = 4 * p.f * (x2 - x4) - 2 * p.B * (x3 + x4)
+    return -(y * (1 - y) * dP + p.nu * (1 - 2 * y)) / (p0 - y)
+
+
+def rho_c_approx(p: Params, p0: float = 1.0):
+    """Approximate critical rotation rate (fold that creates the honest equilibrium).
+
+    rho_c ~ min_{y > y_th} G(y), y_th = max(y_OD, y_PD). G is linear in (mu, nu), so rho_c is
+    proportional to the exploration rates. Returns (rho_c, y at the fold).
+    """
+    from scipy.optimize import minimize_scalar
+    y_th = max(invasion_thresholds(p))
+    r = minimize_scalar(lambda y: _G_honest(y, p, p0), bounds=(y_th + 1e-9, p0 - 1e-6),
+                        method="bounded", options={"xatol": 1e-10})
+    return float(r.fun), float(r.x)
+
+
+# ---------------------------------------------------------------------------
+# Pseudo-arclength continuation of equilibria in one parameter, with fold and
+# Hopf detection (R2: "numerical continuation").
+# ---------------------------------------------------------------------------
+
+def _F(make_model, w):
+    return reduced_rhs(make_model(w[4]), w[:4])
+
+
+def _Fw(make_model, w, eps: float = 1e-7):
+    m = make_model(w[4])
+    Ju = jacobian(m, w[:4])
+    Fl = (_F(make_model, np.r_[w[:4], w[4] + eps]) - _F(make_model, np.r_[w[:4], w[4] - eps]))
+    return np.hstack([Ju, (Fl / (2 * eps)).reshape(4, 1)])
+
+
+def _tangent(A, t_prev=None):
+    _, _, Vt = np.linalg.svd(A)
+    t = Vt[-1]
+    if t_prev is not None and t @ t_prev < 0:
+        t = -t
+    return t / np.linalg.norm(t)
+
+
+def continue_equilibria(make_model, u0, lam0, lam_min, lam_max, ds: float = 1e-3,
+                        ds_min: float = 1e-7, ds_max: float = 2e-2, max_steps: int = 20000,
+                        direction: int = 1):
+    """Pseudo-arclength continuation of F(u, lam) = 0 starting at (u0, lam0).
+
+    Returns a dict of arrays: lam, u (n x 4), stable (bool), lead (leading eigenvalue),
+    fold_idx and hopf_idx (indices after which a fold / Hopf was detected).
+    """
+    w = np.r_[np.asarray(u0, float), lam0]
+    A = _Fw(make_model, w)
+    t = _tangent(A)
+    if np.sign(t[4]) != np.sign(direction):
+        t = -t
+    pts, stab, lead = [w.copy()], [], []
+    ev = eigenvalues(make_model(w[4]), w[:4])
+    stab.append(bool(ev[0].real < 0))
+    lead.append(ev[0])
+    n_unst = [int(np.sum(ev.real > 0))]
+    folds, hopfs = [], []
+    for _ in range(max_steps):
+        ok = False
+        while ds >= ds_min:
+            wp = w + ds * t
+            wc = wp.copy()
+            for _it in range(12):
+                Fv = _F(make_model, wc)
+                G = np.r_[Fv, t @ (wc - wp)]
+                Jg = np.vstack([_Fw(make_model, wc), t])
+                dw = np.linalg.solve(Jg, -G)
+                wc = wc + dw
+                if np.max(np.abs(dw)) < 1e-11:
+                    break
+            if np.max(np.abs(_F(make_model, wc))) < 1e-9 and np.linalg.norm(wc - w) < 3 * ds:
+                ok = True
+                break
+            ds *= 0.5
+        if not ok:
+            break
+        t_new = _tangent(_Fw(make_model, wc), t)
+        if t_new[4] * t[4] < 0:
+            folds.append(len(pts) - 1)
+        w, t = wc, t_new
+        if not in_domain(w[:4], tol=1e-6) or not (lam_min <= w[4] <= lam_max):
+            break
+        pts.append(w.copy())
+        ev = eigenvalues(make_model(w[4]), w[:4])
+        stab.append(bool(ev[0].real < 0))
+        lead.append(ev[0])
+        n_u = int(np.sum(ev.real > 0))
+        # Hopf: the number of unstable eigenvalues changes by 2 and a complex pair is involved
+        # (a focus turning into a node changes the leading complex pair but not n_unstable).
+        if abs(n_u - n_unst[-1]) == 2 and (np.any(np.abs(ev.imag) > 1e-9)
+                                          or np.any(np.abs(lead[-2].imag) > 1e-9)):
+            hopfs.append(len(pts) - 2)
+        n_unst.append(n_u)
+        ds = min(ds * 1.3, ds_max)
+    P = np.array(pts)
+    return {"lam": P[:, 4], "u": P[:, :4], "stable": np.array(stab), "lead": np.array(lead),
+            "fold_idx": folds, "hopf_idx": hopfs}
+
+
+def refine_hopf(make_model, u_guess, lam_guess):
+    """Solve F(u, lam) = 0 and Re(leading complex eigenvalue pair) = 0 for a Hopf point.
+
+    Works near folds where natural-parameter continuation fails. Returns (lam, u, omega).
+    """
+    def G(w):
+        if not np.all(np.isfinite(w)):
+            return np.full(5, 1e3)
+        m = make_model(w[4])
+        g = leading_complex_real_part(eigenvalues(m, w[:4]))
+        if not np.isfinite(g):  # no complex pair at this trial point: push the solver back
+            g = 1.0
+        return np.r_[reduced_rhs(m, w[:4]), g]
+    sol = root(G, np.r_[u_guess, lam_guess], method="hybr", tol=1e-13)
+    if not sol.success or np.max(np.abs(G(sol.x))) > 1e-9:
+        return None
+    ev = eigenvalues(make_model(sol.x[4]), sol.x[:4])
+    omega = max(abs(e.imag) for e in ev if abs(e.real) < 1e-6 and abs(e.imag) > 1e-9)
+    return sol.x[4], sol.x[:4], omega
+
+
+def refine_fold(make_model, u_guess, lam_guess):
+    """Solve F(u, lam) = 0 and det J_u = 0 for a fold point."""
+    def G(w):
+        m = make_model(w[4])
+        return np.r_[reduced_rhs(m, w[:4]), np.linalg.det(jacobian(m, w[:4])) * 1e4]
+    sol = root(G, np.r_[u_guess, lam_guess], method="hybr", tol=1e-13)
+    if not sol.success:
+        return None
+    return sol.x[4], sol.x[:4]
 
 
 # ---------------------------------------------------------------------------
