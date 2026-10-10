@@ -86,3 +86,21 @@ changes are new entries that reference the old one.
 - Why: the paper's replicator-mutator ODE is the weak-selection limit of the Fermi process, not
   its exact limit at s = 0.3. Comparing the IBM with the wrong ODE would confound model error with
   finite-size effects.
+
+## D-013 Mean-field exploration rates for the extension
+- What: mu = nu = 0.01 as the default for mean-field extension experiments; robustness at
+  mu = nu = 0.001 and 0.02 (E7).
+- Why: base cycle periods are about 9400 (1e-4), 1109 (1e-3), 204 (0.01), 136.5 (0.02) time units,
+  and the Hopf point is at mu = nu = 0.0616. At 0.01 the base dynamics cycle with deep corruption
+  (min y about 0.02), and the period is short enough that a 10^4 window holds about 50 cycles.
+- Alternatives: 1e-4 (the orange orbit of Fig. 3) has a period near 10^4 and nearly heteroclinic
+  behavior, which makes heatmaps costly and sensitive to integration windows. 0.02 is the orbit
+  that Fig. 3C, D actually show (SPEC D6) and is used as a robustness case.
+
+## D-014 Discrepancy D6 (Fig. 3C, D)
+- What: the caption says Fig. 3C, D show the orange (mu = nu = 1e-4) limit cycle. Our integration
+  gives period 9437 at 1e-4 but 136.5 at 0.02, with peak frequencies (OC 0.923, PC 0.697, PD 0.438,
+  OD 0.268, min honest 0.047) that match the Fig. 3C, D read-offs. We report Fig. 3C, D as
+  matching the violet orbit (mu = nu = 0.02) and treat the caption as a labeling error.
+- Alternatives: different time scaling of the ODE. Rejected: no single time factor maps the 1e-4
+  orbit amplitudes onto the figure.
