@@ -11,6 +11,7 @@ test:
 	$(PYTHON) -m pytest
 
 reproduce:
+	$(PYTHON) experiments/digitize_si.py $(PROFILE)
 	$(PYTHON) experiments/run_reproduction.py $(PROFILE)
 
 extension:

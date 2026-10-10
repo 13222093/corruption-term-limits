@@ -5,6 +5,7 @@ import sys
 profile = sys.argv[1] if len(sys.argv) > 1 else "full"
 steps = [
     [sys.executable, "-m", "pytest"],
+    [sys.executable, "experiments/digitize_si.py", profile],
     [sys.executable, "experiments/run_reproduction.py", profile],
     [sys.executable, "experiments/run_extension.py", profile],
     [sys.executable, "experiments/run_sensitivity.py", profile],
