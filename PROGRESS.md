@@ -211,3 +211,23 @@ Log of completed tasks: what was done, results, next step. Newest entries at the
   SOP sentences, the author notes, the CV entry and the project brief should be public (done:
   kept private, D-026); ask Lee et al. which time average gave 2.15 and which update order they
   used.
+
+## 2026-10-12 History cleaned before the first public push (D-026)
+- Backup of the whole repository folder: ../corruption-term-limits_backup_2026-10-12_pre-filter.
+- The four private files and the three templates of the private notes moved to private/
+  (gitignored); render_docs.py renders the private templates into private/. Public documents
+  and code comments no longer point to them.
+- git filter-repo removed those paths and logs/ from every commit and set the author, committer
+  and tagger of every commit to Mohammad Ari Alexander Aziz with the GitHub noreply address of the
+  author's account. The repository now holds 21 commits with that single identity.
+- Full pipeline rerun on the rewritten history (`python run_all.py full`, 24 min wall clock):
+  100 tests passed; all 29 result files have identical data to the snapshot taken before the
+  rerun (runtimes ignored); every `git_commit` field in results/full/ is b65f862, a commit of
+  the rewritten history. Of 361 number macros only RuntimeFullMin changed (17 to 22 minutes of
+  recorded compute); every reported result is unchanged. Both papers compile without undefined
+  references or overfull boxes.
+- Search of all 473+ git objects (reachable or not) and the tracked files: no local Windows path
+  and no old email anywhere. The four file names remain only as plain-text mentions in earlier
+  versions of public documents and code comments and in one commit message (D-026); no tracked
+  file in the current tree mentions them.
+- Tag v1.0.0 recreated on the new head of main. PUSH_INSTRUCTIONS.md updated. Not pushed.

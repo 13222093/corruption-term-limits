@@ -2,9 +2,9 @@
  "meta": {
   "name": "sens_finite",
   "config_hash": "1bb6d80af734",
-  "git_commit": "0925a29-dirty",
+  "git_commit": "b65f862",
   "profile": "full",
-  "created": "2026-10-10T22:12:22",
+  "created": "2026-10-12T01:32:22",
   "config": {
    "params": {
     "b": 1.0,
@@ -9928,6 +9928,6 @@
     ]
    }
   ],
-  "runtime_s": 73.13509583473206
+  "runtime_s": 77.9139757156372
  }
 }

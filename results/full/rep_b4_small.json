@@ -2,9 +2,9 @@
  "meta": {
   "name": "rep_b4_small",
   "config_hash": "1bb6d80af734",
-  "git_commit": "0925a29-dirty",
+  "git_commit": "b65f862",
   "profile": "full",
-  "created": "2026-10-10T21:57:21",
+  "created": "2026-10-12T01:11:56",
   "config": {
    "params": {
     "b": 1.0,
@@ -26886,6 +26886,6 @@
    "depth_y_max": 1.0,
    "depth_C_min": 0.0
   },
-  "runtime_s": 0.04763460159301758
+  "runtime_s": 0.06418156623840332
  }
 }

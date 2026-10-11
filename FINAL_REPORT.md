@@ -120,7 +120,7 @@ python experiments/make_changes_si.py
 python experiments/render_docs.py
 python experiments/build_paper.py
 ```
-Recorded compute: about 17 minutes (full) and 3 minutes (quick).
+Recorded compute: about 22 minutes (full) and 3 minutes (quick).
 
 ## 9. Definition of done (project brief, Section 15)
 - [x] All tests pass (100); `make all` regenerates everything (quick pipeline, numbers, docs and

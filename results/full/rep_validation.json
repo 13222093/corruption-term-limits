@@ -2,9 +2,9 @@
  "meta": {
   "name": "rep_validation",
   "config_hash": "1bb6d80af734",
-  "git_commit": "0925a29-dirty",
+  "git_commit": "b65f862",
   "profile": "full",
-  "created": "2026-10-10T21:57:23",
+  "created": "2026-10-12T01:11:59",
   "config": {
    "params": {
     "b": 1.0,
@@ -1077,6 +1077,6 @@
     0.48604111565658487
    ]
   ],
-  "runtime_s": 0.9541101455688477
+  "runtime_s": 1.0349624156951904
  }
 }

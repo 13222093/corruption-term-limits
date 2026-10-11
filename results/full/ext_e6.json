@@ -2,9 +2,9 @@
  "meta": {
   "name": "ext_e6",
   "config_hash": "1bb6d80af734",
-  "git_commit": "0925a29-dirty",
+  "git_commit": "b65f862",
   "profile": "full",
-  "created": "2026-10-10T22:08:26",
+  "created": "2026-10-12T01:28:45",
   "config": {
    "params": {
     "b": 1.0,
@@ -2703,6 +2703,6 @@
     "Cbar": 0.9829283848612845
    }
   ],
-  "runtime_s": 67.67377924919128
+  "runtime_s": 32.51985692977905
  }
 }

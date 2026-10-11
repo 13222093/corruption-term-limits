@@ -2,9 +2,9 @@
  "meta": {
   "name": "rep_fig3",
   "config_hash": "1bb6d80af734",
-  "git_commit": "0925a29-dirty",
+  "git_commit": "b65f862",
   "profile": "full",
-  "created": "2026-10-10T21:55:58",
+  "created": "2026-10-12T01:10:24",
   "config": {
    "params": {
     "b": 1.0,
@@ -669702,6 +669702,6 @@
     "y_PD": 0.33333333333333326
    }
   },
-  "runtime_s": 3.8028275966644287
+  "runtime_s": 6.412454128265381
  }
 }

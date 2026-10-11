@@ -2,9 +2,9 @@
  "meta": {
   "name": "sens_numerics",
   "config_hash": "1bb6d80af734",
-  "git_commit": "0925a29-dirty",
+  "git_commit": "b65f862",
   "profile": "full",
-  "created": "2026-10-10T22:12:43",
+  "created": "2026-10-12T01:32:44",
   "config": {
    "params": {
     "b": 1.0,
@@ -572,6 +572,6 @@
     "grid_step": 0.00125
    }
   ],
-  "runtime_s": 17.951478719711304
+  "runtime_s": 18.192362546920776
  }
 }

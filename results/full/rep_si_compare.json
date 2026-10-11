@@ -2,9 +2,9 @@
  "meta": {
   "name": "rep_si_compare",
   "config_hash": "1bb6d80af734",
-  "git_commit": "0925a29-dirty",
+  "git_commit": "b65f862",
   "profile": "full",
-  "created": "2026-10-10T21:57:34",
+  "created": "2026-10-12T01:12:11",
   "config": {
    "params": {
     "b": 1.0,
@@ -339,6 +339,6 @@
    }
   },
   "identical": true,
-  "runtime_s": 10.822595834732056
+  "runtime_s": 12.224456071853638
  }
 }

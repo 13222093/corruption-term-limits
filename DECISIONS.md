@@ -216,3 +216,34 @@ changes are new entries that reference the old one.
 - Not changed: DECISIONS.md and PROGRESS.md entries written earlier, CHANGES_SI.md history and
   results/pre_si/ keep the wording of the time, because they are dated logs and snapshots.
   The project brief was not edited. WORDING_AUDIT.md lists every replacement.
+
+## D-026 History cleaned before the first public push
+- What: (1) the SOP sentences, the author notes, the CV entry and the project brief were moved to
+  `private/` (gitignored). Their templates moved to `private/docs_src/`, and
+  `experiments/render_docs.py` renders them into `private/` when that folder exists. Public
+  documents and code comments no longer link to them (code comments now cite SPEC.md Section 11
+  for the extension). (2) The repository folder was copied to
+  `../corruption-term-limits_backup_2026-10-12_pre-filter` (git fsck clean, refs/ included).
+  (3) `git filter-repo` (installed with pip, version a40bce548d2c) removed from every commit the
+  four private files (project brief, SOP sentences, author notes, CV entry), the three templates
+  of the last three in docs_src/, and logs/ (three build logs with a local path). (4) A mailmap replaced the author and
+  committer of every commit, and the tagger, with
+  `Mohammad Ari Alexander Aziz <228153893+13222093@users.noreply.github.com>`. The repository's
+  local git config uses the same identity for new commits. (5) The tag v1.0.0 was deleted and
+  recreated on the final head of main after the pipeline rerun.
+- Why the noreply address: the release task named a placeholder, "YOUR-NOREPLY-EMAIL". The
+  GitHub account connected to this session is the author's (name Mohammad Ari Alexander Aziz,
+  login 13222093, id 228153893, profile email equal to the old commit email), so its GitHub
+  noreply address `<id>+<login>@users.noreply.github.com` was used. If a different account will
+  host the repository, rerun the mailmap step before pushing.
+- Why the templates were removed too: they hold the same text as the rendered files, so removing
+  only the rendered files would have left the content in the history.
+- Effect on provenance: the rewrite changed every commit hash, so the pipeline was rerun on the
+  rewritten history; the `git_commit` fields in results/ now name commits that exist. This
+  supersedes the reason given in D-023 for not rewriting history. Results before and after the
+  rerun are compared in PROGRESS.md.
+- Not rewritten: plain-text mentions of the four file names in earlier versions of public
+  documents (README, FINAL_REPORT, DECISIONS, PROGRESS, PLAN, SPEC, WORDING_AUDIT,
+  PUSH_INSTRUCTIONS, CITATIONS_TODO), in four code comments and in one commit message. These are
+  names only; the files' content is gone. A `--replace-text` pass could remove them, but it would
+  change every hash again and need another rerun.

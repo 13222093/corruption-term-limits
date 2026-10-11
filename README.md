@@ -164,7 +164,7 @@ python run_all.py full            # the full pipeline without make
 ```
 
 Expected runtimes on a 16-thread laptop (14 worker processes): about 3 minutes
-for the quick pipeline and about 17 minutes of recorded compute for the full
+for the quick pipeline and about 22 minutes of recorded compute for the full
 pipeline, plus about a minute to build the two papers. `make numbers docs paper` regenerates the
 number macros, the Markdown documents and the PDFs from the committed results without rerunning
 the experiments.

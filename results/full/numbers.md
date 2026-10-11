@@ -361,5 +361,5 @@
 | \HZeroIBMB | 15.32 | h = 0 IBM ratio at mu = 0.0003 |
 | \HZeroIBMBLo | 14.80 | h = 0 IBM ratio at mu = 0.0003 (95% CI low) |
 | \HZeroIBMBHi | 15.85 | h = 0 IBM ratio at mu = 0.0003 (95% CI high) |
-| \RuntimeFullMin | 17 | total recorded compute, full profile (minutes) |
+| \RuntimeFullMin | 22 | total recorded compute, full profile (minutes) |
 | \RuntimeQuickMin | 3 | total recorded compute, quick profile (minutes) |

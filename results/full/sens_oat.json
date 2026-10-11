@@ -2,9 +2,9 @@
  "meta": {
   "name": "sens_oat",
   "config_hash": "1bb6d80af734",
-  "git_commit": "0925a29-dirty",
+  "git_commit": "b65f862",
   "profile": "full",
-  "created": "2026-10-10T22:09:44",
+  "created": "2026-10-12T01:30:00",
   "config": {
    "params": {
     "b": 1.0,
@@ -4159,6 +4159,6 @@
    }
   ],
   "ibm_small_s_identical": true,
-  "runtime_s": 74.11971807479858
+  "runtime_s": 70.86677432060242
  }
 }

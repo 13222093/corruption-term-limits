@@ -2,9 +2,9 @@
  "meta": {
   "name": "sens_altA",
   "config_hash": "1bb6d80af734",
-  "git_commit": "0925a29-dirty",
+  "git_commit": "b65f862",
   "profile": "full",
-  "created": "2026-10-10T22:10:44",
+  "created": "2026-10-12T01:30:47",
   "config": {
    "params": {
     "b": 1.0,
@@ -5906,6 +5906,6 @@
     ]
    }
   ],
-  "runtime_s": 19.467050075531006
+  "runtime_s": 13.606600999832153
  }
 }

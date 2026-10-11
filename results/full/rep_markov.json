@@ -2,9 +2,9 @@
  "meta": {
   "name": "rep_markov",
   "config_hash": "1bb6d80af734",
-  "git_commit": "0925a29-dirty",
+  "git_commit": "b65f862",
   "profile": "full",
-  "created": "2026-10-10T21:56:17",
+  "created": "2026-10-12T01:10:46",
   "config": {
    "params": {
     "b": 1.0,
@@ -369,6 +369,6 @@
    0.041450777202105084
   ],
   "mu_pop_per_generation": 0.05,
-  "runtime_s": 1.3830006122589111
+  "runtime_s": 1.5933310985565186
  }
 }

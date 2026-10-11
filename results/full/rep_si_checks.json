@@ -2,9 +2,9 @@
  "meta": {
   "name": "rep_si_checks",
   "config_hash": "1bb6d80af734",
-  "git_commit": "0925a29-dirty",
+  "git_commit": "b65f862",
   "profile": "full",
-  "created": "2026-10-10T21:59:08",
+  "created": "2026-10-12T01:13:59",
   "config": {
    "params": {
     "b": 1.0,
@@ -352,6 +352,6 @@
     ]
    }
   },
-  "runtime_s": 21.11695909500122
+  "runtime_s": 25.42407512664795
  }
 }
