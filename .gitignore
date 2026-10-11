@@ -26,3 +26,6 @@ logs/
 results/quick/
 figures/quick/
 paper/ieee/*.toc
+
+# Author-only notes and the project brief, never distributed (DECISIONS D-026)
+private/

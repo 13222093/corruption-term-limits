@@ -29,7 +29,7 @@ ROT_NONE, ROT_V0, ROT_V1, ROT_V2 = 0, 1, 2, 3
 
 @njit(cache=True)
 def conformist(y, k):
-    """g(y) = y^k / (y^k + (1 - y)^k) (CLAUDE.md Section 6, V2)."""
+    """g(y) = y^k / (y^k + (1 - y)^k) (SPEC.md Section 11, V2)."""
     if y <= 0.0:
         return 0.0
     if y >= 1.0:
@@ -40,7 +40,7 @@ def conformist(y, k):
 
 @njit(cache=True)
 def p_new_value(variant, y, p0, kappa, kexp):
-    """Honesty probability of a newcomer for undelayed variants (ASSUMPTION, CLAUDE.md Sec. 6)."""
+    """Honesty probability of a newcomer for undelayed variants (ASSUMPTION, SPEC.md Section 11)."""
     if variant == ROT_V0:
         return p0
     if variant == ROT_V1:

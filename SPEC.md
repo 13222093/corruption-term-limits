@@ -58,7 +58,7 @@ PC: -h        -h    -h         -h
 OD: b-f-B      0    -f-B       -f-B
 PD: b-f-B-h   -h    -f-B-h     -f-B-h
 ```
-All signs agree with CLAUDE.md Section 4. No discrepancy.
+All signs agree with the project brief, Section 4. No discrepancy.
 
 ## 3. Umpire income (Methods, p.13280 col.2)
 
@@ -75,7 +75,7 @@ All signs agree with CLAUDE.md Section 4. No discrepancy.
 1. f + h < b - c
 2. c + h < A
 3. B + h < c
-4. h < sqrt(f (f + B))   (confirmed: geometric mean of f and f + B; CLAUDE.md guess correct)
+4. h < sqrt(f (f + B))   (confirmed: geometric mean of f and f + B; guess in the project brief correct)
 
 At base parameters: 0.3 < 0.5; 0.6 < 2; 0.3 < 0.5; 0.1 < 0.2828. All hold. Checked in
 src/params.py (`check_inequalities`).
@@ -172,7 +172,7 @@ U1: the SI does not specify the procedure. Status of each assumption after readi
 - Assumes h > 0, hard imitation, exploration rare enough that each mutant is fixed or lost
   before the next.
 - Absorbing states (10): honest umpires: 1 allOC, 2 allPC, 3 allOD, 4 allPD, 5 OD+PD;
-  corrupt umpires: 6 allOC, 7 allPC, 8 allOD, 9 allPD, 10 OD+PC. Matches CLAUDE.md "10".
+  corrupt umpires: 6 allOC, 7 allPC, 8 allOD, 9 allPD, 10 OD+PC. Matches the "10" in the project brief.
 - mu is the probability per time step of an exploration step in the player population
   ("mu is the M-fold of the individual exploration rate"); nu = lambda mu in the umpire population.
 - Printed transition matrix T (rows = from, columns = to; * = 1 - row sum):
@@ -224,7 +224,7 @@ Derivation (U2, VERIFIED from SI p.2-3; implemented in src/rare_exploration.py):
 | mu = nu (ODE) | 0.0001, 0.02, 0.07 | Fig. 3 caption |
 | ODE initial state | y1 = 1, x = (0.1, 0.4, 0.4, 0.1) | Fig. 3 caption |
 
-## 11. Extension (ASSUMPTION: author's design, CLAUDE.md Section 6; not in Lee et al.)
+## 11. Extension (ASSUMPTION: author's design in the project brief, Section 6; not in Lee et al.)
 
 Mean field (continuous rotation): dy1/dt = [base] + rho (p_new - y1).
 - V0: p_new = p0.

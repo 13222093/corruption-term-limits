@@ -1,6 +1,6 @@
 """Umpire rotation (term limits) with inherited integrity: mean-field versions.
 
-ASSUMPTION (author's extension, CLAUDE.md Section 6; not part of Lee et al. 2019):
+ASSUMPTION (author's extension, SPEC.md Section 11; not part of Lee et al. 2019):
 - Continuous rotation: each umpire is replaced at rate rho; dy/dt gains rho (p_new - y).
 - Pulse rotation: every T time units a fraction tau of umpires is replaced at once:
   y -> (1 - tau) y + tau p_new. Average rate rho = tau / T.

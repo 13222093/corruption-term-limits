@@ -15,7 +15,7 @@ extension with umpire rotation and inherited integrity.
 | 4 | Rare-exploration Markov chain: derive T from payoffs, compare with printed T, B3 vs long simulations | src/rare_exploration.py |
 | 5 | Rotation V0-V3 in ODE, DDE and IBM (continuous and pulse) | src/rotation.py, src/dde.py, tests/test_rotation_limits.py, tests/test_rho_eff_equivalence.py |
 | 6 | METRICS.md (committed before experiments), mean-field analysis (Hopf in rho), E1-E7 | results/, figures/ |
-| 7 | README, NOTES_for_author.md, SOP_sentences.md | docs |
+| 7 | README, the author notes, the SOP sentences | docs |
 | 8 | LaTeX paper with autogen numbers | paper/ |
 | 9 | REVIEW.md, fixes, FINAL_REPORT.md | |
 

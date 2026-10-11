@@ -30,7 +30,12 @@ def load_macros():
 def main():
     vals = load_macros()
     missing = set()
-    for src in glob.glob(os.path.join(ROOT, "docs_src", "*.md.in")):
+    # Public templates render into the repository root. Author-only templates in private/docs_src/
+    # (gitignored, not distributed) render into private/ when that folder is present.
+    jobs = [(src, ROOT) for src in glob.glob(os.path.join(ROOT, "docs_src", "*.md.in"))]
+    jobs += [(src, os.path.join(ROOT, "private"))
+             for src in glob.glob(os.path.join(ROOT, "private", "docs_src", "*.md.in"))]
+    for src, out_dir in jobs:
         with open(src, encoding="utf-8") as fh:
             text = fh.read()
 
@@ -45,9 +50,10 @@ def main():
                 return fh2.read()
         text = re.sub(r"\{\{include:([^}]+)\}\}", inc, text)
         out = re.sub(r"\{\{([A-Za-z]+)\}\}", rep, text)
-        dst = os.path.join(ROOT, os.path.basename(src)[:-3])
+        dst = os.path.join(out_dir, os.path.basename(src)[:-3])
+        rel_src = os.path.relpath(src, ROOT).replace(os.sep, "/")
         with open(dst, "w", encoding="utf-8") as fh:
-            fh.write("<!-- Generated from docs_src/" + os.path.basename(src)
+            fh.write("<!-- Generated from " + rel_src
                      + " by experiments/render_docs.py; edit the template, not this file. -->\n"
                      + out)
         print("wrote", os.path.relpath(dst, ROOT))

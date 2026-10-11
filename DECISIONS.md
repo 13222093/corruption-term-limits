@@ -16,7 +16,7 @@ changes are new entries that reference the old one.
 - What: Python 3.12.8 (system install), pip packages numpy 2.2.6, scipy 1.13.1, sympy 1.14.0,
   matplotlib 3.9.2, pandas 2.2.3, numba 0.68.0, joblib, pyyaml, pytest. environment.yml is
   provided for conda users and pins python 3.12.
-- Why: CLAUDE.md asks for 3.11; 3.12 is what is installed, conda is not installed, and nothing in
+- Why: the project brief asks for 3.11; 3.12 is what is installed, conda is not installed, and nothing in
   the code depends on the 3.11/3.12 difference.
 - Alternatives: install Python 3.11 side by side. Rejected as unnecessary risk to the user's system.
 
@@ -61,13 +61,13 @@ changes are new entries that reference the old one.
 
 ## D-009 SI Appendix unavailable
 - What: proceed from the main text; mark SI-dependent items UNVERIFIED (SPEC Section 0).
-- Why: CLAUDE.md integrity rule 1. Access attempts: PMC (CAPTCHA, not bypassed), PNAS (HTTP 403),
+- Why: integrity rule 1 of the project brief. Access attempts: PMC (CAPTCHA, not bypassed), PNAS (HTTP 403),
   IIASA PURE (bot protection).
 
 ## D-010 Default delay in V3
 - What: continuous rotation: T_lag = 1/rho (mean term length). Pulse rotation: T_lag = T.
   E6 varies T_lag independently.
-- Why: CLAUDE.md says "T_lag = one term"; under continuous rotation the mean term is 1/rho.
+- Why: the project brief says "T_lag = one term"; under continuous rotation the mean term is 1/rho.
 
 ## D-011 Rotation in the IBM
 - What: rotation is an extra event type. Per generation, the expected number of events is M player
@@ -118,7 +118,7 @@ changes are new entries that reference the old one.
   rate, with a small-mu formula) in the Lee et al. (2019) model, and (b) the inheritance variants.
 - Alternatives: claim rotation as entirely new. Rejected: not supported by the search.
 
-## D-016 Literature search (CLAUDE.md Section 13)
+## D-016 Literature search (project brief, Section 13)
 - What: web searches (2026-10-10) for evolutionary-game models of corruption with rotation, term
   limits or turnover of enforcers. Found none that model rotation of enforcers in an
   evolutionary game. Related: Lee et al. 2015 (JTB, enforcer education), Liu, Chen and Szolnoki
@@ -196,12 +196,12 @@ changes are new entries that reference the old one.
   (the Windows user folder, which shows the author's name). Every result file records the git
   commit that produced it, and the documents cite commit aef9a3f; rewriting history would break
   those links. PUSH_INSTRUCTIONS.md gives the command if the author prefers to purge them.
-- Personal files: SOP_sentences.md, NOTES_for_author.md, CV_ENTRY.md and CLAUDE.md are project
-  deliverables listed in CLAUDE.md and in the release task, so they stay. PUSH_INSTRUCTIONS.md
-  reminds the author that they become public with the repository.
+- Personal files: the SOP sentences, the author notes, the CV entry and the project brief were
+  first kept as deliverables listed in the brief. Superseded by D-026: they are now in private/
+  and were removed from the history.
 
 ## D-024 Order of release steps
-- What: the release tag v1.0.0, CV_ENTRY.md and the push are done after Parts 2 and 3 of the
+- What: the release tag v1.0.0, the CV entry and the push are done after Parts 2 and 3 of the
   release task (B3 wording in the paper, neutral wording), not in the middle of Part 1.
 - Why: the tag should point to the final content. Tagging first and then changing the paper and
   documents would make v1.0.0 differ from what the README describes.
@@ -210,9 +210,9 @@ changes are new entries that reference the old one.
 - What: the paper sources, Markdown templates, SPEC.md, SI_EXTRACT.md and code comments now
   describe D1-D4, D6 and D7 as notation inconsistencies with evidence and our resolution. D5 is
   described only in CHANGES_SI.md and in this log (D-019) as our misreading, plus one reminder in
-  NOTES_for_author.md Part 4, as the release task asks. The paper main text keeps one sentence on
+  Part 4 of the author notes, as the release task asks. The paper main text keeps one sentence on
   notation inconsistencies (Model section); the details are in the appendix. Internal LaTeX labels
   `app:typos` and `tab:typos` were renamed to `app:notes` and `tab:notation`.
 - Not changed: DECISIONS.md and PROGRESS.md entries written earlier, CHANGES_SI.md history and
   results/pre_si/ keep the wording of the time, because they are dated logs and snapshots.
-  CLAUDE.md is the author's brief and was not edited. WORDING_AUDIT.md lists every replacement.
+  The project brief was not edited. WORDING_AUDIT.md lists every replacement.

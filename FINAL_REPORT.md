@@ -18,7 +18,7 @@ All numbers below are generated from `results/full/`.
 | B4 orbit shrinkage | qualitative | Hopf at mu = nu = 0.0616 (A = 2), 0.0314 (A = 0.7) | reproduced |
 | Fig. 3C, D values | read off: OC 0.93, PC 0.70, PD 0.45, OD 0.27, period about 137 | at mu = nu = 0.02: 0.923, 0.697, 0.438, 0.268, period 136.5 | match (see D6) |
 
-The fallback project (Section 14 of CLAUDE.md) was not needed: B1 and B2 passed.
+The fallback project (Section 14 of the project brief) was not needed: B1 and B2 passed.
 
 ## 2. Notation inconsistencies and other reproduction notes
 The reproduction relies on the clear and detailed description by Lee et al. (2019). In a few
@@ -94,12 +94,12 @@ a follow-up. See REVIEW.md.
 1. The SI was obtained and checked (SI_EXTRACT.md, CHANGES_SI.md). Remaining: ask the authors
    which time average gave 2.15 and which update order their simulation used (U1, U3).
 2. Push the repository (PUSH_INSTRUCTIONS.md; GitHub CLI was not available, so nothing has been
-   pushed), then fill in the repository URL in README, CITATION.cff, CV_ENTRY and both papers,
+   pushed), then fill in the repository URL in README, CITATION.cff, the CV entry and both papers,
    and the email, ORCID and further acknowledgements in both papers.
 3. Decide whether to keep A = 0.7 and the two-parameter Hopf region in the main text.
 4. Consider a formal derivation of rho_c (matched asymptotics) and an analysis of pulses as a
    periodically forced system.
-5. Read NOTES_for_author.md before interviews; the answers there are honest about the gaps.
+5. Review the private interview notes before interviews.
 
 ## 8. Exact commands to regenerate everything
 ```bash
@@ -122,14 +122,15 @@ python experiments/build_paper.py
 ```
 Recorded compute: about 17 minutes (full) and 3 minutes (quick).
 
-## 9. Definition of done (CLAUDE.md Section 15)
+## 9. Definition of done (project brief, Section 15)
 - [x] All tests pass (100); `make all` regenerates everything (quick pipeline, numbers, docs and
       paper verified from a clean clone; the full profile was run in the working copy).
 - [x] SPEC.md, DECISIONS.md, METRICS.md, PROGRESS.md complete.
 - [x] B1 to B4 attempted and reported with numbers.
 - [x] H1 to H6 each marked supported, not supported or mixed.
 - [x] All figures generated with full captions (paper/main.tex).
-- [x] README, NOTES_for_author.md, SOP_sentences.md complete.
+- [x] README complete; the author's notes and SOP sentences are kept privately (not
+      distributed).
 - [x] paper/main.pdf compiled; numbers via macros only. IEEE two-column version:
       paper/ieee/main_ieee.pdf (same content, same macros, IEEEtran journal format).
 - [x] REVIEW.md and CITATIONS_TODO.md complete.

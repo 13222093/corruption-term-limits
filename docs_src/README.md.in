@@ -140,7 +140,7 @@ docs_src/       templates for the Markdown documents (numbers are filled in auto
 
 Key documents: [SPEC.md](SPEC.md) (model with source locations), [DECISIONS.md](DECISIONS.md),
 [METRICS.md](METRICS.md) (pre-registered metrics and decision rules), [PROGRESS.md](PROGRESS.md),
-[NOTES_for_author.md](NOTES_for_author.md), [REVIEW.md](REVIEW.md),
+[REVIEW.md](REVIEW.md),
 [FINAL_REPORT.md](FINAL_REPORT.md), [CITATIONS_TODO.md](CITATIONS_TODO.md),
 [SI_EXTRACT.md](SI_EXTRACT.md) (what the SI specifies), [CHANGES_SI.md](CHANGES_SI.md) (effect of
 the SI verification), [WORDING_AUDIT.md](WORDING_AUDIT.md) (how the notation inconsistencies are
@@ -180,7 +180,7 @@ present), `python experiments/run_reproduction.py full`,
 
 The implementation and analysis were carried out with the help of AI coding tools (Claude Code)
 under the author's direction. The research question, the extension and the hypotheses were set
-by the author ([CLAUDE.md](CLAUDE.md)). Every number in the documents and the paper is generated
+by the author in a project brief. Every number in the documents and the paper is generated
 from the result files by scripts, and the test suite checks the code against the published
 equations and benchmarks.
 

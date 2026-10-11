@@ -2,7 +2,7 @@
 
 Reduced coordinates u = (x1, x2, x3, y) with x4 = 1 - x1 - x2 - x3 (the simplex is invariant).
 The symbolic Jacobian is built with sympy from the published equations (Methods p.13281, with
-the Q(y) weighting of DECISIONS D-001) plus the rotation term of CLAUDE.md Section 6.
+the Q(y) weighting of DECISIONS D-001) plus the rotation term of SPEC.md Section 11.
 """
 from __future__ import annotations
 

@@ -1,6 +1,6 @@
 """Delay differential equations by the method of steps (V3 delayed inheritance).
 
-V3 (CLAUDE.md Section 6, ASSUMPTION): dy/dt = [base] + rho ((1 - kappa) p0 + kappa y(t - T_lag) - y).
+V3 (SPEC.md Section 11, ASSUMPTION): dy/dt = [base] + rho ((1 - kappa) p0 + kappa y(t - T_lag) - y).
 Only y is delayed. History: constant initial state for t <= 0.
 
 Method of steps: integrate on [k tau, (k+1) tau] with solve_ivp (dense output); the delayed value

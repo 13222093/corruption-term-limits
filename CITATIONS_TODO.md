@@ -17,7 +17,7 @@ claims during revision, add the source here first.
   corruption (137 countries, 2000-2015); topic checked on the publisher page.
 - `buhren2020rotation`: experimental study of staff rotation; online 2019, print 2020.
 
-## Literature search on rotation and term limits (CLAUDE.md Section 13)
+## Literature search on rotation and term limits (project brief, Section 13)
 Searched 2026-10-10 (web search; terms: evolutionary game theory, corruption, term limits,
 rotation, turnover of enforcers, umpire, replicator). Result: no evolutionary-game model of
 corruption with rotation, term limits or turnover of enforcers was found. Closest work:

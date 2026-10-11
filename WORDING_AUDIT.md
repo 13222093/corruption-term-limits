@@ -4,14 +4,13 @@ Scope: every document and code comment that describes how our reading of Lee, Iw
 and Sigmund (2019) and its SI differs from the printed text. Goal: describe these as notation
 inconsistencies that we resolved, credit the original authors, and keep item D5 (our own
 misreading, withdrawn after reading the SI) only in the change logs CHANGES_SI.md and
-DECISIONS.md, plus one reminder in NOTES_for_author.md Part 4, as the release task asks.
+DECISIONS.md, plus one reminder in the author's private notes, as the release task asks.
 
 Method: searched for error, mistake, wrong, typo, fail, misnamed, misread, swapped, reversed,
 slip, lost minus signs, contradict, incorrect, inconsistency, discrepancy and D5 in the paper
 sources, the Markdown templates in docs_src/, SPEC.md, SI_EXTRACT.md, figures/README.md,
 METRICS.md, CITATIONS_TODO.md, src/, experiments/ and tests/. Generated Markdown files (README.md,
-FINAL_REPORT.md, REVIEW.md, NOTES_for_author.md, SOP_sentences.md, CHANGES_SI.md, CV_ENTRY.md)
-are rendered from the templates, so they change with them. Uses of these words about our own
+FINAL_REPORT.md, REVIEW.md, CHANGES_SI.md) are rendered from the templates, so they change with them. Uses of these words about our own
 code, our tests or statistical errors were left as they are.
 
 ## Files changed
@@ -23,8 +22,6 @@ code, our tests or statistical errors were left as they are.
 | `docs_src/README.md.in` (and its rendered output) | 11 |
 | `docs_src/FINAL_REPORT.md.in` (and its rendered output) | 4 |
 | `docs_src/REVIEW.md.in` (and its rendered output) | 3 |
-| `docs_src/NOTES_for_author.md.in` (and its rendered output) | 7 |
-| `docs_src/SOP_sentences.md.in` (and its rendered output) | 2 |
 | `docs_src/CHANGES_SI.md.in` (and its rendered output) | 5 |
 | `SPEC.md` | 8 |
 | `SI_EXTRACT.md` | 12 |
@@ -32,8 +29,9 @@ code, our tests or statistical errors were left as they are.
 | `tests/test_fixed_points.py` | 1 |
 | `tests/test_rare_exploration.py` | 1 |
 
-New files written with neutral wording from the start: `docs_src/CV_ENTRY.md.in` (rendered
-to CV_ENTRY.md). Paper sections added: Acknowledgements in both papers now credit the original
+The author's private notes (interview notes, statement-of-purpose sentences and a CV entry)
+were audited in the same way; they are no longer part of the repository (DECISIONS D-026).
+Paper sections added: Acknowledgements in both papers now credit the original
 authors and disclose AI assistance.
 
 ## Phrases replaced, by file
@@ -106,25 +104,6 @@ authors and disclose AI assistance.
 | - Markov chain: the SI fixation rules for neutral mutants explain every printed entry of T except D4. D5 was our error and is withdrawn. The SI's cost-free chain is reproduced exactly. - Fig. 3 caption (D3) and the T omission (D4) are confirmed by the SI text. | - Markov chain: the SI fixation rules for neutral mutants explain every printed entry of T except D4, and they corrected our own first derivation of one entry (CHANGES_SI.md). The SI's cost-free chain is reproduced exactly. - The SI text supports our readings of the Fig. 3 caption (D3) and of row 3 of T (D4). | SI section: 'D5 was our error' removed; 'T omission ... confirmed' replaced |
 | - New inconsistency D7: SI Fig. 9 axis labels are swapped relative to its caption. | - New notation inconsistency D7: in SI Fig. 9 the axis labels are exchanged relative to the caption. | D7 wording ('swapped') |
 
-### `docs_src/NOTES_for_author.md.in`
-
-| Before | After | Note |
-|---|---|---|
-| wins), 0 if a second copy would do worse, and 1/M if it stays neutral. We first set all neutral player cases to 0 and called one printed entry inconsistent (old D5). The SI showed that this was our mistake. | wins), 0 if a second copy would do worse, and 1/M if it stays neutral. Our first derivation set all neutral player cases to 0; the SI's rules corrected this (see "How to talk about discrepancies" in Part 3). | section 1.4: D5 label and 'our mistake' moved to the new section |
-| Fig. 3C, D (see discrepancy D6). | Fig. 3C, D (see notation inconsistency D6 in the README). | Fig. 2 reading guide |
-| 2. **Did you find errors in the paper?** A few typos and inconsistencies: the Q(y) weighting is swapped in the printed equation, a mixed state is misnamed, the Fig. 3 caption's "respectively" is reversed, one transition-matrix transition is missing (in a transient row, so it has no effect), Fig. 3C, D shows the mu = 0.02 orbit, not the 1e-4 one, and the SI's Fig. 9 has its axis labels swapped. I h ... | 2. **Did you find any problems in the paper?** Only a few notation inconsistencies, which I resolved without changing any of the paper's conclusions. The clearest example is the weighting in Q(y): the printed formula puts the weight y on the corrupt-umpire matrix, although y is the honest fraction. Read literally, the all-corrupt case ends with everyone cooperating, which does not match the paper' ... | interview Q2: 'errors', 'typos', 'swapped', 'misnamed', 'reversed', 'missing' replaced; D5 mention removed |
-| (see "How to talk about discrepancies" in Part 3). | (see Part 4, "How to talk about discrepancies"). | cross-reference to the new Part 4 |
-| The paper itself is very clear; reproducing it was possible because it is so detailed. | The paper is clear and detailed, which is what made the reproduction possible. | interview Q2 closing sentence |
-| (none) | Part 4 'How to talk about discrepancies' added | new section |
-| If our time unit were wrong by a factor | If our time unit differed by a factor | wording about our own model |
-
-### `docs_src/SOP_sentences.md.in`
-
-| Before | After | Note |
-|---|---|---|
-| to recover the honest-to-corrupt ratio (19N+87):109, and documented six inconsistencies in the paper and its SI. | to recover the honest-to-corrupt ratio (19N+87):109, and matched its simulated ratio of about 2.15 under the time average that the chain predicts. | sentence 1: 'documented six inconsistencies' replaced by a verified result |
-| rare-exploration Markov chain ... under the time average that the chain predicts | Markov chain ... under the time average the chain predicts | sentence 1 shortened to stay under 300 characters |
-
 ### `docs_src/CHANGES_SI.md.in`
 
 | Before | After | Note |
@@ -189,7 +168,7 @@ authors and disclose AI assistance.
   the original paper that needed a change.
 - Figure captions: all captions are in the two paper sources; the only caption that refers to the
   original (our Fig. 2D, "which match Lee et al.'s Fig. 3C, D") was already neutral.
-- `CLAUDE.md`: the author's original project brief, kept as written.
+- The author's project brief: kept as written and not distributed (DECISIONS D-026).
 - `DECISIONS.md`, `PROGRESS.md`, `CHANGES_SI.md`: dated logs. Earlier entries keep the wording
   used at the time, so the record stays accurate; D5 is described there as our misreading,
   withdrawn after reading the SI (DECISIONS D-019, CHANGES_SI.md Sections 1 and 4).
